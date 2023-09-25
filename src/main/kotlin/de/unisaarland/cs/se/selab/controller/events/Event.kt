@@ -27,5 +27,4 @@ enum class EventStatus {
     SCHEDULED,
     ACTIVE,
     FINISHED
-
 }
