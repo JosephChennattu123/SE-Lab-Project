@@ -19,7 +19,7 @@ class VehicleValidator : BasicValidator() {
      *
      * @return true if staff bounds where matched
      */
-    fun validateStaffBounds(): Boolean {
+    private fun validateStaffBounds(): Boolean {
         // TODO
         return false
     }
@@ -29,7 +29,7 @@ class VehicleValidator : BasicValidator() {
      *
      * @return true if height bounds where matched
      */
-    fun validateHeightBounds(): Boolean {
+    private fun validateHeightBounds(): Boolean {
         // TODO
         return false
     }
@@ -39,7 +39,7 @@ class VehicleValidator : BasicValidator() {
      *
      * @return true if bases exist
      * */
-    fun validateBaseExists(): Boolean {
+    private fun validateBaseExists(): Boolean {
         // TODO
         return false
     }
@@ -49,7 +49,7 @@ class VehicleValidator : BasicValidator() {
      *
      * @return true if bases have enough staff to fully staff each of the vehicles
      */
-    fun validateBasesNessesaryStaff(): Boolean {
+    private fun validateBasesNessesaryStaff(): Boolean {
         // TODO
         return false
     }
@@ -59,7 +59,7 @@ class VehicleValidator : BasicValidator() {
      *
      * @return true if bounds where matched
      */
-    fun validateLadderLenght(): Boolean {
+    private fun validateLadderLenght(): Boolean {
         // TODO
         return false
     }

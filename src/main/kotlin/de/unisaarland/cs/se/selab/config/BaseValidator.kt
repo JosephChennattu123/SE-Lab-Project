@@ -3,7 +3,7 @@ package de.unisaarland.cs.se.selab.config
 /**
  * Validates the bases
  */
-class BaseValidator: BasicValidator() {
+class BaseValidator : BasicValidator() {
     /**
      * Validates the information for bases and creates bases.
      *
@@ -19,7 +19,7 @@ class BaseValidator: BasicValidator() {
      *
      * @return true if number of doctors is valid
      */
-    fun validateNumDoctors(): Boolean {
+    private fun validateNumDoctors(): Boolean {
         // TODO
         return false
     }
@@ -29,7 +29,7 @@ class BaseValidator: BasicValidator() {
      *
      * @return true if number of staff is valid
      */
-    fun validateStaffBounds(): Boolean {
+    private fun validateStaffBounds(): Boolean {
         // TODO
         return false
     }
@@ -39,7 +39,7 @@ class BaseValidator: BasicValidator() {
      *
      * @return true if the bases contain doctors only if they are hospitals
      */
-    fun validateDoctorsOnlyInHospitals(): Boolean {
+    private fun validateDoctorsOnlyInHospitals(): Boolean {
         // TODO also check if this is needed (special property)
         return false
     }
@@ -49,7 +49,7 @@ class BaseValidator: BasicValidator() {
      *
      * @return true if the number of dogs is valid
      */
-    fun validateNumDogs(): Boolean {
+    private fun validateNumDogs(): Boolean {
         // TODO
         return false
     }
@@ -59,7 +59,7 @@ class BaseValidator: BasicValidator() {
      *
      * @return true if the bases contain dogs only if they are police stations
      */
-    fun validateDogsOnlyInHospitals(): Boolean {
+    private fun validateDogsOnlyInHospitals(): Boolean {
         // TODO also check if this is needed (special property)
         return false
     }
@@ -69,7 +69,7 @@ class BaseValidator: BasicValidator() {
      *
      * @return true if the vertices exist
      */
-    fun validateVerticesExist(): Boolean {
+    private fun validateVerticesExist(): Boolean {
         // TODO
         return false
     }
@@ -79,7 +79,7 @@ class BaseValidator: BasicValidator() {
      *
      * @return true if the base placement is valid
      */
-    fun validateAtMostOneBaseOnEachVertex(): Boolean {
+    private fun validateAtMostOneBaseOnEachVertex(): Boolean {
         // TODO
         return false
     }
