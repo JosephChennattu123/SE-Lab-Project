@@ -6,6 +6,19 @@ package de.unisaarland.cs.se.selab.config
  * */
 class DotParser(graphFilePath: String) {
 
+    var countyName: String = ""
+    var vertexIds: List<String> = emptyList()
+    var edges: List<String> = emptyList()
+    var edgeIdToSourceTargetPairs: Map<Int, Pair<Int, Int>> = emptyMap()
+    var edgeIdToAttributes: Map<Int, String> = emptyMap()
+    var edgeIdToVillageName: Map<Int, String> = emptyMap()
+    var edgeIdToRoadName: Map<Int, String> = emptyMap()
+    var villagesToRoads: Map<String, List<String>> = emptyMap()
+    var edgeIdToHeight: Map<Int, Int> = emptyMap()
+    var edgeIdToWeight: Map<Int, Int> = emptyMap()
+    var edgeIdToPrimaryType: Map<Int, String> = emptyMap()
+    var edgeIdToSecondaryType: Map<Int, String> = emptyMap()
+
     /**
      * Parses the dot-file.
      * Extracts the vertices, edges and other information from the file-
@@ -19,55 +32,55 @@ class DotParser(graphFilePath: String) {
     /**
      * extracts the county name from the file.
      */
-    private fun parseCountyName(): Unit {}
+    private fun parseCountyName() {}
 
     /**
      * extracts the village name from the file.
      */
-    private fun parseVertexIds(): Unit {}
+    private fun parseVertexIds() {}
 
     /**
      * extracts edges from the file.
      * */
-    private fun parseEdges(): Unit {}
+    private fun parseEdges() {}
 
     /**
      * extracts the source and target from an edge.
      * */
-    private fun parseSourceAndTarget(edge: String): Unit {}
+    private fun parseSourceAndTarget(edge: String) {}
 
     /**
      * extracts the attributes from an edge string.
      * */
-    private fun parseAttributes(edge: String): Unit {}
+    private fun parseAttributes(edge: String) {}
 
     /**
      * extracts village name from attributes.
      * */
-    private fun villageName(attributes: String): Unit {}
+    private fun villageName(attributes: String) {}
 
     /**
      * extracts road name from attributes.
      * */
-    private fun parseRoadName(attributes: String): Unit {}
+    private fun parseRoadName(attributes: String) {}
 
     /**
      * extracts road height from attributes.
      * */
-    private fun parseHeight(attributes: String): Unit {}
+    private fun parseHeight(attributes: String) {}
 
     /**
      * extracts road weight from attributes.
      * */
-    private fun parseWeight(attributes: String): Unit {}
+    private fun parseWeight(attributes: String) {}
 
     /**
      * extracts primary road type from attributes.
      * */
-    private fun parsePrimaryType(attributes: String): Unit {}
+    private fun parsePrimaryType(attributes: String) {}
 
     /**
      * extracts secondary road type from attributes.
      * */
-    private fun parseSecondaryType(attributes: String): Unit {}
+    private fun parseSecondaryType(attributes: String) {}
 }
