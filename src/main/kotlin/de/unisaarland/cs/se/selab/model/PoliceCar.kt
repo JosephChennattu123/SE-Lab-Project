@@ -3,7 +3,7 @@ package de.unisaarland.cs.se.selab.model
 import java.time.temporal.TemporalAmount
 
 class PoliceCar : Vehicle() {
-    fun setBusy(): boolean {
+    fun setBusy(): Boolean {
         //todo
         return true
     }

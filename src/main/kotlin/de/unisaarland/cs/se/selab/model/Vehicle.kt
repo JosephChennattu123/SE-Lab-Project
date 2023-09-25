@@ -7,29 +7,35 @@ open class Vehicle {
 
     open fun handleEmergency(amount: Int): Int {
         //TODO
+        return 0
     }
 
     fun setNewPath(): Boolean {
         //TODO
+        return false
     }
 
-    fun setAtBase(): boolean {
+    fun setAtBase(): Boolean {
+        //TODO
+        return false
+    }
+
+    fun decreaseBusyTicks() {
         //TODO
     }
 
-    fun decreaseBusyTicks(): unit {
+    fun getCurrentVertexID(): Int {
         //TODO
+        return 0
     }
 
-    fun getCurrentVertexID(): int {
+    fun getNextVertexID(): Int? {
         //TODO
-    }
-
-    fun getNextVertexID(): int? {
-        //TODO
+        return null
     }
 
     fun getDistanceOnEdge(): Int {
         //TODO
+        return 0
     }
 }

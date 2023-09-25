@@ -1,7 +1,7 @@
 package de.unisaarland.cs.se.selab.model
 
 class FireTruck : Vehicle() {
-    fun setBusy(): boolean {
+    fun setBusy(): Boolean {
         //todo
         return true
     }
