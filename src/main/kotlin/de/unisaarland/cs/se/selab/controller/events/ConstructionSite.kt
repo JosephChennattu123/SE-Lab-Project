@@ -1,6 +1,6 @@
 package de.unisaarland.cs.se.selab.controller.events
 
-class ConstructionSite: RoadEvent() {
+class ConstructionSite : RoadEvent() {
     override fun applyEffect() {
         TODO("Not yet implemented")
     }
