@@ -1,13 +1,26 @@
 package de.unisaarland.cs.se.selab.config
 
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
+
 /**
  * parses the dot-file
  * @param graphFilePath the name of the file that contains the graph information
  * */
-class DotParser(graphFilePath: String) {
+class DotParser(val graphFilePath: String) {
+
+    //private val graphFile: File = File(graphFilePath)
+    //private val scanner = Scanner(graphFile.readText())
+    //private var currentToken: String? = null
+
+    var reader: BufferedReader = BufferedReader( FileReader(graphFilePath))
+    val fileContent = File(graphFilePath).readText()
+
+    private var parsingErrorOccurred: Boolean = false
 
     var countyName: String = ""
-    var vertexIds: List<String> = emptyList()
+    var vertexIds: List<Int> = emptyList()
     var edges: List<String> = emptyList()
     var edgeIdToSourceTargetPairs: Map<Int, Pair<Int, Int>> = emptyMap()
     var edgeIdToAttributes: Map<Int, String> = emptyMap()
@@ -26,18 +39,50 @@ class DotParser(graphFilePath: String) {
      * @return true if parsing was successful
      * */
     fun parse(): Boolean {
-        return false
+//        while (notFinished() && !parsingErrorOccured) {
+//            val token = scanner.next()
+//            parseToken(token)
+//        }
+        var line: String? = reader.readLine()
+        while (line != null) {
+            print(line)
+        }
+        return parsingErrorOccurred
     }
+
+//    private fun parseToken(token: String) {
+//        when (token) {
+//            "digraph" -> parseCountyName()
+//            else -> parsingErrorOccured = true
+//        }
+//    }
 
     /**
      * extracts the county name from the file.
      */
-    private fun parseCountyName() {}
+    private fun parseCountyName() {
+        val regex = """\s*([a-zA-Z][a-zA-Z0-9]*)\s*\{""".toRegex()
+        val matchResult = regex.find(fileContent)
+        val matchedString = matchResult?.groupValues?.get(1)
+        countyName = matchedString ?: run {
+            parsingErrorOccurred = true
+            "" //default value
+        }
+    }
 
     /**
      * extracts the village name from the file.
      */
-    private fun parseVertexIds() {}
+//    private fun parseVertexIds() {
+//        var token = scanner.next()
+//        if (token == "{") {
+//            token = scanner.next()
+//            while (token.contains(";")) {
+//                val vertexId : Int = token.
+//            }
+//        }
+//
+//    }
 
     /**
      * extracts edges from the file.
@@ -83,4 +128,8 @@ class DotParser(graphFilePath: String) {
      * extracts secondary road type from attributes.
      * */
     private fun parseSecondaryType(attributes: String) {}
+
+//    private fun notFinished(): Boolean {
+//        return scanner.hasNext()
+//    }
 }
