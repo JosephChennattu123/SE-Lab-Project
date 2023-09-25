@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.config
 
+import de.unisaarland.cs.se.selab.controller.events.Event
+
 /**
  * Validates the events
  */
