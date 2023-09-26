@@ -12,7 +12,7 @@ abstract class Vehicle(
     var status: VehicleStatus = VehicleStatus.AT_BASE
     var isUnavailable : Boolean = false
     var activeEventID : Int? = null
-    var busyTicks : Int = 0
+    private var busyTicks : Int = 0
     var positionTracker : PositionTracker = PositionTracker()
 
     fun driveUpdate(): Unit {
@@ -29,8 +29,15 @@ abstract class Vehicle(
         TODO()
     }
 
+    /**
+     * Decrease busyTicks, if status is Busy
+     * @return true: busyTicks == 0
+     */
     fun decreaseBusyTicks(): Boolean {
-        TODO()
+        assert(status == VehicleStatus.BUSY && busyTicks != 0)
+        busyTicks -= 1
+        if (busyTicks == 0) return true
+        return false
     }
 
     fun getCurrentVertexID(): Int {
