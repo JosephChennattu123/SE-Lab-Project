@@ -144,8 +144,38 @@ object AssetManager {
      * @param model The model
      * @param emergency The emergency to allocate to
      * @param vehicles The list of vehicles to assign to the emergency */
-    fun allocateAssetsToEmergency(model: Model, emergency: Emergency, vehicles: List<Vehicle>) {
-        // TODO
+    fun allocateAssetsToEmergency(model: Model, emergency: Emergency, vehicles: MutableList<Vehicle>) {
+        filterAssetsByRequirement(vehicles, emergency.currentRequiredAssets)
+        for (v in vehicles) {
+            if (v.status == VehicleStatus.AT_BASE) {
+                val p = Dijkstra.getShortestPathFromVertexToEdge(
+                    model.graph,
+                    model.getBasebyId(v.baseID).vertexID,
+                    emergency.location,
+                    v.height
+                )
+
+                if (!emergency.canReachInTime(p.ticksToArrive)) {
+                    vehicles.remove(v)
+                }
+            } else {
+                val pt = v.positionTracker
+                val p = Dijkstra.getShortestPathFromEdgeToEdge(
+                    model.graph, pt.path.vertexPath[pt.currentVertexIndex],
+                    pt.path.vertexPath[pt.currentVertexIndex + 1],
+                    pt.positionOnEdge,
+                    emergency.location,
+                    v.height
+                )
+                if (!emergency.canReachInTime(p.ticksToArrive)) {
+                    vehicles.remove(v)
+                }
+            }
+        }
+        filteredVehicles = filterAssetsByOptimalSolution()
+        for (v in filteredVehicles) {
+            emergency.addAsset()
+        }
     }
 
     /**

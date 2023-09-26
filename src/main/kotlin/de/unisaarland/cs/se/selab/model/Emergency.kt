@@ -21,7 +21,6 @@ class Emergency(
     var status: EmergencyStatus = EmergencyStatus.ONGOING
 
 ) {
-
     var requiredAssets: List<EmergencyRequirement> = listOf()
     var currentRequiredAssets: MutableList<EmergencyRequirement> = mutableListOf()
     var assignedVehicleIDs: MutableList<Int> = mutableListOf()
@@ -33,7 +32,6 @@ class Emergency(
      * @param v vehicle to be assigned */
     fun addAsset(v: Vehicle) {
         assignedVehicleIDs.add(v.vehicleID)
-
     }
 
     /**
