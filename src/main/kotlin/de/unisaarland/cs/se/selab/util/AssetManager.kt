@@ -1,39 +1,143 @@
 package de.unisaarland.cs.se.selab.util
 
-import de.unisaarland.cs.se.selab.model.Emergency
-import de.unisaarland.cs.se.selab.model.EmergencyRequirement
-import de.unisaarland.cs.se.selab.model.Model
-import de.unisaarland.cs.se.selab.model.Vehicle
+import de.unisaarland.cs.se.selab.model.*
 
 /**
  * Returns requirements for emergencies and handles the allocation of assets to emergencies */
 object AssetManager {
     /**
      * @param severity Severity of the emergency
-     * @return List of EmergencyRequirements */
+     * @return List of EmergencyRequirements
+     * */
     fun getFireRequirements(severity: Int): List<EmergencyRequirement> {
-        TODO()
+        return when (severity) {
+            1 -> {
+                listOf(EmergencyRequirement(VehicleType.FIRE_TRUCK_WATER, AssetType.WATER, 2, 1200))
+            }
+
+            2 -> {
+                listOf(
+                    EmergencyRequirement(VehicleType.FIRE_TRUCK_WATER, AssetType.WATER, 4, 3000),
+                    EmergencyRequirement(VehicleType.FIRE_TRUCK_LADDER, AssetType.LADDER, 1, 30),
+                    EmergencyRequirement(VehicleType.FIREFIGHTER_TRANSPORTER, null, 1, null),
+                    EmergencyRequirement(VehicleType.AMBULANCE, AssetType.PATIENT, 1, 1)
+                )
+            }
+
+            3 -> {
+                listOf(
+                    EmergencyRequirement(VehicleType.FIRE_TRUCK_WATER, AssetType.WATER, 6, 5400),
+                    EmergencyRequirement(VehicleType.FIRE_TRUCK_LADDER, AssetType.LADDER, 2, 40),
+                    EmergencyRequirement(VehicleType.FIREFIGHTER_TRANSPORTER, null, 2, null),
+                    EmergencyRequirement(VehicleType.AMBULANCE, AssetType.PATIENT, 2, 2),
+                    EmergencyRequirement(VehicleType.EMERGENCY_DOCTOR_CAR, null, 1, null)
+                )
+
+            }
+
+            else -> {
+                listOf()
+            }
+        }
     }
 
     /**
      * @param severity Severity of the emergency
      * @return List of EmergencyRequirements */
     fun getMedicalRequirements(severity: Int): List<EmergencyRequirement> {
-        TODO()
+        return when (severity) {
+            1 -> {
+                listOf(EmergencyRequirement(VehicleType.FIRE_TRUCK_TECHNICAL, null, 1, null))
+            }
+
+            2 -> {
+                listOf(
+                    EmergencyRequirement(VehicleType.FIRE_TRUCK_TECHNICAL, null, 2, null),
+                    EmergencyRequirement(VehicleType.POLICE_MOTOR_CYCLE, null, 1, null),
+                    EmergencyRequirement(VehicleType.POLICE_CAR, null, 1, null),
+                    EmergencyRequirement(VehicleType.AMBULANCE, AssetType.PATIENT, 1, 1)
+                )
+            }
+
+            3 -> {
+                listOf(
+                    EmergencyRequirement(VehicleType.FIRE_TRUCK_TECHNICAL, null, 4, null),
+                    EmergencyRequirement(VehicleType.POLICE_MOTOR_CYCLE, null, 2, null),
+                    EmergencyRequirement(VehicleType.POLICE_CAR, null, 4, null),
+                    EmergencyRequirement(VehicleType.AMBULANCE, AssetType.PATIENT, 3, 2),
+                    EmergencyRequirement(VehicleType.EMERGENCY_DOCTOR_CAR, null, 1, null)
+                )
+
+            }
+
+            else -> {
+                listOf()
+            }
+        }
     }
 
     /**
      * @param severity Severity of the emergency
      * @return List of EmergencyRequirements */
     fun getAccidentRequirements(severity: Int): List<EmergencyRequirement> {
-        TODO()
+        return when (severity) {
+            1 -> {
+                listOf(EmergencyRequirement(VehicleType.POLICE_CAR, AssetType.CRIMINAL, 1, 1))
+            }
+
+            2 -> {
+                listOf(
+                    EmergencyRequirement(VehicleType.POLICE_CAR, AssetType.CRIMINAL, 4, 4),
+                    EmergencyRequirement(VehicleType.K9_POLICE_CAR, null, 1, null),
+                    EmergencyRequirement(VehicleType.AMBULANCE, null, 1, null)
+                )
+            }
+
+            3 -> {
+                listOf(
+                    EmergencyRequirement(VehicleType.POLICE_CAR, AssetType.CRIMINAL, 6, 8),
+                    EmergencyRequirement(VehicleType.POLICE_MOTOR_CYCLE, null, 2, null),
+                    EmergencyRequirement(VehicleType.K9_POLICE_CAR, null, 2, null),
+                    EmergencyRequirement(VehicleType.AMBULANCE, AssetType.PATIENT, 1, 1),
+                    EmergencyRequirement(VehicleType.FIREFIGHTER_TRANSPORTER, null, 1, null)
+                )
+
+            }
+
+            else -> {
+                listOf()
+            }
+        }
     }
 
     /**
      * @param severity Severity of the emergency
-     * @return List of EmergencyRequirements */
+     * @return list of EmergencyRequirements for this emergency */
     fun getCrimeRequirements(severity: Int): List<EmergencyRequirement> {
-        TODO()
+        return when (severity) {
+            1 -> {
+                listOf(EmergencyRequirement(VehicleType.AMBULANCE, null, 1, null))
+            }
+
+            2 -> {
+                listOf(
+                    EmergencyRequirement(VehicleType.AMBULANCE, AssetType.PATIENT, 2, 2),
+                    EmergencyRequirement(VehicleType.EMERGENCY_DOCTOR_CAR, null, 1, null)
+                )
+            }
+
+            3 -> {
+                listOf(
+                    EmergencyRequirement(VehicleType.AMBULANCE, AssetType.PATIENT, 5, 5),
+                    EmergencyRequirement(VehicleType.EMERGENCY_DOCTOR_CAR, null, 2, null),
+                    EmergencyRequirement(VehicleType.FIRE_TRUCK_TECHNICAL, null, 2, null)
+                )
+            }
+
+            else -> {
+                listOf()
+            }
+        }
     }
 
     /**
