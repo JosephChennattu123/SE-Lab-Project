@@ -20,7 +20,7 @@ class DotParser(val graphFilePath: String) {
     private var parsingErrorOccurred: Boolean = false
 
     var countyName: String = ""
-    var vertexIds: List<Int> = emptyList()
+    var vertexIds: List<Int> = mutableListOf()
     var edges: List<String> = emptyList()
     var edgeIdToSourceTargetPairs: Map<Int, Pair<Int, Int>> = emptyMap()
     var edgeIdToAttributes: Map<Int, String> = emptyMap()
@@ -39,23 +39,8 @@ class DotParser(val graphFilePath: String) {
      * @return true if parsing was successful
      * */
     fun parse(): Boolean {
-//        while (notFinished() && !parsingErrorOccured) {
-//            val token = scanner.next()
-//            parseToken(token)
-//        }
-        var line: String? = reader.readLine()
-        while (line != null) {
-            print(line)
-        }
-        return parsingErrorOccurred
+        TODO()
     }
-
-//    private fun parseToken(token: String) {
-//        when (token) {
-//            "digraph" -> parseCountyName()
-//            else -> parsingErrorOccured = true
-//        }
-//    }
 
     /**
      * extracts the county name from the file.
@@ -73,16 +58,14 @@ class DotParser(val graphFilePath: String) {
     /**
      * extracts the village name from the file.
      */
-//    private fun parseVertexIds() {
-//        var token = scanner.next()
-//        if (token == "{") {
-//            token = scanner.next()
-//            while (token.contains(";")) {
-//                val vertexId : Int = token.
-//            }
-//        }
-//
-//    }
+    private fun parseVertexIds() {
+        val regexFromCurlyToEdge = """\{(\s*([0-9]+)\s*;\s*)+[0-9]+\s*-""".toRegex()
+        val regexForVertexId = """\s*([0-9]+)\s*;""".toRegex()
+        val unParsedVertices = regexFromCurlyToEdge.find(fileContent)
+        val noCurlyNoEdge = unParsedVertices?.groupValues?.get(0)
+        val matchResults = regexForVertexId.findAll(noCurlyNoEdge ?: "")
+        vertexIds = matchResults.map{ it.groupValues[1].toInt()}.toList()
+    }
 
     /**
      * extracts edges from the file.
