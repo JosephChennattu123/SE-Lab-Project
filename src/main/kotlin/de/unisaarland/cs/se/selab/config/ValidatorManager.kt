@@ -35,7 +35,7 @@ class ValidatorManager {
     fun validate(dotParser: DotParser, jsonParser: JsonParser): ControlCenter? {
         dotParser.parse()
         val graphValidator = GraphValidator()
-        graphValidator.validate(dotParser)
+        this.graph = graphValidator.validate(dotParser)
 
         jsonParser.parseAssets()
         val baseValidator = BaseValidator()
@@ -50,7 +50,7 @@ class ValidatorManager {
         val eventValidator = EventValidator()
         this.events = eventValidator.validate()
 
-
+        controlCenter = ControlCenter()
         TODO()
     }
 
