@@ -14,7 +14,6 @@ class DotParser(val graphFilePath: String) {
 
     private var parsingErrorOccurred: Boolean = false
 
-
     /**
      * Parses the dot-file.
      * Extracts the vertices, edges and other information from the file-
