@@ -8,7 +8,7 @@ class Ambulance(vehicleId: Int, baseId: Int, vehicleType: VehicleType, height: I
     var patientPresent : Boolean? = null
     var doctorPresent : Boolean? = null
 
-    fun setBusy(): Boolean {
+    fun setBusy() {
         TODO()
     }
 

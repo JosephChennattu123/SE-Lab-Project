@@ -1,27 +1,30 @@
 package de.unisaarland.cs.se.selab.model
 
-import de.unisaarland.cs.se.selab.util.Logger
-
 abstract class Vehicle(
     val vehicleID: Int,
-    val baseID : Int,
-    val vehicleType : VehicleType,
-    val height : Int,
-    val staffCapacity : Int,
-    val maxAssetCapacity : Int) {
+    val baseID: Int,
+    val vehicleType: VehicleType,
+    val height: Int,
+    val staffCapacity: Int,
+    val maxAssetCapacity: Int
+) {
 
-    var emergencyID : Int? = null
+    var emergencyID: Int? = null
     var status: VehicleStatus = VehicleStatus.AT_BASE
-    var isUnavailable : Boolean = false
-    var activeEventID : Int? = null
-    private var busyTicks : Int = 0
-    var positionTracker : PositionTracker = PositionTracker()
+    var isUnavailable: Boolean = false
+    var activeEventID: Int? = null
+    private var busyTicks: Int = 0
+    var positionTracker: PositionTracker = PositionTracker()
 
-    fun driveUpdate(): Unit {
+    /**
+     * update the position of vehicle, send log if it arrives, and service vehicles that require
+     */
+    fun driveUpdate() {
         positionTracker.updatePosition()
         if (positionTracker.destinationReached()) {
-//            Logger.logAssetArrived(vehicleID, positionTracker.current)
-//            if ()
+            val destinationVertexID = positionTracker.getDestination()
+//            Logger.logAssetArrived(vehicleID, destinationVertexID)
+//            if (destinationVertexID == baseID)
         }
     }
 
