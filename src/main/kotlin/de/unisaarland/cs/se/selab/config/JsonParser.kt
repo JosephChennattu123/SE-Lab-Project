@@ -5,7 +5,7 @@ package de.unisaarland.cs.se.selab.config
  * @param assetsFilePath path to the file for assets (bases and vehicles)
  * @param emergenciesEventsFilePath path to the file for emergencies and events
  * */
-class JsonParser(assetsFilePath: String, emergenciesEventsFilePath: String) {
+class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: String) {
 
     var bases: List<BaseInfo> = listOf()
     var vehicles: List<VehicleInfo> = listOf()
@@ -34,27 +34,27 @@ class JsonParser(assetsFilePath: String, emergenciesEventsFilePath: String) {
      * parses the bases
      */
     fun parseBases() {
-
+        TODO()
     }
 
     /**
      * parses the vehicles
      */
     fun parseVehicles() {
-
+        TODO()
     }
 
     /**
      * parses the emergencies
      */
     fun parseEmergencies() {
-
+        TODO()
     }
 
     /**
      * parses the events
      */
     fun parseEvents() {
-
+        TODO()
     }
 }
