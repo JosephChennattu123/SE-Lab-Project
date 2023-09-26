@@ -1,19 +1,21 @@
 package de.unisaarland.cs.se.selab.model
 
 
-class PoliceCar : Vehicle() {
+class PoliceCar(vehicleId: Int, baseId: Int,vehicleType: VehicleType , height: Int,
+                staffCapacity: Int, maxAssetCapacity: Int) : Vehicle(vehicleId,baseId,
+    vehicleType,height,staffCapacity,maxAssetCapacity) {
+
+    var criminalsPresent: Int? = null
+
     fun setBusy(): Boolean {
-        //todo
-        return true
+        TODO()
     }
 
     override fun handleEmergency(amount: Int): Int {
-        //todo
-        return -1
+        TODO()
     }
 
     fun isFull(): Boolean {
-        //todo
-        return true
+        TODO()
     }
 }
