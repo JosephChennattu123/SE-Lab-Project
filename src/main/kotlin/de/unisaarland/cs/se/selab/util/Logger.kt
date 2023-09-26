@@ -14,7 +14,8 @@ class Logger {
     }
     public fun logEmergencyAssigned(id1:Int,id2:Int)
     {
-
+        var output : String = "Emergency Assignment" + id1 + "assigned to" + id2
+        println(output)
     }
     public fun logAssetAllocated(assetId:Int,emergencyId:Int,arrivesInt: Int)
     {

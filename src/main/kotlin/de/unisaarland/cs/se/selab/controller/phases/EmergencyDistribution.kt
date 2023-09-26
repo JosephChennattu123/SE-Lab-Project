@@ -1,58 +1,52 @@
-package de.unisaarland.cs.se.selab.controller.phases
-
-import de.unisaarland.cs.se.selab.model.Base
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.util.Logger
 
 class EmergencyDistribution {
 
+
     public fun execute(m: Model) {
-        getEmergenciesFor(0)
-        findNearestBase()
-        distributeEmergencies()
-        getSeverity()
+        //get emergencies for current tick
+        var currentEmergencies = m.tickToEmergencyId.get(0)
+
+        //get graph from model
+        var graph = m.graph
+        var loc = e.location
+
+        for (e in currentEmergencies)
+        {
+            //iterate over emergencies and get nearest base using one of the dijkstra methods
+            var nearestbaseId : Int = 0
+
+            //This seems very wrong,but I need to provide a basetype for getnearestbasetoEdge,so I will have multiple if statements for this purpose
+            if(e.type = EmergencyType.CRIME)
+            {
+                nearestbaseId = Dijkystra.getnearestbasetoEdge(graph,loc,BaseType.POLICE_STATION)
+            }
+            if(e.type = EmergencyType.FIRE)
+            {
+                nearestbaseId = Dijkystra.getnearestbasetoEdge(graph,loc,BaseType.FIRE_STATION)
+            }
+            if(e.type = EmergencyType.ACCIDENT || e.type = EmergencyType.MEDICAL)
+            {
+                nearestbaseId =  Dijkystra.getnearestbasetoEdge(graph,loc,BaseType.HOSPITAL)
+            }
+            //assign the base Id to the emergency
+            //e.baseId = nearestbaseId
+
+            //assign the emergency Id to the base
+            m.getBasebyId(nearestbaseId).addEmergency(e)
+
+
+            //add emergency to active emergencies in the model
+            m.addToAssignedEmergencies(nearestbaseId)
+
+            Logger.logEmergencyAssigned(e.id,nearestbaseId)
+
+        }
+
+
 
     }
-
-    //List<Emergency>
-    /**
-     * @param tick : gets current tick
-     * @return list of emergencies at the current tick
-     * Get the emergencies that are happening at the current tick
-     */
-    private fun getEmergenciesFor(tick: Int): List<Emergency> {
-
-
-    }
-
-    /**
-     * @param e : the emergency to be handled which needs a near base to be assigned to
-     * @return the nearest base found
-     * Get the nearest base to an emergency
-     */
-
-    private fun findNearestBase(e: Emergency): Base {
-
-    }
-
-    /**
-     * @param l : list of the emergencies to be distributed
-     * @return the nearest base found
-     * Get the nearest base to an emergency
-     */
-
-    private fun distributeEmergencies(l: List<Emergency>) {
-
-    }
-
-    /**
-     * @param emergency : the emergency to get the severity for
-     * @return the severity of the severity
-     * Takes an emergency and returns its severity
-     */
-    private fun getSeverity(emergency: Emergency) {
-
-    }
-
 
 }
