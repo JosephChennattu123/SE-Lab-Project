@@ -8,9 +8,8 @@ class FireTruck(vehicleId: Int, baseId: Int,vehicleType: VehicleType , height: I
     var waterLevel: Int? = null
     var ladderLength: Int? = null
 
-    fun setBusy(): Boolean {
-        //todo
-        return true
+    override fun setBusy(): Boolean {
+        TODO()
     }
 
     override fun handleEmergency(amount: Int): Int {
