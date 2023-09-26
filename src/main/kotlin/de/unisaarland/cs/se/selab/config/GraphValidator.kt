@@ -6,6 +6,14 @@ import de.unisaarland.cs.se.selab.model.map.Graph
  * Validates the graph
  */
 class GraphValidator {
+
+    private var dotParser: DotParser? = null
+
+    private var vertexIds: Set<Int> = setOf()
+    private var villageNames: List<String> = listOf()
+    private var villageToRoads: Map<String, List<String>> = mapOf()
+    private var edges: Map<Int, List<Connection>> = mapOf()
+
     /**
      * Validate the information for the graph and create the graph
      *
@@ -13,6 +21,7 @@ class GraphValidator {
      * @return the created graph if the information was valid
      */
     fun validate(dotParser: DotParser): Graph? {
+        this.dotParser = dotParser
         TODO()
     }
 
