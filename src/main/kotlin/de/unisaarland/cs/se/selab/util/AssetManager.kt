@@ -172,9 +172,9 @@ object AssetManager {
                 }
             }
         }
-        filteredVehicles = filterAssetsByOptimalSolution()
-        for (v in filteredVehicles) {
-            emergency.addAsset()
+        filterAssetsByOptimalSolution(vehicles, emergency.currentRequiredAssets)
+        for (v in vehicles) {
+            emergency.addAsset(v)
         }
     }
 
