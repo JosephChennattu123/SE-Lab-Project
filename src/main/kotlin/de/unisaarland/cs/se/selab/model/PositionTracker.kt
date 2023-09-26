@@ -10,27 +10,47 @@ class PositionTracker {
     var currentVertexIndex: Int = 0
     var positionOnEdge: Int = 0
     private val speed = 10
-
+/** */
     fun updatePosition(): Unit {
-
+        var distance = path.edgeWeights[currentVertexIndex]-(positionOnEdge+10)
+        positionOnEdge = if(distance>0){
+            positionOnEdge+10
+        } else{
+            currentVertexIndex++
+            distance*-1
+        }
     }
 
     fun assignPath(path: Path): Boolean {
-        //TODO
-        return true
+        if(path.vertexPath == this.path.vertexPath && path.edgeWeights== this.path.edgeWeights && path.totalTicksToArrive == this.path.totalTicksToArrive)
+        return false
+        else{
+            if(path.vertexPath[0]==this.path.vertexPath[currentVertexIndex])
+            {
+             this.path = path
+             return true
+            }
+            else{
+             positionOnEdge = this.path.edgeWeights[currentVertexIndex]-positionOnEdge
+             currentVertexIndex = 0
+             this.path = path
+             return true
+            }
+        }
     }
 
     fun getNextVertex(): Int {
-        //TODO
-        return -1
+        return path.vertexPath[currentVertexIndex+1]
     }
 
     fun destinationReached(): Boolean {
-        //TODO
+        if (path.vertexPath.last()==path.vertexPath[currentVertexIndex])
         return true
+        return false
     }
 
     fun getDestination(): Int {
-        TODO()
+        return path.vertexPath.last()
+
     }
 }
