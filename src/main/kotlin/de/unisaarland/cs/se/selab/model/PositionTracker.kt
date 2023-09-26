@@ -10,45 +10,50 @@ class PositionTracker {
     var currentVertexIndex: Int = 0
     var positionOnEdge: Int = 0
     private val speed = 10
-/** */
+
+    /** updates Position: updates the value of current Vertex index and position on Edge*/
     fun updatePosition(): Unit {
-        var distance = path.edgeWeights[currentVertexIndex]-(positionOnEdge+10)
-        positionOnEdge = if(distance>0){
-            positionOnEdge+10
-        } else{
+        var distance = path.edgeWeights[currentVertexIndex] - (positionOnEdge + speed)
+        if (distance > 0) {
+            positionOnEdge + speed
+        } else {
             currentVertexIndex++
-            distance*-1
+            positionOnEdge = distance * -1
         }
     }
+
+    /** @returns true if path has to be changed and false if not. If path has to be changed,(.ie starting point has change) then currentVertexIndex
+     * is reset to 0 and position on edge is updated  * */
 
     fun assignPath(path: Path): Boolean {
-        if(path.vertexPath == this.path.vertexPath && path.edgeWeights== this.path.edgeWeights && path.totalTicksToArrive == this.path.totalTicksToArrive)
-        return false
-        else{
-            if(path.vertexPath[0]==this.path.vertexPath[currentVertexIndex])
-            {
-             this.path = path
-             return true
-            }
-            else{
-             positionOnEdge = this.path.edgeWeights[currentVertexIndex]-positionOnEdge
-             currentVertexIndex = 0
-             this.path = path
-             return true
+        if (path.vertexPath == this.path.vertexPath && path.edgeWeights == this.path.edgeWeights && path.totalTicksToArrive == this.path.totalTicksToArrive)
+            return false
+        else {
+            if (path.vertexPath[0] == this.path.vertexPath[currentVertexIndex]) {
+                this.path = path
+                return true
+            } else {
+                positionOnEdge = this.path.edgeWeights[currentVertexIndex] - positionOnEdge
+                currentVertexIndex = 0
+                this.path = path
+                return true
             }
         }
     }
 
+    /** returns the id of the next vertex that will be reached */
     fun getNextVertex(): Int {
-        return path.vertexPath[currentVertexIndex+1]
+        return path.vertexPath[currentVertexIndex + 1]
     }
 
+    /** @returns true if destination vertex is reached */
     fun destinationReached(): Boolean {
-        if (path.vertexPath.last()==path.vertexPath[currentVertexIndex])
-        return true
+        if (path.vertexPath.last() == path.vertexPath[currentVertexIndex])
+            return true
         return false
     }
 
+    /** @returns id of destination vertex*/
     fun getDestination(): Int {
         return path.vertexPath.last()
 
