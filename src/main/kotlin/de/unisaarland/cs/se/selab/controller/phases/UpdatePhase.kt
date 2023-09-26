@@ -1,37 +1,48 @@
 package de.unisaarland.cs.se.selab.controller.phases
 
-import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
-
 import de.unisaarland.cs.se.selab.model.Vehicle
-
+import de.unisaarland.cs.se.selab.model.VehicleStatus
 
 class UpdatePhase {
-    fun execute(m: Model): Unit {
+    fun execute(model: Model) {
+        processVehicles(model.getSortedVehicleList())
+    }
+
+    /**
+     * update the status for all vehicles
+     */
+    private fun processVehicles(vehicles: List<Vehicle>) {
+        for (vehicle in vehicles) {
+            when (vehicle.status) {
+                VehicleStatus.BUSY -> {
+                    if (vehicle.decreaseBusyTicks()) vehicle.status = VehicleStatus.AT_BASE
+                }
+                VehicleStatus.RETURNING, VehicleStatus.ASSIGNED, VehicleStatus.TO_EMERGENCY -> {
+                    vehicle.driveUpdate()
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun processEmergencies(model: Model) {
         // todo
     }
 
-    private fun processVehicles(vehicles: List<Vehicle>, emergencies: List<Emergency>): Unit {
+    private fun processActiveEvents() {
         // todo
     }
 
-    private fun processEmergencies(model: Model): Unit {
+    private fun processPostponedEvents() {
         // todo
     }
 
-    private fun processActiveEvents(): Unit {
+    private fun timeUpdate(model: Model) {
         // todo
     }
 
-    private fun processPostponedEvents(): Unit {
-        // todo
-    }
-
-    private fun timeUpdate(model: Model): Unit {
-        // todo
-    }
-
-    private fun printLog(vehicles: List<Vehicle>): Unit {
+    private fun printLog(vehicles: List<Vehicle>) {
         // todo
     }
 
