@@ -41,6 +41,14 @@ class Model {
         TODO()
     }
 
+    /**
+     * @return all the vehicles sorted by id.
+     * */
+    fun getSortedVehicleList(): List<Vehicle> {
+        // return vehicles.entries.sortedBy { it.key }.map { it.value }.toList()
+        return TODO()
+    }
+
     fun getVehicleById(vId: Int): Vehicle {
         //TODO
         TODO()
