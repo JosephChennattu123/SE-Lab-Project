@@ -1,6 +1,6 @@
 package de.unisaarland.cs.se.selab.config
 
-import de.unisaarland.cs.se.selab.model.map.Graph
+import de.unisaarland.cs.se.selab.model.map.*
 
 /**
  * Validates the graph
@@ -22,16 +22,66 @@ class GraphValidator {
      */
     fun validate(dotParser: DotParser): Graph? {
         this.dotParser = dotParser
-        TODO()
+
+        val functions = listOf(
+            ::validateVertexIds,
+            ::validateVerticesConnected,
+            ::validateNoSelfLoops,
+            ::validateNoDuplicateConnections,
+            ::validateEdgeConnectsExistingVertices,
+            ::validateSameVertexSameVillageOrCounty,
+            ::validateRoadNamesUniqueInVillage,
+            ::validateMainStreetExistInVillages,
+            ::validateSideStreetExists,
+            ::validateNonZeroRoadWeights,
+            ::validateMinimumRoadHeight,
+            ::validateMaximumTunnelHeight,
+            ::validateVillageNameNotCountyName
+        )
+
+        for (i in functions) {
+            val returnValue = i()
+            if (!returnValue) {
+                return null
+            }
+        }
+        val graph = Graph()
+        val vertices: MutableMap<Int, Vertex> = mutableMapOf()
+        for (vertexId in vertexIds) {
+            val vertex = Vertex(vertexId)
+            vertices.put(vertexId, vertex)
+        }
+        for (connections: Map.Entry<Int, List<Connection>> in edges) {
+            for (edge: Connection in connections.value) {
+                val source: Vertex? = vertices.get(connections.key)
+                val target: Vertex? = vertices.get(edge.vertexId)
+                if (source == null || target == null) {
+                    return null
+                }
+                val property = RoadProperties(edge.primary, edge.secondary, edge.weight, edge.height)
+                graph.addEdge(source, target, property, edge.villageName, edge.roadName)
+            }
+        }
+        return graph
     }
 
     /**
-     * Validates the vertexIds
+     * Validates the vertexIds.
+     * Checks that there are no duplicate vertices and that they are non-negative
      *
      * @return true if the vertices are valid
      */
     private fun validateVertexIds(): Boolean {
-        TODO()
+        val vertexIds: List<Int> = dotParser!!.vertexIds
+        if (vertexIds.map { it >= 0 }.toList().contains(false)) { // no negative elements allowed
+            return false
+        }
+        val vertexIdsSet: Set<Int> = vertexIds.toSet()
+        if (vertexIds.count() != vertexIdsSet.count()) { // no duplicate elements allowed
+            return false
+        }
+        this.vertexIds = vertexIdsSet
+        return true
     }
 
     /**
