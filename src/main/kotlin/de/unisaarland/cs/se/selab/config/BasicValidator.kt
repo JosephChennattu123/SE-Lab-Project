@@ -5,6 +5,9 @@ package de.unisaarland.cs.se.selab.config
  * */
 abstract class BasicValidator {
 
+    protected abstract var requiredProperties: List<String>
+    protected abstract var jsonParser: JsonParser
+
     /**
      * Validate ids.
      * Checks for duplicate ids and if the values are in range.
