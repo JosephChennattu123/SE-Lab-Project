@@ -15,20 +15,18 @@ class JsonParser(assetsFilePath: String, emergenciesEventsFilePath: String) {
     /**
      * parses the assets (bases and vehicles)
      *
-     * @param assetsFilePath the file name that contains the information to be parsed
      * @return true if parsing was successful
      */
-    fun parseAssets(assetsFilePath: String): Boolean {
+    fun parseAssets(): Boolean {
         TODO()
     }
 
     /**
      * parses the emergencies and events
      *
-     * @param emergenciesEventsFilePath the file name that contains the information to be parsed
      * @return true if parsing was successful
      */
-    fun parseEmergenciesEvents(emergenciesEventsFilePath: String): Boolean {
+    fun parseEmergenciesEvents(): Boolean {
         TODO()
     }
 
