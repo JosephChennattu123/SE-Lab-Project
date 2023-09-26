@@ -18,4 +18,15 @@ class DotParserTest {
        val input = "{" + "\n"+ "1;" + "2" + "\n" + ";" + "32 ;" + "\n" + "7 ->" + "}"
     }
 
+    @Test
+    fun parseEdges() {
+        val input = ";" + "1" + "\n" + "->" + "\n" + "2" + "\n" + "[label=" + "\n" + "test" + "\n" + "];"
+        val regex ="""""".toRegex()
+        val matchResult = regex.find(input)
+        val matchedString = matchResult?.groupValues?.get(0)
+        println(matchedString)
+
+
+    }
+
 }
