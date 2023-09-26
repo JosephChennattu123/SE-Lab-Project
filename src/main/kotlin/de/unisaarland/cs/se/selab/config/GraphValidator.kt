@@ -1,6 +1,6 @@
 package de.unisaarland.cs.se.selab.config
 
-import de.unisaarland.cs.se.selab.model.Graph
+import de.unisaarland.cs.se.selab.model.map.Graph
 
 /**
  * Validates the graph

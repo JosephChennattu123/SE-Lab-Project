@@ -1,6 +1,5 @@
 package de.unisaarland.cs.se.selab.model
 
-import java.time.temporal.TemporalAmount
 
 class PoliceCar : Vehicle() {
     fun setBusy(): Boolean {

@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab.model
+package de.unisaarland.cs.se.selab.model.map
 
 import java.util.*
 
