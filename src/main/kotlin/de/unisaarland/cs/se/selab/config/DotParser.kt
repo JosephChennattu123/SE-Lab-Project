@@ -14,7 +14,7 @@ class DotParser(val graphFilePath: String) {
     //private val scanner = Scanner(graphFile.readText())
     //private var currentToken: String? = null
 
-    var reader: BufferedReader = BufferedReader( FileReader(graphFilePath))
+    var reader: BufferedReader = BufferedReader(FileReader(graphFilePath))
     val fileContent = File(graphFilePath).readText()
 
     private var parsingErrorOccurred: Boolean = false
@@ -64,7 +64,7 @@ class DotParser(val graphFilePath: String) {
         val unParsedVertices = regexFromCurlyToEdge.find(fileContent)
         val noCurlyNoEdge = unParsedVertices?.groupValues?.get(0)
         val matchResults = regexForVertexId.findAll(noCurlyNoEdge ?: "")
-        vertexIds = matchResults.map{ it.groupValues[1].toInt()}.toList()
+        vertexIds = matchResults.map { it.groupValues[1].toInt() }.toList()
     }
 
     /**

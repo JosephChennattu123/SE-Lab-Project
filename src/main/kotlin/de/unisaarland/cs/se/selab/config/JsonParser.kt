@@ -12,6 +12,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     var events: List<EventInfo> = listOf()
     var emergencies: List<EmergencyInfo> = listOf()
     var failed: Boolean = false
+
     /**
      * parses the assets (bases and vehicles)
      *

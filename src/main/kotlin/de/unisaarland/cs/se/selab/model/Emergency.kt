@@ -27,6 +27,7 @@ class Emergency(
     var assignedVehicleIDs: MutableList<Int> = mutableListOf()
     var availableVehicleIDs: MutableList<Int> = mutableListOf()
     var mainBaseID: Int? = null
+
     /**
      * assigns a Vehicle to this emergency
      * @param v vehicle to be assigned */
