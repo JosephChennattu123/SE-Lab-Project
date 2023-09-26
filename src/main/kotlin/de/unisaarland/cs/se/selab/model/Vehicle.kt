@@ -2,21 +2,30 @@ package de.unisaarland.cs.se.selab.model
 
 abstract class Vehicle(
     val vehicleID: Int,
-    val baseID : Int,
-    val vehicleType : VehicleType,
-    val height : Int,
-    val staffCapacity : Int,
-    val maxAssetCapacity : Int) {
+    val baseID: Int,
+    val vehicleType: VehicleType,
+    val height: Int,
+    val staffCapacity: Int,
+    val maxAssetCapacity: Int
+) {
 
-    var emergencyID : Int? = null
+    var emergencyID: Int? = null
     var status: VehicleStatus = VehicleStatus.AT_BASE
-    var isUnavailable : Boolean = false
-    var activeEventID : Int? = null
-    var busyTicks : Int = 0
-    var positionTracker : PositionTracker = PositionTracker()
+    var isUnavailable: Boolean = false
+    var activeEventID: Int? = null
+    private var busyTicks: Int = 0
+    var positionTracker: PositionTracker = PositionTracker()
 
-    fun driveUpdate(): Unit {
-        TODO()
+    /**
+     * update the position of vehicle, send log if it arrives, and service vehicles that require
+     */
+    fun driveUpdate() {
+        positionTracker.updatePosition()
+        if (positionTracker.destinationReached()) {
+            val destinationVertexID = positionTracker.getDestination()
+//            Logger.logAssetArrived(vehicleID, destinationVertexID)
+            if (destinationVertexID == baseID) setBusy()
+        }
     }
 
     abstract fun handleEmergency(amount: Int): Int
@@ -29,8 +38,15 @@ abstract class Vehicle(
         TODO()
     }
 
+    /**
+     * Decrease busyTicks, if status is Busy
+     * @return true: busyTicks == 0
+     */
     fun decreaseBusyTicks(): Boolean {
-        TODO()
+        assert(status == VehicleStatus.BUSY && busyTicks != 0)
+        busyTicks -= 1
+        if (busyTicks == 0) return true
+        return false
     }
 
     fun getCurrentVertexID(): Int {
@@ -44,4 +60,6 @@ abstract class Vehicle(
     fun getDistanceOnEdge(): Int {
         TODO()
     }
+
+    open fun setBusy() {}
 }

@@ -7,7 +7,7 @@ class PoliceCar(vehicleId: Int, baseId: Int,vehicleType: VehicleType , height: I
 
     var criminalsPresent: Int? = null
 
-    fun setBusy(): Boolean {
+    override fun setBusy() {
         TODO()
     }
 
