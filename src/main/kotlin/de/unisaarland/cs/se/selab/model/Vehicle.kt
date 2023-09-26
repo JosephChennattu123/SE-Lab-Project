@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.model
 
 open class Vehicle(
+    val vehicleID: Int,
     val baseID : Int,
     val vehicleType : VehicleType,
     var height : Int,
@@ -9,7 +10,7 @@ open class Vehicle(
     var emergencyID : Int? = null
     var status: VehicleStatus = VehicleStatus.AT_BASE
     var isUnavailable : Boolean = false
-    var activeEventId : Int? = null
+    var activeEventID : Int? = null
     var busyTicks : Int = 0
     var positionTracker : PositionTracker = PositionTracker()
 
