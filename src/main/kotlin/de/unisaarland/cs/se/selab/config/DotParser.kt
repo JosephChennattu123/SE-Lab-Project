@@ -13,7 +13,7 @@ class DotParser(graphFilePath: String) {
      * @return true if parsing was successful
      * */
     fun parse(): Boolean {
-        return false
+        TODO()
     }
 
     /**

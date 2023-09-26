@@ -16,7 +16,7 @@ class ValidatorManager {
      * @return Emcc the EMCC-object
      * */
     fun validate(dotParser: DotParser, jsonParser: JsonParser): ControlCenter? {
-        return null
+        TODO()
     }
 
     /**
@@ -25,7 +25,7 @@ class ValidatorManager {
      * @return true if validation was successful
      * */
     fun validateVehicles(): Boolean {
-        return false
+        TODO()
     }
 
     /**
@@ -34,7 +34,7 @@ class ValidatorManager {
      * @return true if validation was successful
      * */
     fun validateGraph(): Boolean {
-        return false
+        TODO()
     }
 
     /**
@@ -43,7 +43,7 @@ class ValidatorManager {
      * @return true if validation was successful
      * */
     fun validateBases(): Boolean {
-        return false
+        TODO()
     }
 
     /**
@@ -52,7 +52,7 @@ class ValidatorManager {
      * @return true if validation was successful
      * */
     fun validateEmergencies(): Boolean {
-        return false
+        TODO()
     }
 
     /**
@@ -61,6 +61,6 @@ class ValidatorManager {
      * @return true if validation was successful
      * */
     fun validateEvent(): Boolean {
-        return false
+        TODO()
     }
 }
