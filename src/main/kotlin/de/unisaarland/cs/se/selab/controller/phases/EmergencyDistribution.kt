@@ -18,7 +18,7 @@ class EmergencyDistribution {
     /**
      * @param tick : gets current tick
      * @return list of emergencies at the current tick
-     * Get the emergecies that are happening at the current tick
+     * Get the emergencies that are happening at the current tick
      */
     private fun getEmergenciesFor(tick: Int): List<Emergency> {
 
