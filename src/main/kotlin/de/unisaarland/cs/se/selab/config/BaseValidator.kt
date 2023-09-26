@@ -6,14 +6,15 @@ import de.unisaarland.cs.se.selab.model.Base
  * Validates the bases
  */
 class BaseValidator : BasicValidator() {
+    override var requiredProperties: List<String> = listOf("id", "baseType", "staff", "location")
+
     /**
      * Validates the information for bases and creates bases.
      *
      * @return the list of bases created
      */
     fun validate(): List<Base> {
-        // TODO
-        return listOf()
+        TODO()
     }
 
     /**
@@ -22,8 +23,7 @@ class BaseValidator : BasicValidator() {
      * @return true if number of doctors is valid
      */
     private fun validateNumDoctors(): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 
     /**
@@ -32,8 +32,7 @@ class BaseValidator : BasicValidator() {
      * @return true if number of staff is valid
      */
     private fun validateStaffBounds(): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 
     /**
@@ -43,7 +42,7 @@ class BaseValidator : BasicValidator() {
      */
     private fun validateDoctorsOnlyInHospitals(): Boolean {
         // TODO also check if this is needed (special property)
-        return false
+        TODO()
     }
 
     /**
@@ -52,8 +51,7 @@ class BaseValidator : BasicValidator() {
      * @return true if the number of dogs is valid
      */
     private fun validateNumDogs(): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 
     /**
@@ -63,7 +61,7 @@ class BaseValidator : BasicValidator() {
      */
     private fun validateDogsOnlyInHospitals(): Boolean {
         // TODO also check if this is needed (special property)
-        return false
+        TODO()
     }
 
     /**
@@ -72,8 +70,7 @@ class BaseValidator : BasicValidator() {
      * @return true if the vertices exist
      */
     private fun validateVerticesExist(): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 
     /**
@@ -82,7 +79,6 @@ class BaseValidator : BasicValidator() {
      * @return true if the base placement is valid
      */
     private fun validateAtMostOneBaseOnEachVertex(): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 }

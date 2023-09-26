@@ -6,15 +6,15 @@ import de.unisaarland.cs.se.selab.model.Emergency
  * Validates emergencies
  */
 class EmergencyValidator : BasicValidator() {
-
+    override var requiredProperties: List<String> =
+        listOf("id", "tick", "village", "roadName", "emergencyType", "severity", "handleTime", "maxDuration")
     /**
      * Validates the information for emergencies and creates emergencies.
      *
      * @return the list of emergencies created
      */
     fun validate(): List<Emergency> {
-        // TODO
-        return listOf()
+        TODO()
     }
 
     /**
@@ -23,8 +23,7 @@ class EmergencyValidator : BasicValidator() {
      * @return true if villages are valid
      */
     private fun validateVillagesExist(): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 
     /**
@@ -34,7 +33,7 @@ class EmergencyValidator : BasicValidator() {
      */
     private fun validateRoadExistsInVillageOrCounty(): Boolean {
         // TODO
-        return false
+        TODO()
     }
 
     /**
@@ -43,8 +42,7 @@ class EmergencyValidator : BasicValidator() {
      * @return true if severities are valid
      */
     private fun validateSeverityBounds(): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 
     /**
@@ -54,7 +52,6 @@ class EmergencyValidator : BasicValidator() {
      * @return true if maxDurations and handleTimes are valid
      */
     private fun validateMaxDurationNotExceedHandleTime(): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 }

@@ -1,23 +1,44 @@
 package de.unisaarland.cs.se.selab.model
 
 /**
- * */
+ * Emergencies have to be assigned to bases and handled by vehicles, they can fail or resolve
+ * @param id ID of the emergency
+ * @param scheduledTick round in which the emergency begins
+ * @param type Type of the emergency
+ * @param severity Severity of the emergency, dictates requirements
+ * @param handleTime amount of rounds needed to resolve the emergency
+ * @param maxDuration amount of rounds until the emergency fails
+ * @param location Precise location of the emergency */
 class Emergency(
-    id: Int, scheduledTick: Int, type: EmergencyType, severity: Int, handeTime: Int, maxDuration: Int,
-    location: Location
+    var id: Int,
+    var scheduledTick: Int,
+    var type: EmergencyType,
+    var severity: Int = 3,
+    var handleTime: Int,
+    var maxDuration: Int,
+    var location: Location,
+    private var timeElapsed: Int,
+    var status: EmergencyStatus = EmergencyStatus.ONGOING
+
 ) {
+
+    var requiredAssets: List<EmergencyRequirement> = listOf()
+    var currentRequiredAssets: MutableList<EmergencyRequirement> = mutableListOf()
+    var assignedVehicleIDs: MutableList<Int> = mutableListOf()
+    var availableVehicleIDs: MutableList<Int> = mutableListOf()
+    var mainBaseID: Int? = null
     /**
      * assigns a Vehicle to this emergency
      * @param v vehicle to be assigned */
     fun addAsset(v: Vehicle) {
-        // TODO
+        TODO()
     }
 
     /**
      * adds a Vehicle to the emergency's list of arrived vehicles
      * @param v vehicle to be added*/
     fun assetArrived(v: Vehicle) {
-        // TODO
+        TODO()
     }
 
     /**
