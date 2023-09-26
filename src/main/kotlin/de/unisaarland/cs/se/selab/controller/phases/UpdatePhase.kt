@@ -7,6 +7,8 @@ import de.unisaarland.cs.se.selab.model.Vehicle
 
 
 class UpdatePhase {
+
+    var eventOccured : Boolean
     fun execute(m: Model): Unit {
         // todo
     }
