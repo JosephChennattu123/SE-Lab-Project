@@ -13,8 +13,7 @@ class JsonParser(assetsFilePath: String, emergenciesEventsFilePath: String) {
      * @return true if parsing was successful
      */
     fun parseAssets(assetsFilePath: String): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 
     /**
@@ -24,8 +23,7 @@ class JsonParser(assetsFilePath: String, emergenciesEventsFilePath: String) {
      * @return true if parsing was successful
      */
     fun parseEmergenciesEvents(emergenciesEventsFilePath: String): Boolean {
-        // TODO
-        return false
+        TODO()
     }
 
     /**

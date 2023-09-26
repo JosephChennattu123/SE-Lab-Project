@@ -5,6 +5,9 @@ package de.unisaarland.cs.se.selab.config
  * */
 abstract class BasicValidator {
 
+    protected abstract var requiredProperties: List<String>
+    protected var jsonParser: JsonParser? = null
+
     /**
      * Validate ids.
      * Checks for duplicate ids and if the values are in range.
@@ -12,7 +15,7 @@ abstract class BasicValidator {
      * @return true if ids are valid
      * */
     protected fun validateIds(): Boolean {
-        return true
+        TODO()
     }
 
     /**
@@ -24,6 +27,6 @@ abstract class BasicValidator {
      * @return true if specific properties are in an entry iff it is a required property for it
      * */
     protected fun validateSpecificProperty(objectType: String, specificFields: List<String>): Boolean {
-        return true
+        TODO()
     }
 }
