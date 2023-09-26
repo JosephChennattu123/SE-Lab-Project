@@ -24,7 +24,7 @@ abstract class Vehicle(
         if (positionTracker.destinationReached()) {
             val destinationVertexID = positionTracker.getDestination()
 //            Logger.logAssetArrived(vehicleID, destinationVertexID)
-//            if (destinationVertexID == baseID)
+            if (destinationVertexID == baseID) setBusy()
         }
     }
 
@@ -60,4 +60,6 @@ abstract class Vehicle(
     fun getDistanceOnEdge(): Int {
         TODO()
     }
+
+    open fun setBusy() {}
 }
