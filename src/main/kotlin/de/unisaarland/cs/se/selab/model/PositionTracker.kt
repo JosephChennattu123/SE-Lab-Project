@@ -1,6 +1,16 @@
 package de.unisaarland.cs.se.selab.model
 
+/**
+ * @property path
+ * @property currentVertexIndex
+ *
+ * */
 class PositionTracker {
+    lateinit var path: Path
+    var currentVertexIndex : Int = 0
+    var positionOnEdge : Int = 0
+
+
     fun updatePosition(): Unit {
         //TODO
     }

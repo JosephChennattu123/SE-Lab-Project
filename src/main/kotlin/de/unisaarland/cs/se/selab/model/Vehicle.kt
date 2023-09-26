@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.model
 
+import de.unisaarland.cs.se.selab.util.Logger
+
 abstract class Vehicle(
     val vehicleID: Int,
     val baseID : Int,
@@ -16,7 +18,11 @@ abstract class Vehicle(
     var positionTracker : PositionTracker = PositionTracker()
 
     fun driveUpdate(): Unit {
-        TODO()
+        positionTracker.updatePosition()
+        if (positionTracker.destinationReached()) {
+//            Logger.logAssetArrived(vehicleID, positionTracker.current)
+//            if ()
+        }
     }
 
     abstract fun handleEmergency(amount: Int): Int
