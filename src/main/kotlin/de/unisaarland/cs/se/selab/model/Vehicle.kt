@@ -1,6 +1,18 @@
 package de.unisaarland.cs.se.selab.model
 
-open class Vehicle {
+open class Vehicle(
+    val baseID : Int,
+    val vehicleType : VehicleType,
+    var height : Int,
+    var capacity : Int) {
+
+    var emergencyID : Int? = null
+    var status: VehicleStatus = VehicleStatus.AT_BASE
+    var isUnavailable : Boolean = false
+    var activeEventId : Int? = null
+    var busyTicks : Int = 0
+    var positionTracker : PositionTracker = PositionTracker()
+
     fun driveUpdate(): Unit {
         //TODO
     }
