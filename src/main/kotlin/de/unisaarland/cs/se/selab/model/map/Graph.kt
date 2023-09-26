@@ -1,4 +1,6 @@
-package de.unisaarland.cs.se.selab.model
+package de.unisaarland.cs.se.selab.model.map
+
+import de.unisaarland.cs.se.selab.model.Location
 
 class Graph {
     fun getEdges(): List<Edge> {
