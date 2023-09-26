@@ -10,7 +10,7 @@ class EmergencyDistribution {
 
     public fun execute(model: Model) {
         //get emergencies for current tick
-        var currentEmergencies = model.tickToEmergencyId.get(0)
+        var currentEmergencies = model.getCurrentEmergencies()
 
         //get graph from model
         var graph = model.graph
@@ -23,23 +23,23 @@ class EmergencyDistribution {
             var loc = e.location
 
             //This seems very wrong,but I need to provide a basetype for getnearestbasetoEdge,so I will have multiple if statements for this purpose
-            if(e.type = EmergencyType.CRIME)
+            if(e.type == EmergencyType.CRIME)
             {
-                nearestbaseId = Dijkstra.getnearestbasetoEdge(graph,loc, BaseType.POLICE_STATION)
+                nearestbaseId = Dijkstra.getNearestBaseToEdge(graph,loc, BaseType.POLICE_STATION)
             }
-            if(e.type = EmergencyType.FIRE)
+            if(e.type == EmergencyType.FIRE)
             {
-                nearestbaseId = Dijkstra.getnearestbasetoEdge(graph,loc,BaseType.FIRE_STATION)
+                nearestbaseId = Dijkstra.getNearestBaseToEdge(graph,loc,BaseType.FIRE_STATION)
             }
-            if(e.type = EmergencyType.ACCIDENT || e.type = EmergencyType.MEDICAL)
+            if(e.type == EmergencyType.ACCIDENT || e.type == EmergencyType.MEDICAL)
             {
-                nearestbaseId =  Dijkstra.getnearestbasetoEdge(graph,loc,BaseType.HOSPITAL)
+                nearestbaseId =  Dijkstra.getNearestBaseToEdge(graph,loc,BaseType.HOSPITAL)
             }
             //assign the base Id to the emergency
             //e.baseId = nearestbaseId
 
             //assign the emergency Id to the base
-            model.getBasebyId(nearestbaseId).addEmergency(e)
+            model.getBaseById(nearestbaseId)?.addEmergency(e.id)
 
 
             //add emergency to active emergencies in the model
