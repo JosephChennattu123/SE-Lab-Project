@@ -5,7 +5,7 @@ import de.unisaarland.cs.se.selab.model.map.Graph
 
 class Model(
     val graph: Graph,
-    val maxTick: Int,
+    val maxTick: Int?, // optional command-line argument
     val bases: Map<Int, Base>,
     val vehicles: Map<Int, Vehicle>,
     val vehicleToBase: Map<Int, Int>,
