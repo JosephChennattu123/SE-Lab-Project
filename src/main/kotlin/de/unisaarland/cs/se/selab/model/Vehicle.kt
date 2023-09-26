@@ -1,11 +1,12 @@
 package de.unisaarland.cs.se.selab.model
 
-open class Vehicle(
+abstract class Vehicle(
     val vehicleID: Int,
     val baseID : Int,
     val vehicleType : VehicleType,
-    var height : Int,
-    var capacity : Int) {
+    val height : Int,
+    val staffCapacity : Int,
+    val maxAssetCapacity : Int) {
 
     var emergencyID : Int? = null
     var status: VehicleStatus = VehicleStatus.AT_BASE
@@ -15,40 +16,32 @@ open class Vehicle(
     var positionTracker : PositionTracker = PositionTracker()
 
     fun driveUpdate(): Unit {
-        //TODO
+        TODO()
     }
 
-    open fun handleEmergency(amount: Int): Int {
-        //TODO
-        return 0
-    }
+    abstract fun handleEmergency(amount: Int): Int
 
     fun setNewPath(): Boolean {
-        //TODO
-        return false
+        TODO()
     }
 
     fun setAtBase(): Boolean {
-        //TODO
-        return false
+        TODO()
     }
 
-    fun decreaseBusyTicks() {
-        //TODO
+    fun decreaseBusyTicks(): Boolean {
+        TODO()
     }
 
     fun getCurrentVertexID(): Int {
-        //TODO
-        return 0
+        TODO()
     }
 
     fun getNextVertexID(): Int? {
-        //TODO
-        return null
+        TODO()
     }
 
     fun getDistanceOnEdge(): Int {
-        //TODO
-        return 0
+        TODO()
     }
 }
