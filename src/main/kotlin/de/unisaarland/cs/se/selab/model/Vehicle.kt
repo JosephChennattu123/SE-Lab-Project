@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.model
 
+import de.unisaarland.cs.se.selab.util.Logger
+
 abstract class Vehicle(
     val vehicleID: Int,
     val baseID: Int,
@@ -17,18 +19,35 @@ abstract class Vehicle(
     var positionTracker: PositionTracker = PositionTracker()
 
     /**
-     * update the position of vehicle, send log if it arrives, and service vehicles that require
+     * update the position and status of vehicle
+     * send log if it arrives, and service vehicles that require
      */
     fun driveUpdate() {
         positionTracker.updatePosition()
+        if (status == VehicleStatus.ASSIGNED) status = VehicleStatus.TO_EMERGENCY
         if (positionTracker.destinationReached()) {
             val destinationVertexID = positionTracker.getDestination()
-//            Logger.logAssetArrived(vehicleID, destinationVertexID)
-            if (destinationVertexID == baseID) setBusy()
+            Logger.logAssetArrived(vehicleID, destinationVertexID)
+            status = if (destinationVertexID == baseID) {
+                if (setBusy()) {
+                    VehicleStatus.BUSY
+                } else {
+                    VehicleStatus.AT_BASE
+                }
+            } else {
+                VehicleStatus.WAITING
+            }
         }
     }
 
     abstract fun handleEmergency(amount: Int): Int
+
+    /**
+     * service vehicles, set busyTicks
+     * @return false: don't need to service
+     * @return true: need to service
+     * */
+    abstract fun setBusy(): Boolean
 
     fun setNewPath(): Boolean {
         TODO()
@@ -61,5 +80,4 @@ abstract class Vehicle(
         TODO()
     }
 
-    open fun setBusy() {}
 }
