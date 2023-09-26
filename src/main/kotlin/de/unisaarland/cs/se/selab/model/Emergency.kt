@@ -10,9 +10,23 @@ package de.unisaarland.cs.se.selab.model
  * @param maxDuration amount of rounds until the emergency fails
  * @param location Precise location of the emergency */
 class Emergency(
-    id: Int, scheduledTick: Int, type: EmergencyType, severity: Int, handleTime: Int, maxDuration: Int,
-    location: Location
+    var id: Int,
+    var scheduledTick: Int,
+    var type: EmergencyType,
+    var severity: Int = 3,
+    var handleTime: Int,
+    var maxDuration: Int,
+    var location: Location,
+    private var timeElapsed: Int,
+    var status: EmergencyStatus = EmergencyStatus.ONGOING
+
 ) {
+
+    var requiredAssets: List<EmergencyRequirement> = listOf()
+    var currentRequiredAssets: MutableList<EmergencyRequirement> = mutableListOf()
+    var assignedVehicleIDs: MutableList<Int> = mutableListOf()
+    var availableVehicleIDs: MutableList<Int> = mutableListOf()
+    var mainBaseID: Int? = null
     /**
      * assigns a Vehicle to this emergency
      * @param v vehicle to be assigned */
