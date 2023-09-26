@@ -22,7 +22,7 @@ class ValidatorManager {
     private var graph: Graph? = null
     private var events: List<Event> = listOf()
     private var emergencies: List<Emergency> = listOf()
-    private var emcc: ControlCenter? = null
+    private var controlCenter: ControlCenter? = null
 
     /**
      * The entrypoint for validation.
@@ -30,9 +30,27 @@ class ValidatorManager {
      *
      * @param dotParser the parser for the dot-file
      * @param jsonParser the parser for the json files
-     * @return Emcc the EMCC-object
+     * @return the ControlCenter-object
      * */
     fun validate(dotParser: DotParser, jsonParser: JsonParser): ControlCenter? {
+        dotParser.parse()
+        val graphValidator = GraphValidator()
+        graphValidator.validate(dotParser)
+
+        jsonParser.parseAssets()
+        val baseValidator = BaseValidator()
+        this.bases = baseValidator.validate()
+        val vehicleValidator = VehicleValidator()
+        this.vehicles = vehicleValidator.validate()
+
+        jsonParser.parseEmergenciesEvents()
+        val emergencyValidator = EmergencyValidator()
+        this.emergencies = emergencyValidator.validate()
+
+        val eventValidator = EventValidator()
+        this.events = eventValidator.validate()
+
+
         TODO()
     }
 
