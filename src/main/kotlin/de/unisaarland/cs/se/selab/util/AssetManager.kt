@@ -174,7 +174,7 @@ object AssetManager {
 
                 VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
                     // If vehicle is currently on the road,
-                    // calculate drive time from their precise position to emergency
+                    // calculate drive time from their precise position on the edge to emergency
 
                     val pt = v.positionTracker
                     val p = Dijkstra.getShortestPathFromEdgeToEdge(
