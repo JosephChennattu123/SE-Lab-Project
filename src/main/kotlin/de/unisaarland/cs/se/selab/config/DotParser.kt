@@ -1,8 +1,6 @@
 package de.unisaarland.cs.se.selab.config
 
-import java.io.BufferedReader
 import java.io.File
-import java.io.FileReader
 
 /**
  * parses the dot-file
@@ -10,27 +8,11 @@ import java.io.FileReader
  * */
 class DotParser(val graphFilePath: String) {
 
-    //private val graphFile: File = File(graphFilePath)
-    //private val scanner = Scanner(graphFile.readText())
-    //private var currentToken: String? = null
+    private val fileContent = File(graphFilePath).readText()
 
-    var reader: BufferedReader = BufferedReader(FileReader(graphFilePath))
-    val fileContent = File(graphFilePath).readText()
+    private val regexId = """([_a-zA-z]+|\d*\.*\d*)""".toRegex()
 
     private var parsingErrorOccurred: Boolean = false
-
-    var countyName: String = ""
-    var vertexIds: List<Int> = mutableListOf()
-    var edges: List<String> = emptyList()
-    var edgeIdToSourceTargetPairs: Map<Int, Pair<Int, Int>> = emptyMap()
-    var edgeIdToAttributes: Map<Int, String> = emptyMap()
-    var edgeIdToVillageName: Map<Int, String> = emptyMap()
-    var edgeIdToRoadName: Map<Int, String> = emptyMap()
-    var villagesToRoads: Map<String, List<String>> = emptyMap()
-    var edgeIdToHeight: Map<Int, Int> = emptyMap()
-    var edgeIdToWeight: Map<Int, Int> = emptyMap()
-    var edgeIdToPrimaryType: Map<Int, String> = emptyMap()
-    var edgeIdToSecondaryType: Map<Int, String> = emptyMap()
 
     /**
      * Parses the dot-file.
@@ -45,74 +27,153 @@ class DotParser(val graphFilePath: String) {
     /**
      * extracts the county name from the file.
      */
-    private fun parseCountyName() {
+    fun parseCountyName(): String? {
         val regex = """\s*([a-zA-Z][a-zA-Z0-9]*)\s*\{""".toRegex()
         val matchResult = regex.find(fileContent)
         val matchedString = matchResult?.groupValues?.get(1)
-        countyName = matchedString ?: run {
+        return matchedString ?: run {
             parsingErrorOccurred = true
-            "" //default value
+            null // default value
         }
     }
 
     /**
      * extracts the village name from the file.
      */
-    private fun parseVertexIds() {
+    fun parseVertexIds(): List<Int> {
         val regexFromCurlyToEdge = """\{(\s*([0-9]+)\s*;\s*)+[0-9]+\s*-""".toRegex()
         val regexForVertexId = """\s*([0-9]+)\s*;""".toRegex()
         val unParsedVertices = regexFromCurlyToEdge.find(fileContent)
         val noCurlyNoEdge = unParsedVertices?.groupValues?.get(0)
         val matchResults = regexForVertexId.findAll(noCurlyNoEdge ?: "")
-        vertexIds = matchResults.map { it.groupValues[1].toInt() }.toList()
+        return matchResults.map { it.groupValues[1].toInt() }.toList()
     }
 
     /**
      * extracts edges from the file.
      * */
-    private fun parseEdges() {}
+    private fun parseEdges(): List<String> {
+        val regex = """\s*[0-9]+\s*->\s*[0-9]+\s*\[(\s*[a-zA-z]+\s*=\s*[a-zA-z0-9]+\s*;\s*)*\s*]\s*;""".toRegex()
+        val matchResult = regex.findAll(fileContent)
+        val edges: List<String> = matchResult.map { it.groupValues[0].replace("\\s".toRegex(), "") }
+            .toList()
+        return edges
+    }
 
     /**
      * extracts the source and target from an edge.
      * */
-    private fun parseSourceAndTarget(edge: String) {}
+    fun parseSourceAndTarget(edges: List<String>): Map<Int, Pair<Int, Int>> {
+        val edgeIdToSourceTargetPair = mutableMapOf<Int, Pair<Int, Int>>()
+        val regexIdArrowId = """([0-9]+)->([0-9]+)\[""".toRegex()
+        for ((index, edge) in edges.withIndex()) {
+            val matchResult = regexIdArrowId.find(edge)
+            val matchedString = matchResult?.groupValues?.get(1)
+            val matchedString2 = matchResult?.groupValues?.get(2)
+            val source = matchedString?.toInt() ?: run {
+                parsingErrorOccurred = true
+                0 // default value
+            }
+            val target = matchedString2?.toInt() ?: run {
+                parsingErrorOccurred = true
+                0 // default value
+            }
+
+            edgeIdToSourceTargetPair[index] = Pair(source, target)
+        }
+        return edgeIdToSourceTargetPair
+    }
 
     /**
      * extracts the attributes from an edge string.
      * */
-    private fun parseAttributes(edge: String) {}
+    fun parseAttributes(edges: List<String>): Map<Int, String> {
+        val edgeIdToAttributes = mutableMapOf<Int, String>()
+        val regexAttributes = """\[([a-zA-z]+\s*=\s*[a-zA-z0-9]+\s*;\s*)*\s*]\s*;""".toRegex()
+        for ((index, edge) in edges.withIndex()) {
+            edgeIdToAttributes[index] = matchRegex(regexAttributes, edge)
+        }
+        return edgeIdToAttributes
+    }
 
     /**
      * extracts village name from attributes.
      * */
-    private fun villageName(attributes: String) {}
+    fun villageName(attributes: Map<Int, String>): Map<Int, String> {
+        val edgeIdToVillageName = mutableMapOf<Int, String>()
+        val regexVillageName = """village\s*=\s*$regexId\s*;""".toRegex()
+        for ((index, attribute) in attributes) {
+            edgeIdToVillageName[index] = matchRegex(regexVillageName, attribute)
+        }
+        return edgeIdToVillageName
+    }
 
     /**
      * extracts road name from attributes.
      * */
-    private fun parseRoadName(attributes: String) {}
+    fun parseRoadName(attributes: Map<Int, String>): Map<Int, String> {
+        val edgeIdToRoadName = mutableMapOf<Int, String>()
+        val regexRoadName = """name\s*=\s*$regexId\s*;""".toRegex()
+        for ((index, attribute) in attributes) {
+            edgeIdToRoadName[index] = matchRegex(regexRoadName, attribute)
+        }
+        return edgeIdToRoadName
+    }
 
     /**
      * extracts road height from attributes.
      * */
-    private fun parseHeight(attributes: String) {}
+    fun parseHeight(attributes: Map<Int, String>): Map<Int, Int> {
+        val edgeIdToHeight = mutableMapOf<Int, Int>()
+        val regexHeight = """heightLimit\s*=\s*$regexId\s*;""".toRegex()
+        for ((index, attribute) in attributes) {
+            edgeIdToHeight[index] = matchRegex(regexHeight, attribute).toInt()
+        }
+        return edgeIdToHeight
+    }
 
     /**
      * extracts road weight from attributes.
      * */
-    private fun parseWeight(attributes: String) {}
+    fun parseWeight(attributes: Map<Int, String>): Map<Int, Int> {
+        val edgeIdToWeight = mutableMapOf<Int, Int>()
+        val regexWeight = """weight\s*=\s*$regexId\s*;""".toRegex()
+        for ((index, attribute) in attributes) {
+            edgeIdToWeight[index] = matchRegex(regexWeight, attribute).toInt()
+        }
+        return edgeIdToWeight
+    }
 
     /**
      * extracts primary road type from attributes.
      * */
-    private fun parsePrimaryType(attributes: String) {}
+    fun parsePrimaryType(attributes: Map<Int, String>): Map<Int, String> {
+        val edgeIdToPrimaryType = mutableMapOf<Int, String>()
+        val regexPrimaryType = """primaryType\s*=\s*(mainStreet|sideStreet|countyRoad)\s*;""".toRegex()
+        for ((index, attribute) in attributes) {
+            edgeIdToPrimaryType[index] = matchRegex(regexPrimaryType, attribute)
+        }
+        return edgeIdToPrimaryType
+    }
 
     /**
      * extracts secondary road type from attributes.
      * */
-    private fun parseSecondaryType(attributes: String) {}
+    fun parseSecondaryType(attributes: Map<Int, String>): Map<Int, String> {
+        val edgeIdToSecondaryType = mutableMapOf<Int, String>()
+        val regexSecondaryType = """secondaryType\s*=\s*(oneWayStreet|tunnel|none)\s*;""".toRegex()
+        for ((index, attribute) in attributes) {
+            edgeIdToSecondaryType[index] = matchRegex(regexSecondaryType, attribute)
+        }
+        return edgeIdToSecondaryType
+    }
 
-//    private fun notFinished(): Boolean {
-//        return scanner.hasNext()
-//    }
+    private fun matchRegex(regex: Regex, string: String): String {
+        val matchResult = regex.find(string)
+        val matchedString = matchResult?.groupValues?.get(1) ?: run {
+            parsingErrorOccurred = true
+            "" // default value
+        }
+        return matchedString
+    }
 }
