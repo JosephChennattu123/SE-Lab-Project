@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab
 
+import de.unisaarland.cs.se.selab.config.DotParser
+import de.unisaarland.cs.se.selab.config.JsonParser
 import de.unisaarland.cs.se.selab.config.ValidatorManager
 import de.unisaarland.cs.se.selab.util.Logger
 import kotlinx.cli.ArgParser
@@ -35,22 +37,21 @@ fun main(args: Array<String>) {
     ).default("stdout")
     parser.parse(args)
 
-    Logger.filename = outPath
+    Logger.outputFile = outPath
 
-    //validate the input files and create the control center.
-    val dotParser = dotParser(mapPath)
-    val jsonParse = jsonParser(assetsPath, scenarioPath)
+    // validate the input files and create the control center.
+    val dotParser = DotParser(mapPath)
+    val jsonParse = JsonParser(assetsPath, scenarioPath)
     val validator = ValidatorManager()
     val controlCenter = validator.validate(dotParser, jsonParse, ticks)
 
     // run the simulation.
     if (controlCenter != null) {
         controlCenter.simulate()
-        //TODO call gather statistics here.
+        // TODO call gather statistics here.
     } else {
-        throw IllegalStateException("ControlCenter is null")
+        error("controlCenter is null")
     }
 
-
-    //throw UnsupportedOperationException()
+    // throw UnsupportedOperationException()
 }
