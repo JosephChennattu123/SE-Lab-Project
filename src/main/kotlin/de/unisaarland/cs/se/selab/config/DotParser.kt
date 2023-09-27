@@ -26,7 +26,6 @@ class DotParser(val graphFilePath: String) {
             parsingErrorOccurred = true
             null // default value
         }
-        // return countyName
     }
 
     /**
