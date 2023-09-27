@@ -5,7 +5,14 @@ import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Vehicle
 import de.unisaarland.cs.se.selab.model.VehicleStatus
 
+/**
+ * Iterates through all vehicles and emergencies and updates their states and fields
+ */
 class UpdatePhase {
+
+    /**
+     * begins the update phase processing
+     */
     fun execute(model: Model) {
         processVehicles(model.getSortedVehicleList())
         processEmergencies(model.getAssignedEmergenciesObjects())
@@ -20,9 +27,11 @@ class UpdatePhase {
                 VehicleStatus.BUSY -> {
                     if (vehicle.decreaseBusyTicks()) vehicle.status = VehicleStatus.AT_BASE
                 }
+
                 VehicleStatus.RETURNING, VehicleStatus.ASSIGNED, VehicleStatus.TO_EMERGENCY -> {
                     vehicle.driveUpdate()
                 }
+
                 else -> {}
             }
         }
@@ -30,9 +39,7 @@ class UpdatePhase {
 
     private fun processEmergencies(emergencies: List<Emergency>) {
         for (emergency in emergencies) {
-            when (emergency.status) {
-                // todo
-                else -> {}
+            emergency.handle()
             }
         }
     }
