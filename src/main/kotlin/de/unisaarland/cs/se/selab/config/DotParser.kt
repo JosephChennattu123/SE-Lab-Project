@@ -1,5 +1,6 @@
 package de.unisaarland.cs.se.selab.config
 
+import de.unisaarland.cs.se.selab.util.Logger
 import java.io.File
 
 /**
@@ -9,20 +10,10 @@ import java.io.File
 class DotParser(val graphFilePath: String) {
 
     private val fileContent = File(graphFilePath).readText()
-
-    private val regexId = """([_a-zA-z]+|\d*\.*\d*)""".toRegex()
+    private val regexId = """([_a-zA-Z]+|\d*\.*\d*)""".toRegex()
+    private val whitespace = """\s""".toRegex()
 
     private var parsingErrorOccurred: Boolean = false
-
-    /**
-     * Parses the dot-file.
-     * Extracts the vertices, edges and other information from the file-
-     *
-     * @return true if parsing was successful
-     * */
-    fun parse(): Boolean {
-        TODO()
-    }
 
     /**
      * extracts the county name from the file.
@@ -55,9 +46,8 @@ class DotParser(val graphFilePath: String) {
     fun parseEdges(): List<String> {
         val regex = """\s*[0-9]+\s*->\s*[0-9]+\s*\[(\s*[a-zA-z]+\s*=\s*[a-zA-z0-9]+\s*;\s*)*\s*]\s*;""".toRegex()
         val matchResult = regex.findAll(fileContent)
-        val edges: List<String> = matchResult.map { it.groupValues[0].replace("\\s".toRegex(), "") }
+        return matchResult.map { it.groupValues[0].replace(whitespace, "") }
             .toList()
-        return edges
     }
 
     /**
@@ -72,11 +62,11 @@ class DotParser(val graphFilePath: String) {
             val matchedString2 = matchResult?.groupValues?.get(2)
             val source = matchedString?.toInt() ?: run {
                 parsingErrorOccurred = true
-                0 // default value
+                -1 // default value
             }
             val target = matchedString2?.toInt() ?: run {
                 parsingErrorOccurred = true
-                0 // default value
+                -1 // default value
             }
 
             edgeIdToSourceTargetPair[index] = Pair(source, target)
@@ -89,9 +79,16 @@ class DotParser(val graphFilePath: String) {
      * */
     fun parseAttributes(edges: List<String>): Map<Int, String> {
         val edgeIdToAttributes = mutableMapOf<Int, String>()
-        val regexAttributes = """\[([a-zA-z]+\s*=\s*[a-zA-z0-9]+\s*;\s*)*\s*]\s*;""".toRegex()
-        for ((index, edge) in edges.withIndex()) {
-            edgeIdToAttributes[index] = matchRegex(regexAttributes, edge)
+        val regexAttributes = """\[\s*($regexId\s*=\s*$regexId\s*;\s*)*\s*]\s*;""".toRegex()
+        for (edge in edges) {
+            val matchResult = regexAttributes.findAll(edge)
+            val matchedString =
+                matchResult.map {
+                    it.groupValues[0]
+                        .replace(whitespace, "")
+                        .replace("[\\[\\]]".toRegex(), "")
+                }
+            edgeIdToAttributes[edges.indexOf(edge)] = matchedString.first()
         }
         return edgeIdToAttributes
     }
@@ -168,16 +165,70 @@ class DotParser(val graphFilePath: String) {
         return edgeIdToSecondaryType
     }
 
-    fun validateSyntax(): Boolean {
-        TODO()
-    }
-
     private fun matchRegex(regex: Regex, string: String): String {
         val matchResult = regex.find(string)
         val matchedString = matchResult?.groupValues?.get(1) ?: run {
+            Logger.logFileInvalid(graphFilePath)
             parsingErrorOccurred = true
             "" // default value
         }
         return matchedString
+    }
+
+    /**
+     * validates the syntax of the dot-file.
+     * */
+    fun validateSyntax() {
+        val reconstructedFile = reconstructValidFile()
+        if (parsingErrorOccurred) {
+            Logger.logFileInvalid(graphFilePath)
+            error("Parsing error occurred.")
+        }
+        val originalFileNoSpaces = fileContent.replace(whitespace, "")
+        if (reconstructedFile != originalFileNoSpaces) {
+            Logger.logFileInvalid(graphFilePath)
+            error("Parsing error occurred.")
+        }
+    }
+
+    /**
+     * parses the dot-file to be checked for syntax errors and reconstructs the valid portion of it.
+     * */
+    private fun reconstructValidFile(): String {
+        val countyName: String? = parseCountyName()
+        val vertexIds: List<Int> = parseVertexIds()
+        val edges: List<String> = parseEdges()
+        val edgeIdToSourceTargetPairs: Map<Int, Pair<Int, Int>> = parseSourceAndTarget(edges)
+        val edgeIdToAttributes: Map<Int, String> = parseAttributes(edges)
+        val edgeIdToVillageName: Map<Int, String> = parseVillageName(edgeIdToAttributes)
+        val edgeIdToRoadName: Map<Int, String> = parseRoadName(edgeIdToAttributes)
+        val edgeIdToHeight: Map<Int, Int> = parseHeight(edgeIdToAttributes)
+        val edgeIdToWeight: Map<Int, Int> = parseWeight(edgeIdToAttributes)
+        val edgeIdToPrimaryType: Map<Int, String> = parsePrimaryType(edgeIdToAttributes)
+        val edgeIdToSecondaryType: Map<Int, String> = parseSecondaryType(edgeIdToAttributes)
+
+        // reconstruct county name.
+        var reconstructedFile = "digraph$countyName{"
+
+        // reconstruct vertices.
+        for (vertexId in vertexIds) {
+            reconstructedFile += "$vertexId;"
+        }
+
+        // reconstruct edges.
+        for (i in edges.indices) {
+            reconstructedFile += "${edgeIdToSourceTargetPairs[i]?.first}->${edgeIdToSourceTargetPairs[i]?.second}[" +
+                "village=${edgeIdToVillageName[i]};" +
+                "name=${edgeIdToRoadName[i]};" +
+                "heightLimit=${edgeIdToHeight[i]};" +
+                "weight=${edgeIdToWeight[i]};" +
+                "primaryType=${edgeIdToPrimaryType[i]};" +
+                "secondaryType=${edgeIdToSecondaryType[i]};" +
+                "];"
+        }
+
+        // reconstruct closing curly bracket.
+        reconstructedFile += "}"
+        return reconstructedFile
     }
 }

@@ -27,6 +27,9 @@ class Model(
     var roadToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
     var vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
     var requests: MutableList<Request> = mutableListOf()
+    var numReroutedAssets: Int = 0
+    var numFailedEmergencies: Int = 0
+    var numResolvedEmergency: Int = 0
 
     /** returns emergency object with respect to its id */
     fun getAssignedEmergencyById(emId: Int): Emergency? {
@@ -122,7 +125,8 @@ class Model(
 
     /** add vehicleEvent to a map of vehicle id to postponed events */
     fun addVehicleEvent(vehicleId: Int, eventId: Event) {
-        val vehicleEventsPost: MutableList<Event> = vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
+        val vehicleEventsPost: MutableList<Event> =
+            vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
         vehicleEventsPost.add(eventId)
         vehicleToPostponedEvents[vehicleId] = vehicleEventsPost
     }

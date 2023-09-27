@@ -2,10 +2,12 @@ package de.unisaarland.cs.se.selab.controller.phases
 
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
+
 import de.unisaarland.cs.se.selab.model.Vehicle
-import de.unisaarland.cs.se.selab.model.VehicleStatus
+
 
 class UpdatePhase {
+    var eventOccured : Boolean
     fun execute(model: Model) {
         processVehicles(model.getSortedVehicleList())
         processEmergencies(model.getAssignedEmergencies())
