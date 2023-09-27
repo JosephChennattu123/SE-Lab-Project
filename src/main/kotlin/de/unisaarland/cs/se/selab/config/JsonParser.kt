@@ -6,6 +6,13 @@ package de.unisaarland.cs.se.selab.config
  * @param emergenciesEventsFilePath path to the file for emergencies and events
  * */
 class JsonParser(assetsFilePath: String, emergenciesEventsFilePath: String) {
+
+    var bases: List<BaseInfo> = listOf()
+    var vehicles: List<VehicleInfo> = listOf()
+    var events: List<EventInfo> = listOf()
+    var emergencies: List<EmergencyInfo> = listOf()
+    var failed: Boolean = false
+
     /**
      * parses the assets (bases and vehicles)
      *
