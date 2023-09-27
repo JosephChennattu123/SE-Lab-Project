@@ -250,7 +250,10 @@ class GraphValidator {
      * @return true if no road exists with a
      */
     private fun validateMinimumRoadHeight(): Boolean {
-        TODO()
+        val edgeStrings = dotParser!!.parseEdges()
+        val attributes = dotParser!!.parseAttributes(edgeStrings)
+        val roadHeights = dotParser!!.parseHeight(attributes)
+        return roadHeights.filter { (_, value) -> value < 1 }.isEmpty()
     }
 
     /**
