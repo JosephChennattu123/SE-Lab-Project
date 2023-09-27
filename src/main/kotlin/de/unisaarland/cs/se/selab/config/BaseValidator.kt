@@ -14,6 +14,13 @@ class BaseValidator : BasicValidator() {
      * @return the list of bases created
      */
     fun validate(): List<Base> {
+        validateNumDoctors()
+        validateStaffBounds()
+        validateDoctorsOnlyInHospitals()
+        validateNumDogs()
+        validateDogsOnlyInPoliceStations()
+        validateVerticesExist()
+        validateAtMostOneBaseOnEachVertex()
         TODO()
     }
 
@@ -59,7 +66,7 @@ class BaseValidator : BasicValidator() {
      *
      * @return true if the bases contain dogs only if they are police stations
      */
-    private fun validateDogsOnlyInHospitals(): Boolean {
+    private fun validateDogsOnlyInPoliceStations(): Boolean {
         // TODO also check if this is needed (special property)
         TODO()
     }

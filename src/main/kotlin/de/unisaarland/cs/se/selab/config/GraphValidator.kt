@@ -271,8 +271,8 @@ class GraphValidator {
      * @return true if every village has a main street
      */
     private fun validateMainStreetExistInVillages(): Boolean {
-        val edgeStrings = dotParser!!.parseEdges()
-        val attributes = dotParser!!.parseAttributes(edgeStrings)
+        // val edgeStrings = dotParser!!.parseEdges()
+        // val attributes = dotParser!!.parseAttributes(edgeStrings)
         // val primaryTypes = dotParser!!.parsePrimaryType(attributes)
         for ((key, value) in villageToRoads!!) {
             if (key == dotParser!!.parseCountyName()) {

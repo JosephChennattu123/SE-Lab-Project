@@ -6,9 +6,7 @@ import de.unisaarland.cs.se.selab.model.Base
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Vehicle
-import de.unisaarland.cs.se.selab.model.map.Edge
 import de.unisaarland.cs.se.selab.model.map.Graph
-import de.unisaarland.cs.se.selab.model.map.Vertex
 
 /**
  * Manages the parsing and validation of files and builds
@@ -18,8 +16,9 @@ class ValidatorManager {
 
     private var vehicles: List<Vehicle> = listOf()
     private var bases: List<Base> = listOf()
-    private var vertices: List<Vertex> = listOf()
-    private var edges: List<Edge> = listOf()
+
+    // private var vertices: List<Vertex> = listOf()
+    // private var edges: List<Edge> = listOf()
     private var graph: Graph? = null
     private var events: List<Event> = listOf()
     private var emergencies: List<Emergency> = listOf()
@@ -73,7 +72,6 @@ class ValidatorManager {
             }
             elements
         }
-
 
         val tickToEventId: MutableMap<Int, List<Int>> = mutableMapOf()
         events.map { it.start }.toSet().associateWithTo(tickToEmergencyId) {
