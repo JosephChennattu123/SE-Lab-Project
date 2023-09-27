@@ -9,8 +9,8 @@ object Logger {
     public fun logParsingValidationSuccess(filename: String) {
         var output: String =
             "Initialization Info: " +
-                filename +
-                "successfully parsed and validated"
+                    filename +
+                    "successfully parsed and validated"
         if (outputFile == null) {
             println(output)
             return
@@ -22,8 +22,8 @@ object Logger {
     public fun logFileInvalid(filename: String) {
         var output: String =
             "Initialization Info: " +
-                filename +
-                "Invalid"
+                    filename +
+                    "Invalid"
         if (outputFile == null) {
             println(output)
             return
@@ -54,7 +54,7 @@ object Logger {
 
     public fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int) {
         var output: String = "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
-            "ticks to arrive."
+                "ticks to arrive."
         if (outputFile == null) {
             println(output)
             return
