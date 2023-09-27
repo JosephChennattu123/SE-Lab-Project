@@ -1,7 +1,8 @@
 package de.unisaarland.cs.se.selab.controller.events
 
-abstract class RoadEvent(id: Int, eventType: EventType, duration: Int) : Event(id, eventType, duration) {
-    val source: Int? = null
-    val target: Int? = null
-    val factor: Int? = null
+abstract class RoadEvent(id: Int, eventType: EventType, start: Int, duration: Int) :
+    Event(id, eventType, start, duration) {
+    var source: Int? = null
+    var target: Int? = null
+    var factor: Int? = null
 }

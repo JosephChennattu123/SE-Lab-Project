@@ -8,6 +8,7 @@ import de.unisaarland.cs.se.selab.model.Emergency
 class EmergencyValidator : BasicValidator() {
     override var requiredProperties: List<String> =
         listOf("id", "tick", "village", "roadName", "emergencyType", "severity", "handleTime", "maxDuration")
+
     /**
      * Validates the information for emergencies and creates emergencies.
      *

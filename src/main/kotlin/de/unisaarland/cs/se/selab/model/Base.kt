@@ -22,7 +22,7 @@ class Base(
 }
 
 enum class BaseType {
-    FIRE_STATION, POLICE_STATION,HOSPITAL
+    FIRE_STATION, POLICE_STATION, HOSPITAL
 }
 
 
