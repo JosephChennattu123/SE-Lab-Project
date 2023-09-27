@@ -52,7 +52,7 @@ class DotParser(val graphFilePath: String) {
     /**
      * extracts edges from the file.
      * */
-    private fun parseEdges(): List<String> {
+    fun parseEdges(): List<String> {
         val regex = """\s*[0-9]+\s*->\s*[0-9]+\s*\[(\s*[a-zA-z]+\s*=\s*[a-zA-z0-9]+\s*;\s*)*\s*]\s*;""".toRegex()
         val matchResult = regex.findAll(fileContent)
         val edges: List<String> = matchResult.map { it.groupValues[0].replace("\\s".toRegex(), "") }
