@@ -15,7 +15,9 @@ object Dijkstra {
      * @return the distance in weight units.
      * */
     fun getShortestDistance(
-        graph: Graph, sourceVertex: Int, targetVertex: Int,
+        graph: Graph,
+        sourceVertex: Int,
+        targetVertex: Int,
         height: Int
     ): Int {
         TODO()
@@ -38,7 +40,9 @@ object Dijkstra {
      * @return the vertex id of the nearest base.
      * */
     fun getNextNearestBase(
-        graph: Graph, sourceVertex: Int, baseType: BaseType,
+        graph: Graph,
+        sourceVertex: Int,
+        baseType: BaseType,
         requestedBases: Set<Int>
     ): Int? {
         TODO()
@@ -55,7 +59,8 @@ object Dijkstra {
      * @return Path object containing the shortest path.
      * */
     fun getShortestPathFromEdgeToEdge(
-        graph: Graph, lastVisitedVertex: Int,
+        graph: Graph,
+        lastVisitedVertex: Int,
         nextVertexToVisit: Int,
         distanceFromSourceVertex: Int,
         targetEdgeLocation: Location,
@@ -73,7 +78,9 @@ object Dijkstra {
      * @return Path object containing the shortest path.
      * */
     fun getShortestPathFromVertexToVertex(
-        graph: Graph, sourceVertex: Int, targetVertex: Int,
+        graph: Graph,
+        sourceVertex: Int,
+        targetVertex: Int,
         height: Int
     ): Path {
         TODO()
@@ -88,7 +95,9 @@ object Dijkstra {
      * @return Path object containing the shortest path.
      * */
     fun getShortestPathFromVertexToEdge(
-        graph: Graph, sourceVertex: Int, location: Location,
+        graph: Graph,
+        sourceVertex: Int,
+        location: Location,
         height: Int
     ): Path {
         TODO()
@@ -104,7 +113,10 @@ object Dijkstra {
      * @return Path object containing the shortest path.
      * */
     fun getShortestPathFromEdgeToVertex(
-        graph: Graph, sourceVertex: Int, targetVertex: Int, destinationVertex: Int,
+        graph: Graph,
+        sourceVertex: Int,
+        targetVertex: Int,
+        destinationVertex: Int,
         height: Int
     ): Path {
         TODO()
@@ -118,7 +130,8 @@ object Dijkstra {
      * @return Path object containing the shortest path.
      * */
     private fun findNearestBases(
-        graph: Graph, vertexId: Int,
+        graph: Graph,
+        vertexId: Int,
         baseType: BaseType
     ): HashMap<Int, Int> {
         TODO()
@@ -134,7 +147,10 @@ object Dijkstra {
      * @return map from vertex id to the distance from source to all other vertices .
      * */
     private fun dijkstra(
-        graph: Graph, source: Int, reverse: Boolean, parentMap: HashMap<Int, Int>
+        graph: Graph,
+        source: Int,
+        reverse: Boolean,
+        parentMap: HashMap<Int, Int>
     ): HashMap<Int, Int> {
         TODO()
     }
@@ -147,7 +163,8 @@ object Dijkstra {
      * @return the vertex with the minimum distance.
      * */
     private fun getMinDistance(
-        vertices: HashMap<Int, Vertex>, distances: HashMap<Int, Int>,
+        vertices: HashMap<Int, Vertex>,
+        distances: HashMap<Int, Int>,
         visited: HashMap<Int, Boolean>
     ): Vertex {
         TODO()
@@ -161,9 +178,11 @@ object Dijkstra {
      * @param reverse if true, the graph is traversed in reverse.
      * */
     private fun updateParent(
-        vertex: Vertex, distancesFromSource: HashMap<Int, Int>,
-        parentMap: HashMap<Int, Int>, reverse: Boolean
-    ): Unit {
+        vertex: Vertex,
+        distancesFromSource: HashMap<Int, Int>,
+        parentMap: HashMap<Int, Int>,
+        reverse: Boolean
+    ) {
         TODO()
     }
 }
