@@ -49,7 +49,7 @@ object Logger {
      * @param baseId the id of the base
      */
     fun logEmergencyAssigned(emergencyId: Int, baseId: Int) {
-        printLog("Emergency Assignment" + id1 + "assigned to" + id2)
+        printLog("Emergency Assignment $emergencyId assigned to $baseId")
     }
 
     /**
@@ -121,16 +121,14 @@ object Logger {
 
     /**
      * @param eventId the id of the event
+     * @param triggered true if triggered else false (ended)
      */
-    fun logEventEnded(eventId: Int) {
-        printLog("Event Ended: $eventId ended")
-    }
-
-    /**
-     * @param eventId the id of the event
-     */
-    fun logEventTriggered(eventId: Int) {
-        printLog("Event Triggered: $eventId triggered")
+    fun logEventStatus(eventId: Int, triggered: Boolean) {
+        if (triggered) {
+            printLog("Event Triggered: $eventId triggered")
+        } else {
+            printLog("Event Ended: $eventId ended")
+        }
     }
 
     /**
@@ -170,16 +168,16 @@ object Logger {
     }
 
     /**
-     * @param failedEmergenciesAmount the amount of emergencies that failed
+     * Logs the number of total failed emergencies
      */
-    fun logNumberOfFailedEmergencies(failedEmergenciesAmount: Int) {
+    fun logNumberOfFailedEmergencies() {
         printLog("Simulation Statistics: $numFailedEmergencies failed emergencies")
     }
 
     /**
-     * @param resolvedEmergenciesAmount the amount resolved emergencies
+     * Logs the number of total resolved emergencies
      */
-    fun logNumberOfResolvedEmergencies(resolvedEmergenciesAmount: Int) {
+    fun logNumberOfResolvedEmergencies() {
         printLog("Simulation Statistics: $numResolvedEmergency resolved emergencies.")
     }
 }
