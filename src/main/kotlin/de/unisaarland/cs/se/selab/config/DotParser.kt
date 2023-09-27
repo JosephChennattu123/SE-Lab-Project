@@ -99,7 +99,7 @@ class DotParser(val graphFilePath: String) {
     /**
      * extracts village name from attributes.
      * */
-    fun villageName(attributes: Map<Int, String>): Map<Int, String> {
+    fun parseVillageName(attributes: Map<Int, String>): Map<Int, String> {
         val edgeIdToVillageName = mutableMapOf<Int, String>()
         val regexVillageName = """village\s*=\s*$regexId\s*;""".toRegex()
         for ((index, attribute) in attributes) {
@@ -166,6 +166,10 @@ class DotParser(val graphFilePath: String) {
             edgeIdToSecondaryType[index] = matchRegex(regexSecondaryType, attribute)
         }
         return edgeIdToSecondaryType
+    }
+
+    fun validateSyntax(): Boolean {
+        TODO()
     }
 
     private fun matchRegex(regex: Regex, string: String): String {
