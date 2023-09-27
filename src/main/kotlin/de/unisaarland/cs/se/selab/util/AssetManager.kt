@@ -148,7 +148,7 @@ object AssetManager {
         filterAssetsByRequirement(vehicles, emergency.currentRequiredAssets)
         for (v in vehicles) {
             when (v.status) {
-                VehicleStatus.AT_BASE -> {
+                VehicleStatus.AT_BASE -> { // If vehicle is currently at base, calculate drive time from base to emergency
                     val p = Dijkstra.getShortestPathFromVertexToEdge(
                         model.graph,
                         model.getBasebyId(v.baseID).vertexID,
@@ -156,12 +156,12 @@ object AssetManager {
                         v.height
                     )
 
-                    if (!emergency.canReachInTime(p.ticksToArrive)) {
+                    if (!emergency.canReachInTime(p.totalTicksToArrive)) {
                         vehicles.remove(v)
                     }
                 }
 
-                VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
+                VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> { // If vehicle is currently on the road, calculate drive time from their precise position to emergency
                     val pt = v.positionTracker
                     val p = Dijkstra.getShortestPathFromEdgeToEdge(
                         model.graph, pt.path.vertexPath[pt.currentVertexIndex],
@@ -170,7 +170,7 @@ object AssetManager {
                         emergency.location,
                         v.height
                     )
-                    if (!emergency.canReachInTime(p.ticksToArrive)) {
+                    if (!emergency.canReachInTime(p.totalTicksToArrive)) {
                         vehicles.remove(v)
                     }
                 }
