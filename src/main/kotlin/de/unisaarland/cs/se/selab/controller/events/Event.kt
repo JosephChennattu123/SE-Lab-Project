@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.controller.events
 
+import de.unisaarland.cs.se.selab.model.Model
+
 /**
  * Event superclass.
  * */
@@ -10,12 +12,17 @@ abstract class Event(val id: Int, val eventType: EventType, val start: Int, val 
     /**
      * Changes weight and or behaviour of roads as well as vehicles.
      * */
-    abstract fun applyEffect(): Unit
+    abstract fun applyEffect(model: Model): Unit
 
     /**
      * Decrements the timer of the event.
      * */
     abstract fun decrementTimer(): Unit
+
+    /**
+     * changes removes effect of event on the required object
+     * */
+    abstract fun removeEffect(model: Model): Unit
 }
 
 /**
