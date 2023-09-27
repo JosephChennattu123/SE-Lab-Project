@@ -4,28 +4,26 @@ import java.io.File
 
 object Logger {
 
-    var filename: String? = null
-
+    var outputFile: String? = null
 
     public fun logParsingValidationSuccess(filename: String) {
         var output: String =
             "Initialization Info: " +
-                    filename +
-                    "successfully parsed and validated"
+                filename +
+                "successfully parsed and validated"
         if (filename == null) {
             println(output)
             return
         }
         val file = File(filename)
         file.writeText(output, Charsets.UTF_8)
-
     }
 
     public fun logFileInvalid(filename: String) {
         var output: String =
             "Initialization Info: " +
-                    filename +
-                    "Invalid"
+                filename +
+                "Invalid"
         if (filename == null) {
             println(output)
             return
@@ -56,7 +54,7 @@ object Logger {
 
     public fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int) {
         var output: String = "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
-                "ticks to arrive."
+            "ticks to arrive."
         if (filename == null) {
             println(output)
             return
@@ -224,6 +222,4 @@ object Logger {
         val file = File(filename)
         file.writeText(output, Charsets.UTF_8)
     }
-
-
 }
