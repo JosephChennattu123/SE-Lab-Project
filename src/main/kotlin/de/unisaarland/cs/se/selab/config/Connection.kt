@@ -4,27 +4,16 @@ import de.unisaarland.cs.se.selab.model.map.PrimaryType
 import de.unisaarland.cs.se.selab.model.map.SecondaryType
 
 /**
- * @param vertexId the target of the connection
- * @param name the name of the connection(road)
+ * @param sourceId the source of the connection
+ * @param targetId the target of the connection
  * @param weight the weight of the connection
- * @param direction the direction of the connection
+ * @param height the height of the road (tunnel, ...)
+ * @param primary the primary type of the road
+ * @param secondary the secondaryType of the road
+ * @param villageName the name of the village this road belongs to (or the county name)
+ * @param roadName the name of the road
  */
 data class Connection(
-    val vertexId: Int, val name: String, val weight: Int, val height: Int, val direction: Direction,
+    val sourceId: Int, val targetId: Int, val weight: Int, val height: Int,
     val primary: PrimaryType, val secondary: SecondaryType, val villageName: String, val roadName: String
 )
-
-/**
- * direction of a road / connection:
- */
-enum class Direction {
-    /**
-     * only from source to target of road / connection
-     */
-    ONEWAY,
-
-    /**
-     * both direction
-     */
-    BOTH
-}
