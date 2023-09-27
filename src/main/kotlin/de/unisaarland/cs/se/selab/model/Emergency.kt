@@ -54,35 +54,7 @@ class Emergency(
     /**
      * begin handling the emergency if all assets have arrived */
     fun handle() {
-        when (status) {
-            EmergencyStatus.ONGOING -> {
-                if (isFulfilled()) {
-                    changeStatus(EmergencyStatus.WAITING_FOR_ASSETS)
-                }
-            }
 
-            EmergencyStatus.WAITING_FOR_ASSETS -> {
-                if (!isFulfilled()) {
-                    changeStatus(EmergencyStatus.ONGOING)
-                } else {
-                    if (canStart()) {
-                        changeStatus(EmergencyStatus.BEING_HANDLED)
-                    }
-                }
-            }
-
-            EmergencyStatus.BEING_HANDLED -> {
-                if(){
-                    changeStatus(EmergencyStatus.RESOLVED)
-                }
-            }
-
-            else -> {
-                return
-            }
-        }
-        decrementTimer()
-        resolveOrFailEmergency()
     }
 
     /**
@@ -123,7 +95,7 @@ class Emergency(
             changeStatus(EmergencyStatus.FAILED)
             return true
         }
-        if (handleTime == 0) {
+        if (handleTime <= 0) {
             changeStatus(EmergencyStatus.RESOLVED)
             return true
         }
