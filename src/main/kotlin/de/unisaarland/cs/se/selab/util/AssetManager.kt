@@ -18,6 +18,7 @@ object AssetManager {
     private const val CRIMINALCAPACITY4 = 4
     private const val CRIMINALCAPACITY8 = 8
     private const val PATIENTCAPACITY5 = 5
+
     /**
      * @param severity Severity of the emergency
      * @return List of EmergencyRequirements
@@ -158,7 +159,9 @@ object AssetManager {
      * @param emergency The emergency to allocate to
      * @param vehicles The list of vehicles to assign to the emergency */
     fun allocateAssetsToEmergency(model: Model, emergency: Emergency, vehicles: MutableList<Vehicle>) {
+
         filterAssetsByRequirement(model, vehicles, emergency.currentRequiredAssets)
+
         for (v in vehicles) {
             when (v.status) {
                 VehicleStatus.AT_BASE -> {
@@ -196,6 +199,31 @@ object AssetManager {
         }
         filterAssetsByOptimalSolution(vehicles, emergency.currentRequiredAssets)
         for (v in vehicles) {
+            val oldEmergency = model.getAssignedEmergencyById(v.emergencyID!!) // ONLY FOR REALLOCATED VEHICLES
+            for (req in oldEmergency.currentRequiredAssets) {
+                if (req.vehicleType == v.vehicleType) { // find requirement that needs to be changed
+                    req.numberOfVehicles++ // increase the number of current needed vehicles of this type by 1
+                    // to compensate for loss of v
+                    if (req.assetType != null) {
+                        var originalreq: EmergencyRequirement? = null
+                        for (oreq in oldEmergency!!.requiredAssets) { // find original requirement that corresponds to
+                                                                    // req
+                            if (oreq.vehicleType == v.vehicleType) {
+                                originalreq = oreq
+                            }
+                        }
+                        req.amountOfAsset = originalreq!!.amountOfAsset!!
+                        for (v2 in model.getVehiclesByIds(oldEmergency.assignedVehicleIDs)) {
+                            if (v2.vehicleType == v.vehicleType) { // go through all vehicles of the same type
+                                // and add up their total asset capacity
+                                req.amountOfAsset = req.amountOfAsset!! - v2.maxAssetCapacity
+                            } // req.amountOfAsset is now the actual missing amount of asset to fulfill the requirement
+                        }
+                    }
+                }
+            }
+            var newReq: EmergencyRequirement
+            oldEmergency.currentRequiredAssets.add(newReq)
             emergency.addAsset(v)
         }
     }
