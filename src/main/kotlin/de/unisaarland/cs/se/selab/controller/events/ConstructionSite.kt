@@ -42,8 +42,6 @@ class ConstructionSite(
     override fun removeEffect(model: Model) {
         val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
         currentEdge.closed = false
-        if (this.factor != null) {
-            currentEdge.properties.factor = BASE_FACTOR
-        }
+        currentEdge.properties.factor = BASE_FACTOR
     }
 }
