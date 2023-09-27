@@ -17,14 +17,23 @@ class ControlCenter(val model: Model) {
     var gatherStatistics = GatherStatistics()
 
     /***
-     * Runs the simulation until termination */
+     * Runs the simulation for a fixed amount of ticks, then gathers statistics */
     fun simulate(): Boolean {
+        while(model.maxTick == null || model.currentTick < model.maxTick) {
+            tick()
+        }
+        gatherStatistics.execute(model)
         TODO()
     }
 
     /***
      * Progresses the simulation by 1 tick */
     fun tick() {
-        TODO()
+        emergencyDistribution.execute(model)
+        assetAllocation.execute(model)
+        requestProcessing.execute(model)
+        updatePhase.execute(model)
+        if(updatePhase.eventOccured) reroute.execute(model)
+        model.incrementTick()
     }
 }

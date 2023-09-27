@@ -67,7 +67,6 @@ class UpdatePhase {
             }
         }
     }
-}
 
 private fun processActiveEvents() {
     // todo
