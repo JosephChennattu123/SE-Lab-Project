@@ -24,12 +24,8 @@ abstract class Vehicle(
      * update the position of vehicle, send log if it arrives, and service vehicles that require
      */
     fun driveUpdate() {
-        positionTracker.updatePosition()
-        if (positionTracker.destinationReached()) {
-            val destinationVertexID = positionTracker.getDestination()
-//            Logger.logAssetArrived(vehicleID, destinationVertexID)
-            if (destinationVertexID == baseID) setBusy()
-        }
+        // implemented in the update branch
+        TODO()
     }
 
     /**
