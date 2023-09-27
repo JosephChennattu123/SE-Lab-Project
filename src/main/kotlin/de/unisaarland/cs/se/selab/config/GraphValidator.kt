@@ -72,7 +72,7 @@ class GraphValidator {
      * @return true if the vertices are valid
      */
     private fun validateVertexIds(): Boolean {
-        val vertexIds: List<Int> = dotParser!!.vertexIds
+        val vertexIds: List<Int> = dotParser!!.parseVertexIds()
         if (vertexIds.map { it >= 0 }.toList().contains(false)) { // no negative elements allowed
             return false
         }
