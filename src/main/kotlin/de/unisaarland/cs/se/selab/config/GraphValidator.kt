@@ -210,6 +210,7 @@ class GraphValidator {
             for (inEdge: Int in incomingEdges) {
                 val newVillageName = villageNames[inEdge] ?: return false
                 vertexVillage = vertexVillage ?: newVillageName
+                // TODO check if check against county name is enough to detect county road or also type needs to match
                 if (vertexVillage != newVillageName && newVillageName != countyName) {
                     return false
                 }
@@ -233,7 +234,10 @@ class GraphValidator {
      * @return true if a side street exists
      */
     private fun validateSideStreetExists(): Boolean {
-        TODO()
+        val edgeStrings = dotParser!!.parseEdges()
+        val attributes = dotParser!!.parseAttributes(edgeStrings)
+        val primaryTypes = dotParser!!.parsePrimaryType(attributes)
+        return primaryTypes.containsValue("sideStreet")
     }
 
     /**
@@ -242,7 +246,10 @@ class GraphValidator {
      * @return true if all roads have positive weight
      */
     private fun validateNonZeroRoadWeights(): Boolean {
-        TODO()
+        val edgeStrings = dotParser!!.parseEdges()
+        val attributes = dotParser!!.parseAttributes(edgeStrings)
+        val weights = dotParser!!.parseWeight(attributes)
+        return weights.filter { (_, value) -> value <= 0 }.isEmpty()
     }
 
     /**
