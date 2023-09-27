@@ -19,7 +19,7 @@ class Reroute {
                     vPath[v.positionTracker.currentVertexIndex],
                     vPath[v.positionTracker.currentVertexIndex + 1],
                     v.positionTracker.positionOnEdge,
-                    model.getAssignedEmergencyById(v.emergencyID).location,
+                    model.getAssignedEmergencyById(v.emergencyID!!)!!.location,
                     v.height
                 )
             }
