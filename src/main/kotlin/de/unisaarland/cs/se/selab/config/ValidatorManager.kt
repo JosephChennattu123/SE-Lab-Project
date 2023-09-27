@@ -30,6 +30,7 @@ class ValidatorManager {
      *
      * @param dotParser the parser for the dot-file
      * @param jsonParser the parser for the json files
+     * @param maxTick the maximum number of ticks to run the simulation
      * @return Emcc the EMCC-object
      * */
     fun validate(dotParser: DotParser, jsonParser: JsonParser, maxTick: Int?): ControlCenter? {
