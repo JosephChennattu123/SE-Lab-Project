@@ -34,7 +34,7 @@ enum class VehicleType {
     }
 
     /**
-     * @return the BaseType of the base which this vehicle can from
+     * @return the BaseType of the base which this vehicle could from
      * */
     fun getBaseType(vehicleType: VehicleType): BaseType {
         return when (vehicleType) {
