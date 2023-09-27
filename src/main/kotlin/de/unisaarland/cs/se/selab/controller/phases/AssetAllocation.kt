@@ -1,6 +1,13 @@
 package de.unisaarland.cs.se.selab.controller.phases
 
-import de.unisaarland.cs.se.selab.model.*
+import de.unisaarland.cs.se.selab.model.Base
+import de.unisaarland.cs.se.selab.model.Emergency
+import de.unisaarland.cs.se.selab.model.EmergencyStatus
+import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.Request
+import de.unisaarland.cs.se.selab.model.Vehicle
+import de.unisaarland.cs.se.selab.model.VehicleStatus
+import de.unisaarland.cs.se.selab.model.VehicleType
 import de.unisaarland.cs.se.selab.util.AssetManager
 import de.unisaarland.cs.se.selab.util.Dijkstra
 import de.unisaarland.cs.se.selab.util.Logger
