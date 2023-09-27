@@ -4,7 +4,7 @@ import java.io.File
 
 object Logger {
 
-    val filename: String? = null
+    var filename: String? = null
 
 
     public fun logParsingValidationSuccess(filename: String) {
