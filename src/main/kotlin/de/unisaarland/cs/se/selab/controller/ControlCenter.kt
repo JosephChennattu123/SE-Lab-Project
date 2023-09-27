@@ -23,7 +23,6 @@ class ControlCenter(val model: Model) {
             tick()
         }
         gatherStatistics.execute(model)
-        TODO()
     }
 
     /***
