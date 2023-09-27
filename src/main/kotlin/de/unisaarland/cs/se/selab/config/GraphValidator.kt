@@ -88,7 +88,7 @@ class GraphValidator {
         val graph = Graph()
         val vertices: MutableMap<Int, Vertex> = mutableMapOf()
         for (vertexId in vertexIds!!) {
-            val vertex = Vertex(vertexId)
+            val vertex = Vertex(vertexId, null, null)
             vertices[vertexId] = vertex
         }
         for (connections: Map.Entry<Int, List<Connection>> in edges!!) {

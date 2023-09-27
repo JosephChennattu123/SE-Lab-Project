@@ -14,7 +14,8 @@ import kotlin.collections.HashMap
  * */
 object Dijkstra {
 
-    private val speed: Int = 10
+    private const val speed: Int = 10
+    private const val num9: Int = 9
 
     /**
      * Finds the nearest base to the given edge given as location.
@@ -189,7 +190,7 @@ object Dijkstra {
         val isOneWay: List<Boolean> = mutableListOf()
         isOneWay + true
         isOneWay + pathFromTarget.isOneWay
-        val oneWayPath: Path = Path(path, weights, isOneWay, roundToNextTen(weights.sum()) / 10)
+        val oneWayPath: Path = Path(path, weights, isOneWay, roundToNextTen(weights.sum()) / speed)
         // check if it is shorter to travel back to source and then to destination.
         if (pathFromSource.getTotalDistance() + currentDistanceOnEdge <
             pathFromTarget.getTotalDistance() + (edge.getWeight() - currentDistanceOnEdge)
@@ -335,6 +336,6 @@ object Dijkstra {
     }
 
     private fun roundToNextTen(number: Int): Int {
-        return (number + 9) / 10 * 10
+        return (number + num9) / speed * speed
     }
 }

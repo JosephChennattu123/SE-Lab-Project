@@ -14,6 +14,12 @@ import de.unisaarland.cs.se.selab.model.map.SecondaryType
  * @param roadName the name of the road
  */
 data class Connection(
-    val sourceId: Int, val targetId: Int, val weight: Int, val height: Int,
-    val primary: PrimaryType, val secondary: SecondaryType, val villageName: String, val roadName: String
+    val sourceId: Int,
+    val targetId: Int,
+    val weight: Int,
+    val height: Int,
+    val primary: PrimaryType,
+    val secondary: SecondaryType,
+    val villageName: String,
+    val roadName: String
 )

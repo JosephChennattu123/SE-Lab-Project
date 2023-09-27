@@ -43,24 +43,24 @@ class ValidatorManager {
 
         // dotParser.parse()
         if (!validateGraph()) {
-            Logger.logFileInvalid(dotParser.graphFilePath)
+            Logger.logParsingValidationResult(dotParser.graphFilePath, false)
             return null
         }
-        Logger.logParsingValidationSuccess(dotParser.graphFilePath)
+        Logger.logParsingValidationResult(dotParser.graphFilePath, true)
 
         // jsonParser.parseAssets()
         if (!validateBases() || !validateVehicles()) {
-            Logger.logFileInvalid(jsonParser.assetsFilePath)
+            Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
             return null
         }
-        Logger.logParsingValidationSuccess(jsonParser.assetsFilePath)
+        Logger.logParsingValidationResult(jsonParser.assetsFilePath, true)
 
         // jsonParser.parseEmergenciesEvents()
         if (!validateEmergencies() || !validateEvent()) {
-            Logger.logFileInvalid(jsonParser.emergenciesEventsFilePath)
+            Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
             return null
         }
-        Logger.logParsingValidationSuccess(jsonParser.emergenciesEventsFilePath)
+        Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, true)
 
         val model = buildModel(maxTick)
 

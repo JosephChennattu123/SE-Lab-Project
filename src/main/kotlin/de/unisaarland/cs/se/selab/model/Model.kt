@@ -9,7 +9,6 @@ import de.unisaarland.cs.se.selab.model.map.Graph
  * @param vehicleToBase
  * @param emergencies
  * */
-
 class Model(
     val graph: Graph,
     val maxTick: Int?, // optional command-line argument
@@ -92,7 +91,7 @@ class Model(
     }
 
     /** @returns list of all current events */
-    fun getCurrentEvents(): List<Event> {
+    fun getCurrentEventsObjects(): List<Event> {
         return currentEvents.mapNotNull { events[it] }
     }
 

@@ -12,17 +12,17 @@ abstract class Event(val id: Int, val eventType: EventType, val start: Int, val 
     /**
      * Changes weight and or behaviour of roads as well as vehicles.
      * */
-    abstract fun applyEffect(model: Model): Unit
+    abstract fun applyEffect(model: Model)
 
     /**
      * Decrements the timer of the event.
      * */
-    abstract fun decrementTimer(): Unit
+    abstract fun decrementTimer()
 
     /**
      * changes removes effect of event on the required object
      * */
-    abstract fun removeEffect(model: Model): Unit
+    abstract fun removeEffect(model: Model)
 }
 
 /**

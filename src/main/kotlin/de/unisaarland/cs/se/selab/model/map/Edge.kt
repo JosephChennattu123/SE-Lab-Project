@@ -17,6 +17,9 @@ class Edge(
     var closed: Boolean
 ) {
 
+    /**
+     * @return the weight of the edge
+     */
     fun getWeight(): Int {
         return properties.weight
     }
@@ -31,6 +34,9 @@ class Edge(
         TODO()
     }
 
+    /**
+     * @return true if the secondary type is ONE_WAY
+     */
     fun isOneWay(): Boolean {
         return properties.secondaryType == SecondaryType.ONE_WAY
     }

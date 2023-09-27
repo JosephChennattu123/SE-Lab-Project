@@ -3,7 +3,16 @@ package de.unisaarland.cs.se.selab.controller.phases
 import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.util.Logger
 
+/**
+ * Gather statistics phase
+ * This phase gets executed once the simulation is over.
+ * Collects statistics about the simulation
+ */
 class GatherStatistics {
+
+    /**
+     * @param model the model
+     */
     fun execute(model: Model) {
         Logger.logSimulationEnded()
         // the number of rerouted assets
