@@ -4,12 +4,13 @@ import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
 
 import de.unisaarland.cs.se.selab.model.Vehicle
+import de.unisaarland.cs.se.selab.model.VehicleStatus
 
 
 class UpdatePhase {
     fun execute(model: Model) {
         processVehicles(model.getSortedVehicleList())
-        processEmergencies(model.getAssignedEmergencies())
+        processEmergencies(model.getAssignedEmergenciesObjects())
     }
 
     /**
