@@ -9,10 +9,10 @@ class GraphValidator {
 
     private var dotParser: DotParser? = null
 
-    private var vertexIds: Set<Int> = setOf()
-    private var villageNames: List<String> = listOf()
-    private var villageToRoads: Map<String, List<String>> = mapOf()
-    private var edges: Map<Int, List<Connection>> = mapOf()
+    private var vertexIds: Set<Int>? = null
+    private var villageNames: List<String>? = null
+    private var villageToRoads: Map<String, Set<String>>? = null
+    private var edges: Map<Int, List<Connection>>? = null
 
     /**
      * Validate the information for the graph and create the graph
@@ -47,11 +47,11 @@ class GraphValidator {
         }
         val graph = Graph()
         val vertices: MutableMap<Int, Vertex> = mutableMapOf()
-        for (vertexId in vertexIds) {
+        for (vertexId in vertexIds!!) {
             val vertex = Vertex(vertexId)
             vertices.put(vertexId, vertex)
         }
-        for (connections: Map.Entry<Int, List<Connection>> in edges) {
+        for (connections: Map.Entry<Int, List<Connection>> in edges!!) {
             for (edge: Connection in connections.value) {
                 val source: Vertex? = vertices.get(connections.key)
                 val target: Vertex? = vertices.get(edge.vertexId)
@@ -93,7 +93,7 @@ class GraphValidator {
         val edges = dotParser!!.parseEdges()
         val sourceTarget = dotParser!!.parseSourceAndTarget(edges)
         val verticesInEdges: Set<Int> = sourceTarget.values.flatMap { (first, second) -> listOf(first, second) }.toSet()
-        return verticesInEdges.containsAll(this.vertexIds)
+        return verticesInEdges.containsAll(this.vertexIds!!)
     }
 
     /**
@@ -104,7 +104,7 @@ class GraphValidator {
     private fun validateNoSelfLoops(): Boolean {
         val edges = dotParser!!.parseEdges()
         val soureTarget = dotParser!!.parseSourceAndTarget(edges)
-        for (id in this.vertexIds) {
+        for (id in this.vertexIds!!) {
             if (soureTarget.containsValue(Pair(id, id))) {
                 return false
             }
@@ -138,7 +138,41 @@ class GraphValidator {
         val edges = dotParser!!.parseEdges()
         val sourceTarget = dotParser!!.parseSourceAndTarget(edges)
         val verticesInEdges: Set<Int> = sourceTarget.values.flatMap { (first, second) -> listOf(first, second) }.toSet()
-        return vertexIds.containsAll(verticesInEdges)
+        return vertexIds!!.containsAll(verticesInEdges)
+    }
+
+    /**
+     * Check that road names are unique in a village
+     *
+     * @return true if road names are unique in each village
+     */
+    private fun validateRoadNamesUniqueInVillage(): Boolean {
+        // TODO check if correct
+        val edges = dotParser!!.parseEdges()
+        val attributes = dotParser!!.parseAttributes(edges)
+        val edgeIdToRoadName = dotParser!!.parseRoadName(attributes)
+        val edgeIdToVillageName = dotParser!!.parseVillageName(attributes)
+        val villageNameToEdgeIds = reverseMap(edgeIdToVillageName)
+
+        val villageNamesSet = edgeIdToVillageName.map { it.value }.toSet()
+        val villageToRoadNames: MutableMap<String, Set<String>> = mutableMapOf()
+        villageNamesSet.associateWithTo(
+            villageToRoadNames
+        ) {
+            val edgeIds = villageNameToEdgeIds[it] ?: return false
+            val villageRoadNames: MutableSet<String> = mutableSetOf()
+            for (edgeId in edgeIds) {
+                val roadName: String = edgeIdToRoadName[edgeId] ?: return false
+                if (!villageRoadNames.contains(roadName)) {
+                    villageRoadNames.add(roadName)
+                } else {
+                    return false
+                }
+            }
+            villageRoadNames
+        }
+        this.villageToRoads = villageToRoadNames.toMap()
+        return true
     }
 
     /**
@@ -148,16 +182,40 @@ class GraphValidator {
      * @return true if vertices only connected to their village or county
      */
     private fun validateSameVertexSameVillageOrCounty(): Boolean {
-        TODO()
-    }
+        val edgeStrings = dotParser!!.parseEdges()
+        val sourceTargetMap = dotParser!!.parseSourceAndTarget(edgeStrings)
+        val attributes = dotParser!!.parseAttributes(edgeStrings)
+        val villageNames = dotParser!!.parseVillageName(attributes)
+        val countyName = dotParser!!.parseCountyName()
 
-    /**
-     * Check that road names are unique in a village
-     *
-     * @return true if road names are unique in each village
-     */
-    private fun validateRoadNamesUniqueInVillage(): Boolean {
-        TODO()
+        val vertexIdToEdges: MutableMap<Int, Pair<List<Int>, List<Int>>> = mutableMapOf()
+        vertexIds!!.associateWithTo(vertexIdToEdges) {
+
+            val outEdges = sourceTargetMap.filter { (_, value) -> value.first == it }.keys.toList()
+            val inEdges = sourceTargetMap.filter { (_, value) -> value.second == it }.keys.toList()
+            Pair(outEdges, inEdges)
+        }
+        for ((_, value) in vertexIdToEdges) {
+            var vertexVillage: String? = null
+
+            val outgoingEdges = value.first
+            val incomingEdges = value.second
+            for (outEdge: Int in outgoingEdges) {
+                val newVillageName = villageNames[outEdge] ?: return false
+                vertexVillage = vertexVillage ?: newVillageName
+                if (vertexVillage != newVillageName && newVillageName != countyName) {
+                    return false
+                }
+            }
+            for (inEdge: Int in incomingEdges) {
+                val newVillageName = villageNames[inEdge] ?: return false
+                vertexVillage = vertexVillage ?: newVillageName
+                if (vertexVillage != newVillageName && newVillageName != countyName) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     /**
@@ -211,5 +269,22 @@ class GraphValidator {
     private fun validateVillageNameNotCountyName(): Boolean {
         // TODO newly added (was missing
         TODO()
+    }
+
+    /**
+     * Reverses a map.
+     * It uses the values as new keys and as values collects all keys that had the same value
+     *
+     * @param inputMap map from a key to a value
+     * @return the reversed map
+     */
+    private fun <K, V> reverseMap(inputMap: Map<K, V>): Map<V, List<K>> {
+        val reversed = mutableMapOf<V, MutableList<K>>()
+
+        for ((key, value) in inputMap) {
+            reversed.computeIfAbsent(value) { mutableListOf() }.add(key)
+        }
+
+        return reversed.mapValues { it.value.toList() }
     }
 }
