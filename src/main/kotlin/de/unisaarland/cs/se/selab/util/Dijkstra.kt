@@ -6,13 +6,18 @@ import de.unisaarland.cs.se.selab.model.Path
 import de.unisaarland.cs.se.selab.model.map.Graph
 import de.unisaarland.cs.se.selab.model.map.Vertex
 
-class Dijkstra {
+/**
+ * Util class to calculate the shortest path on a graph using Dijkstra's algorithm.
+ * */
+object Dijkstra {
     /**
      * calculates the shortest distance weights from sourceVertex to targetVertex.
      * @return the distance in weight units.
      * */
     fun getShortestDistance(
-        graph: Graph, sourceVertex: Int, targetVertex: Int,
+        graph: Graph,
+        sourceVertex: Int,
+        targetVertex: Int,
         height: Int
     ): Int {
         TODO()
@@ -35,14 +40,17 @@ class Dijkstra {
      * @return the vertex id of the nearest base.
      * */
     fun getNextNearestBase(
-        graph: Graph, sourceVertex: Int, baseType: BaseType,
+        graph: Graph,
+        sourceVertex: Int,
+        baseType: BaseType,
         requestedBases: Set<Int>
     ): Int? {
         TODO()
     }
 
     /**
-     * calculates the shortest path when a vehicle needs to be reallocated.
+     * calculates the shortest path when a vehicle needs to be reallocated to a different emergency
+     * and is already on the way to one.
      * @param lastVisitedVertex the source vertex of the current traversed edge.
      * @param nextVertexToVisit the target vertex of the current traversed edge.
      * @param distanceFromSourceVertex the current distance on edge relative to source.
@@ -51,7 +59,8 @@ class Dijkstra {
      * @return Path object containing the shortest path.
      * */
     fun getShortestPathFromEdgeToEdge(
-        graph: Graph, lastVisitedVertex: Int,
+        graph: Graph,
+        lastVisitedVertex: Int,
         nextVertexToVisit: Int,
         distanceFromSourceVertex: Int,
         targetEdgeLocation: Location,
@@ -62,14 +71,16 @@ class Dijkstra {
 
     /**
      * calculates the shortest path between two vertices when vehicle needs to be sent to
-     * an emergency or to back to base.
+     * an emergency or to back to base once emergency is finished.
      * @param sourceVertex the vertex of a base or emergency.
      * @param targetVertex the vertex of an emergency or base.
      * @param height the height of the vehicle.
      * @return Path object containing the shortest path.
      * */
     fun getShortestPathFromVertexToVertex(
-        graph: Graph, sourceVertex: Int, targetVertex: Int,
+        graph: Graph,
+        sourceVertex: Int,
+        targetVertex: Int,
         height: Int
     ): Path {
         TODO()
@@ -84,7 +95,28 @@ class Dijkstra {
      * @return Path object containing the shortest path.
      * */
     fun getShortestPathFromVertexToEdge(
-        graph: Graph, sourceVertex: Int, location: Location,
+        graph: Graph,
+        sourceVertex: Int,
+        location: Location,
+        height: Int
+    ): Path {
+        TODO()
+    }
+
+    /**
+     * calculates the shortest path from an edge to a vertex when vehicle needs to be returned
+     * to base midway as an emergency failed.
+     * @param sourceVertex the source vertex of the edge on which vehicle currently travels.
+     * @param targetVertex the target vertex of the currently travelled edge.
+     * @param destinationVertex the vertex of the base.
+     * @param height the height of the vehicle.
+     * @return Path object containing the shortest path.
+     * */
+    fun getShortestPathFromEdgeToVertex(
+        graph: Graph,
+        sourceVertex: Int,
+        targetVertex: Int,
+        destinationVertex: Int,
         height: Int
     ): Path {
         TODO()
@@ -98,7 +130,8 @@ class Dijkstra {
      * @return Path object containing the shortest path.
      * */
     private fun findNearestBases(
-        graph: Graph, vertexId: Int,
+        graph: Graph,
+        vertexId: Int,
         baseType: BaseType
     ): HashMap<Int, Int> {
         TODO()
@@ -114,7 +147,10 @@ class Dijkstra {
      * @return map from vertex id to the distance from source to all other vertices .
      * */
     private fun dijkstra(
-        graph: Graph, source: Int, reverse: Boolean, parentMap: HashMap<Int, Int>
+        graph: Graph,
+        source: Int,
+        reverse: Boolean,
+        parentMap: HashMap<Int, Int>
     ): HashMap<Int, Int> {
         TODO()
     }
@@ -127,7 +163,8 @@ class Dijkstra {
      * @return the vertex with the minimum distance.
      * */
     private fun getMinDistance(
-        vertices: HashMap<Int, Vertex>, distances: HashMap<Int, Int>,
+        vertices: HashMap<Int, Vertex>,
+        distances: HashMap<Int, Int>,
         visited: HashMap<Int, Boolean>
     ): Vertex {
         TODO()
@@ -141,9 +178,11 @@ class Dijkstra {
      * @param reverse if true, the graph is traversed in reverse.
      * */
     private fun updateParent(
-        vertex: Vertex, distancesFromSource: HashMap<Int, Int>,
-        parentMap: HashMap<Int, Int>, reverse: Boolean
-    ): Unit {
+        vertex: Vertex,
+        distancesFromSource: HashMap<Int, Int>,
+        parentMap: HashMap<Int, Int>,
+        reverse: Boolean
+    ) {
         TODO()
     }
 }

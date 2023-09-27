@@ -4,7 +4,8 @@ class Base(
     var baseId: Int,
     var baseType: BaseType,
     var vertexID: Int,
-    var numStaff: Int,
+    val numStaff: Int,
+    var currStaff:Int,
     var doctors: Int,
     var dogs: Int,
     var vehicles: MutableList<Int>,
@@ -22,7 +23,7 @@ class Base(
 }
 
 enum class BaseType {
-    FIRE_STATION, POLICE_STATION,HOSPITAL
+    FIRE_STATION, POLICE_STATION, HOSPITAL
 }
 
 

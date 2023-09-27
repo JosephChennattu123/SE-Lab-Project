@@ -1,7 +1,6 @@
 package de.unisaarland.cs.se.selab.controller.events
 
-abstract class Event(val id: Int, eventType: EventType, val duration: Int) {
-
+abstract class Event(val id: Int, val eventType: EventType, val start: Int, val duration: Int) {
 
     var status: EventStatus = EventStatus.NOT_SCHEDULED
 
