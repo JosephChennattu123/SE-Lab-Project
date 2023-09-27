@@ -26,9 +26,6 @@ class Model(
     var roadToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
     var vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
     var requests: MutableList<Request> = mutableListOf()
-    var numReroutedAssets: Int = 0
-    var numFailedEmergencies: Int = 0
-    var numResolvedEmergency: Int = 0
 
     /** returns emergency object with respect to its id */
     fun getAssignedEmergencyById(emId: Int): Emergency? {

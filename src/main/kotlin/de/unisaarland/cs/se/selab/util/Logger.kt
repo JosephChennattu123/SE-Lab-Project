@@ -9,6 +9,21 @@ object Logger {
 
     var outputFile: String? = null
 
+    var numReroutedAssets: Int = 0
+    var numFailedEmergencies: Int = 0
+    var numResolvedEmergency: Int = 0
+
+    private fun printLog(output: String) {
+        if (outputFile == null) {
+            println(output)
+        } else {
+            File(outputFile).writeText(
+                output,
+                Charsets.UTF_8
+            )
+        }
+    }
+
     /**
      * @param filename the name of the configuration file
      * @param success true if parsing and validation was successful, false otherwise
@@ -19,25 +34,14 @@ object Logger {
         } else {
             "Initialization Info: $filename successfully parsed and validated"
         }
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog(output)
     }
 
     /**
      * @param tick the number of the tick
      */
     fun logTick(tick: Int) {
-        var output: String = "Simulation Tick: $tick"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Simulation Tick:  $tick")
     }
 
     /***
@@ -45,13 +49,7 @@ object Logger {
      * @param baseId the id of the base
      */
     fun logEmergencyAssigned(emergencyId: Int, baseId: Int) {
-        var output: String = "Emergency Assignment $emergencyId assigned to $baseId"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Emergency Assignment" + id1 + "assigned to" + id2)
     }
 
     /**
@@ -60,14 +58,10 @@ object Logger {
      * @param arrivesInt the number of ticks it takes the vehicle to arrive
      */
     fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int) {
-        var output: String = "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
-            "ticks to arrive."
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog(
+            "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
+                "ticks to arrive."
+        )
     }
 
     /**
@@ -75,13 +69,8 @@ object Logger {
      * @param emergencyId the id of the new emergency
      */
     fun logAssetReallocated(assetId: Int, emergencyId: Int) {
-        var output: String = "Asset Reallocation: $assetId reallocated to $emergencyId"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Asset Reallocation: $assetId reallocated to $emergencyId")
+        // numReroutedAssets += 1
     }
 
     /**
@@ -90,26 +79,14 @@ object Logger {
      * @param emergencyId the id of the emergency
      */
     fun logRequest(requestId: Int, targetBaseId: Int, emergencyId: Int) {
-        var output: String = "Asset Request: $requestId sent to $targetBaseId for $emergencyId"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Asset Request: $requestId sent to $targetBaseId for $emergencyId")
     }
 
     /**
      * @param emergencyId the id of the emergency
      */
     fun logRequestFailed(emergencyId: Int) {
-        var output: String = "Request Failed: $emergencyId failed"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Request Failed: $emergencyId failed")
     }
 
     /**
@@ -117,26 +94,14 @@ object Logger {
      * @param vertexId the id of the vertex
      */
     fun logAssetArrived(assetId: Int, vertexId: Int) {
-        var output: String = "Asset Arrival: $assetId arrived at $vertexId"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Asset Arrival: $assetId arrived at $vertexId")
     }
 
     /**
      * @param emergencyId the id of the emergency
      */
     fun logEmergencyHandlingStart(emergencyId: Int) {
-        var output: String = "Emergency Handling Start: $emergencyId handling started"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Emergency Handling Start: $emergencyId handling started")
     }
 
     /**
@@ -145,130 +110,76 @@ object Logger {
      * @param success true if resolved else failed
      */
     fun logEmergencyResult(emergencyId: Int, success: Boolean) {
-        var output: String =
-            if (success) "Emergency Resolved: $emergencyId resolved" else "Emergency Failed: $emergencyId failed"
-        if (outputFile == null) {
-            println(output)
-            return
+        if (success) {
+            printLog("Emergency Resolved: $emergencyId resolved")
+            numResolvedEmergency += 1
+        } else {
+            printLog("Emergency Failed: $emergencyId failed")
+            numFailedEmergencies += 1
         }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
     }
 
     /**
      * @param eventId the id of the event
      */
     fun logEventEnded(eventId: Int) {
-        var output: String = "Event Ended: $eventId ended"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Event Ended: $eventId ended")
     }
 
     /**
      * @param eventId the id of the event
      */
     fun logEventTriggered(eventId: Int) {
-        var output: String = "Event Triggered: $eventId triggered"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Event Triggered: $eventId triggered")
     }
 
     /**
      * @param assetsAmount the amount of rerouted vehicles
      */
     fun logAssetRerouted(assetsAmount: Int) {
-        var output: String = "Assets Rerouted: $assetsAmount"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Assets Rerouted: $assetsAmount")
+        numReroutedAssets += 1
     }
 
     /**
      * Logs that the simulation ended
      */
     fun logSimulationEnded() {
-        var output: String = "Simulation End"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Simulation End")
     }
 
     /**
      * @param reroutedAssetsAmount the number of rerouted assets
      */
-    public fun logNumberOfReroutedAssets(reroutedAssetsAmount: Int) {
-        var output: String = "Simulation Statistics: $reroutedAssetsAmount assets rerouted"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+    fun logNumberOfReroutedAssets() {
+        printLog("Simulation Statistics: $numReroutedAssets assets rerouted")
     }
 
     /**
      * @param recievedEmergenciesAmount the number of received emergencies (emergency calls)
      */
-    public fun logNumberOfRecievedEmergencies(recievedEmergenciesAmount: Int) {
-        var output: String = "Simulation Statistics: $recievedEmergenciesAmount received emergencies"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+    fun logNumberOfRecievedEmergencies(recievedEmergenciesAmount: Int) {
+        printLog("Simulation Statistics: $recievedEmergenciesAmount received emergencies")
     }
 
     /**
      * @param ongoingEmergenciesAmount the remaining ongoing emergencies
      */
-    public fun logNumberOfOngoingEmergencies(ongoingEmergenciesAmount: Int) {
-        var output: String = "Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+    fun logNumberOfOngoingEmergencies(ongoingEmergenciesAmount: Int) {
+        printLog("Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies")
     }
 
     /**
      * @param failedEmergenciesAmount the amount of emergencies that failed
      */
-    public fun logNumberOfFailedEmergencies(failedEmergenciesAmount: Int) {
-        var output: String = "Simulation Statistics: $failedEmergenciesAmount failed emergencies"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+    fun logNumberOfFailedEmergencies(failedEmergenciesAmount: Int) {
+        printLog("Simulation Statistics: $numFailedEmergencies failed emergencies")
     }
 
     /**
      * @param resolvedEmergenciesAmount the amount resolved emergencies
      */
-    public fun logNumberOfResolvedEmergencies(resolvedEmergenciesAmount: Int) {
-        var output: String = "Simulation Statistics: $resolvedEmergenciesAmount resolved emergencies."
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+    fun logNumberOfResolvedEmergencies(resolvedEmergenciesAmount: Int) {
+        printLog("Simulation Statistics: $numResolvedEmergency resolved emergencies.")
     }
 }
