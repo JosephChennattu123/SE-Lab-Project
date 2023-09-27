@@ -16,14 +16,26 @@ class RushHour(id: Int, start: Int, duration: Int, val roadTypes: List<PrimaryTy
     }
 
     override fun applyEffect(model: Model) {
-        TODO("Not implemented")
+        for (currentEdge in model.graph.getEdges()) {
+            for (currentPrimaryType in roadTypes) {
+                if (currentEdge.properties.roadType == currentPrimaryType) {
+                    currentEdge.properties.factor = factor!!
+                }
+            }
+        }
     }
 
     override fun decrementTimer() {
-        TODO("Not yet implemented")
+        duration--
     }
 
     override fun removeEffect(model: Model) {
-        TODO("Not yet implemented")
+        for (currentEdge in model.graph.getEdges()) {
+            for (currentPrimaryType in roadTypes) {
+                if (currentEdge.properties.roadType == currentPrimaryType) {
+                    currentEdge.properties.factor = BASE_FACTOR
+                }
+            }
+        }
     }
 }

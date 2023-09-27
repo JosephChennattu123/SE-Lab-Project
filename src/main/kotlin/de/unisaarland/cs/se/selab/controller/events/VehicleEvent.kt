@@ -1,6 +1,9 @@
 package de.unisaarland.cs.se.selab.controller.events
 
 import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.Vehicle
+import de.unisaarland.cs.se.selab.model.VehicleStatus
+
 /** @param vehicleId
  * @param id
  * @param start
@@ -9,14 +12,20 @@ import de.unisaarland.cs.se.selab.model.Model
 class VehicleEvent(val vehicleId: Int, id: Int, start: Int, duration: Int) :
     Event(id, EventType.VEHICLE_UNAVAILABLE, start, duration) {
     override fun applyEffect(model: Model) {
-        TODO("Not implemented")
+        val vehicleObject: Vehicle = model.getVehicleById(vehicleId)!!
+        if (vehicleObject.status == VehicleStatus.AT_BASE) {
+            vehicleObject.status = VehicleStatus.UNAVAILABLE
+        }
     }
 
     override fun decrementTimer() {
-        TODO("Not yet implemented")
+        duration--
     }
 
     override fun removeEffect(model: Model) {
-        TODO("Not yet implemented")
+        val vehicleObject: Vehicle = model.getVehicleById(vehicleId)!!
+        if (vehicleObject.status == VehicleStatus.UNAVAILABLE) {
+            vehicleObject.status = VehicleStatus.AT_BASE
+        }
     }
 }

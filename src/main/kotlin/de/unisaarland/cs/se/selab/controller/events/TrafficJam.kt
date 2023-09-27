@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.controller.events
 
 import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.map.Edge
 
 /**@param id
  * @param start
@@ -18,14 +19,17 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
     }
 
     override fun applyEffect(model: Model) {
-        TODO("Not implemented")
+        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
+        currentEdge.properties.factor = this.factor!!
     }
 
     override fun decrementTimer() {
-        TODO("Not yet implemented")
+        duration--
     }
 
     override fun removeEffect(model: Model) {
-        TODO("Not yet implemented")
+        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
+        currentEdge.properties.factor = BASE_FACTOR
     }
 }
+const val BASE_FACTOR = 1

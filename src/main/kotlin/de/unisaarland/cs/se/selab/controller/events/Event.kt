@@ -5,7 +5,7 @@ import de.unisaarland.cs.se.selab.model.Model
 /**
  * Event superclass.
  * */
-abstract class Event(val id: Int, val eventType: EventType, val start: Int, val duration: Int) {
+abstract class Event(val id: Int, val eventType: EventType, val start: Int, var duration: Int) {
 
     var status: EventStatus = EventStatus.NOT_SCHEDULED
 

@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.controller.events
 
 import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.map.Edge
 
 /**@param id
  * @param start
@@ -27,14 +28,22 @@ class ConstructionSite(
     }
 
     override fun applyEffect(model: Model) {
-        TODO("Not implemented")
+        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
+        currentEdge.closed = true
+        if (this.factor != null) {
+            currentEdge.properties.factor = this.factor!!
+        }
     }
 
     override fun decrementTimer() {
-        TODO("Not yet implemented")
+        duration--
     }
 
     override fun removeEffect(model: Model) {
-        TODO("Not yet implemented")
+        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
+        currentEdge.closed = false
+        if (this.factor != null) {
+            currentEdge.properties.factor = BASE_FACTOR
+        }
     }
 }
