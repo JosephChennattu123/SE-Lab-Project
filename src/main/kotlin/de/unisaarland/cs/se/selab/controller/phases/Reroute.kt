@@ -11,9 +11,17 @@ class Reroute {
      * @param model The model
      * */
     fun execute(model: Model) {
-        for (v : Vehicle in model.getSortedVehicleList()) {
+        for (v: Vehicle in model.getSortedVehicleList()) {
             if (v.status == VehicleStatus.TO_EMERGENCY || v.status == VehicleStatus.RETURNING) {
-                v.positionTracker.path = Dijkstra.getShortestPathFromVertexToEdge()
+                val vPath = v.positionTracker.path.vertexPath
+                v.positionTracker.path = Dijkstra.getShortestPathFromEdgeToEdge(
+                    model.graph,
+                    vPath[v.positionTracker.currentVertexIndex],
+                    vPath[v.positionTracker.currentVertexIndex + 1],
+                    v.positionTracker.positionOnEdge,
+                    model.getAssignedEmergencyById(v.emergencyID).location,
+                    v.height
+                )
             }
         }
     }
