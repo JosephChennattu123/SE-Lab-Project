@@ -6,220 +6,117 @@ object Logger {
 
     var outputFile: String? = null
 
-    public fun logParsingValidationSuccess(filename: String) {
-        var output: String =
-            "Initialization Info: " +
-                    filename +
-                    "successfully parsed and validated"
+    var numReroutedAssets: Int = 0
+    var numFailedEmergencies: Int = 0
+    var numResolvedEmergency: Int = 0
+
+    private fun printLog(output: String) {
         if (outputFile == null) {
             println(output)
-            return
+        } else {
+            File(outputFile).writeText(
+                output,
+                Charsets.UTF_8
+            )
         }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+    }
+
+    public fun logParsingValidationSuccess(filename: String) {
+        printLog(
+            "Initialization Info: " +
+                filename +
+                "successfully parsed and validated"
+        )
     }
 
     public fun logFileInvalid(filename: String) {
-        var output: String =
+        printLog(
             "Initialization Info: " +
-                    filename +
-                    "Invalid"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+                filename +
+                "Invalid"
+        )
     }
 
     public fun logTick(tick: Int) {
-        var output: String = "Simulation Tick:  $tick"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Simulation Tick:  $tick")
     }
 
     public fun logEmergencyAssigned(id1: Int, id2: Int) {
-        var output: String = "Emergency Assignment" + id1 + "assigned to" + id2
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Emergency Assignment" + id1 + "assigned to" + id2)
     }
 
     public fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int) {
-        var output: String = "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
+        printLog(
+            "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
                 "ticks to arrive."
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        )
     }
 
     public fun logAssetReallocated(assetId: Int, emergencyId: Int) {
-        var output: String = "Asset Reallocation: $assetId reallocated to $emergencyId"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Asset Reallocation: $assetId reallocated to $emergencyId")
+//        numReroutedAssets += 1
     }
 
     public fun logRequest(requestId: Int, targetBaseId: Int, emergencyId: Int) {
-        var output: String = "Asset Request: $requestId sent to $targetBaseId for $emergencyId"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Asset Request: $requestId sent to $targetBaseId for $emergencyId")
     }
 
     public fun logRequestFailed(emergencyId: Int) {
-        var output: String = "Request Failed: $emergencyId failed"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Request Failed: $emergencyId failed")
     }
 
     public fun logAssetArrived(assetId: Int, vertexId: Int) {
-        var output: String = "Asset Arrival: $assetId arrived at $vertexId"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Asset Arrival: $assetId arrived at $vertexId")
     }
 
     public fun logEmergencyHandlingStart(emergencyId: Int) {
-        var output: String = "Emergency Handling Start: $emergencyId handling started"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Emergency Handling Start: $emergencyId handling started")
     }
 
     public fun logEmergencyResolve(emergencyId: Int) {
-        var output: String = "Emergency Resolved: $emergencyId resolved"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Emergency Resolved: $emergencyId resolved")
+        numResolvedEmergency += 1
     }
 
     public fun logEmergencyFailed(emergencyId: Int) {
-        var output: String = "Emergency Failed: $emergencyId failed"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Emergency Failed: $emergencyId failed")
+        numFailedEmergencies += 1
     }
 
     public fun logEventEnded(eventId: Int) {
-        var output: String = "Event Ended: $eventId ended"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Event Ended: $eventId ended")
     }
 
     public fun logEventTriggered(eventId: Int) {
-        var output: String = "Event Triggered: $eventId triggered"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Event Triggered: $eventId triggered")
     }
 
     public fun logAssetRerouted(assetsAmount: Int) {
-        var output: String = "Assets Rerouted: $assetsAmount"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Assets Rerouted: $assetsAmount")
+        numReroutedAssets += 1
     }
 
     public fun logSimulationEnded() {
-        var output: String = "Simulation End"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Simulation End")
     }
 
-    public fun logNumberOfReroutedAssets(reroutedAssetsAmount: Int) {
-        var output: String = "Simulation Statistics: $reroutedAssetsAmount assets rerouted"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+    public fun logNumberOfReroutedAssets() {
+        printLog("Simulation Statistics: $numReroutedAssets assets rerouted")
     }
 
     public fun logNumberOfRecievedEmergencies(recievedEmergenciesAmount: Int) {
-        var output: String = "Simulation Statistics: $recievedEmergenciesAmount received emergencies"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Simulation Statistics: $recievedEmergenciesAmount received emergencies")
     }
 
     public fun logNumberOfOngoingEmergencies(ongoingEmergenciesAmount: Int) {
-        var output: String = "Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+        printLog("Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies")
     }
 
-    public fun logNumberOfFailedEmergencies(failedEmergenciesAmount: Int) {
-        var output: String = "Simulation Statistics: $failedEmergenciesAmount failed emergencies"
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+    public fun logNumberOfFailedEmergencies() {
+        printLog("Simulation Statistics: $numFailedEmergencies failed emergencies")
     }
 
-    public fun logNumberOfResolvedEmergencies(resolvedEmergenciesAmount: Int) {
-        var output: String = "Simulation Statistics: $resolvedEmergenciesAmount resolved emergencies."
-        if (outputFile == null) {
-            println(output)
-            return
-        }
-        val file = File(outputFile)
-        file.writeText(output, Charsets.UTF_8)
+    public fun logNumberOfResolvedEmergencies() {
+        printLog("Simulation Statistics: $numResolvedEmergency resolved emergencies.")
     }
 }
