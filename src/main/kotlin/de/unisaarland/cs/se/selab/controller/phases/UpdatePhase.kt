@@ -9,6 +9,7 @@ import de.unisaarland.cs.se.selab.model.Vehicle
 class UpdatePhase {
     fun execute(model: Model) {
         processVehicles(model.getSortedVehicleList())
+        processEmergencies(model.getAssignedEmergencies())
     }
 
     /**
@@ -28,8 +29,13 @@ class UpdatePhase {
         }
     }
 
-    private fun processEmergencies(model: Model) {
-        // todo
+    private fun processEmergencies(emergencies: List<Emergency>) {
+        for (emergency in emergencies) {
+            when (emergency.status) {
+                // todo
+                else -> {}
+            }
+        }
     }
 
     private fun processActiveEvents() {
