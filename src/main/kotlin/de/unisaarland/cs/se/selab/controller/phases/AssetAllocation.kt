@@ -27,14 +27,14 @@ class AssetAllocation {
                     if (!emergency.isFulfilled() && emergency.canRequest) {
                         // request
                         for (req in emergency.currentRequiredAssets) {
-
+                            val nextNearestBase = Dijkstra.getNextNearestBase(
+                                model.graph,
+                                mainBase.vertexID,
+                                req.vehicleType.getBaseType(req.vehicleType)
+                                setOf()
+                            )
                         }
-                        val nextNearestBase = Dijkstra.getNextNearestBase(
-                            model.graph,
-                            mainBase.vertexID,
-                            mainBase.baseType,
-                            setOf()
-                        )
+
 
                     }
                 }
