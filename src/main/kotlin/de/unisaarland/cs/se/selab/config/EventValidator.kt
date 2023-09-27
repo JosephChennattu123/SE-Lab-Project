@@ -14,7 +14,7 @@ class EventValidator : BasicValidator() {
      *
      * @return the list of events created
      */
-    fun validate(): List<Event> {
+    fun validate(): List<Event>? {
         validateFactor()
         validateEdgeAndVerticesExists()
         validateVehicleExist()

@@ -14,7 +14,7 @@ class EmergencyValidator : BasicValidator() {
      *
      * @return the list of emergencies created
      */
-    fun validate(): List<Emergency> {
+    fun validate(): List<Emergency>? {
         validateVillagesExist()
         validateRoadExistsInVillageOrCounty()
         validateSeverityBounds()

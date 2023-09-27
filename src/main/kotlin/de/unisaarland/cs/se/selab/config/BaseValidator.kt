@@ -13,7 +13,7 @@ class BaseValidator : BasicValidator() {
      *
      * @return the list of bases created
      */
-    fun validate(): List<Base> {
+    fun validate(): List<Base>? {
         validateNumDoctors()
         validateStaffBounds()
         validateDoctorsOnlyInHospitals()
