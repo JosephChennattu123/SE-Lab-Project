@@ -17,7 +17,7 @@ class Emergency(
     var handleTime: Int,
     var maxDuration: Int,
     var location: Location,
-    private var timeElapsed: Int,
+    var timeElapsed: Int,
     var status: EmergencyStatus = EmergencyStatus.ONGOING
 
 ) {
