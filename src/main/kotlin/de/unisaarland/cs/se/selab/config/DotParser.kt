@@ -99,7 +99,7 @@ class DotParser(val graphFilePath: String) {
     /**
      * extracts village name from attributes.
      * */
-    fun villageName(attributes: Map<Int, String>): Map<Int, String> {
+    fun parseVillageName(attributes: Map<Int, String>): Map<Int, String> {
         val edgeIdToVillageName = mutableMapOf<Int, String>()
         val regexVillageName = """village\s*=\s*$regexId\s*;""".toRegex()
         for ((index, attribute) in attributes) {
