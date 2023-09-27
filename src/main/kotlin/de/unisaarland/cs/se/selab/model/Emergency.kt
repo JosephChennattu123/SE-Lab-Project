@@ -8,7 +8,8 @@ package de.unisaarland.cs.se.selab.model
  * @param severity Severity of the emergency, dictates requirements
  * @param handleTime amount of rounds needed to resolve the emergency
  * @param maxDuration amount of rounds until the emergency fails
- * @param location Precise location of the emergency */
+ * @param location Precise location of the emergency
+ * @property canRequest true if at least one allocation or reallocation was not fail*/
 class Emergency(
     var id: Int,
     var scheduledTick: Int,
@@ -22,6 +23,7 @@ class Emergency(
 
 ) {
 
+    var canRequest: Boolean = false
     var requiredAssets: List<EmergencyRequirement> = listOf()
     var currentRequiredAssets: MutableList<EmergencyRequirement> = mutableListOf()
     var assignedVehicleIDs: MutableList<Int> = mutableListOf()
@@ -33,7 +35,6 @@ class Emergency(
      * @param v vehicle to be assigned */
     fun addAsset(v: Vehicle) {
         assignedVehicleIDs.add(v.vehicleID)
-
     }
 
     /**
@@ -54,7 +55,6 @@ class Emergency(
     /**
      * begin handling the emergency if all assets have arrived */
     fun handle() {
-
     }
 
     /**
@@ -63,7 +63,6 @@ class Emergency(
     fun canReachInTime(ticks: Int): Boolean {
         return maxDuration - (timeElapsed + handleTime) > ticks
     }
-
 
     /**
      * @return if the emergency has been assigned all of its necessary assets */
@@ -84,7 +83,6 @@ class Emergency(
     fun decrementTimer() {
         timeElapsed++
         if (status == EmergencyStatus.BEING_HANDLED) handleTime--
-
     }
 
     /**
