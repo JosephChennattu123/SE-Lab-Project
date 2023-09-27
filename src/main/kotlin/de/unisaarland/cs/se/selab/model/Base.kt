@@ -13,14 +13,14 @@ package de.unisaarland.cs.se.selab.model
  * @property assignedEmergencies A list of unique identifiers for emergencies currently assigned to the base.
  */
 class Base(
-    private var baseId: Int,
-    private var baseType: BaseType,
-    private var vertexID: Int,
-    private var numStaff: Int,
-    private var doctors: Int,
-    private var dogs: Int,
-    private var vehicles: MutableList<Int>,
-    private var assignedEmergencies: MutableList<Int>
+    var baseId: Int,
+    var baseType: BaseType,
+    var vertexID: Int,
+    var numStaff: Int,
+    var doctors: Int,
+    var dogs: Int,
+    var vehicles: MutableList<Int>,
+    var assignedEmergencies: MutableList<Int>
 ) {
     /**
      * Adds an emergency to the list of emergencies assigned to this base.
