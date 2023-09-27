@@ -21,7 +21,12 @@ class AssetAllocation {
                     val vehiclesCanReroute =
                         getVehiclesCanReroute(emergency, mainBase, vehicles, model)
                     AssetManager.allocateAssetsToEmergency(model, emergency, vehiclesCanReroute)
+                    // if allocate & reallocate not failed, then change this canRequest
+                    if (emergency.assignedVehicleIDs.isNotEmpty()) emergency.canRequest = true
+                    if (!emergency.isFulfilled() && emergency.canRequest) {
+                        // request
 
+                    }
                 }
             }
         }
