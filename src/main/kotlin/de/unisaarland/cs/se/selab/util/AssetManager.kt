@@ -200,22 +200,23 @@ object AssetManager {
         filterAssetsByOptimalSolution(vehicles, emergency.currentRequiredAssets)
         for (v in vehicles) {
             val oldEmergency = model.getAssignedEmergencyById(v.emergencyID!!) // ONLY FOR REALLOCATED VEHICLES
-            for (req in oldEmergency.currentRequiredAssets) {
+            for (req in oldEmergency!!.currentRequiredAssets) { // if currentRequirement for this AssetType exists
                 if (req.vehicleType == v.vehicleType) { // find requirement that needs to be changed
+                    // (there should only be 1 req of same type as v)
                     req.numberOfVehicles++ // increase the number of current needed vehicles of this type by 1
                     // to compensate for loss of v
                     if (req.assetType != null) {
                         var originalreq: EmergencyRequirement? = null
-                        for (oreq in oldEmergency!!.requiredAssets) { // find original requirement that corresponds to
-                                                                    // req
-                            if (oreq.vehicleType == v.vehicleType) {
-                                originalreq = oreq
+                        for (oReq in oldEmergency.requiredAssets) { // find original requirement that corresponds to
+                            // req
+                            if (oReq.vehicleType == v.vehicleType) {
+                                originalreq = oReq
                             }
                         }
                         req.amountOfAsset = originalreq!!.amountOfAsset!!
                         for (v2 in model.getVehiclesByIds(oldEmergency.assignedVehicleIDs)) {
-                            if (v2.vehicleType == v.vehicleType) { // go through all vehicles of the same type
-                                // and add up their total asset capacity
+                            if (v2.vehicleType == v.vehicleType) { // go through all vehicles of same type as v
+                                // and add up their total asset capacity (v should not be part of this list anymore)
                                 req.amountOfAsset = req.amountOfAsset!! - v2.maxAssetCapacity
                             } // req.amountOfAsset is now the actual missing amount of asset to fulfill the requirement
                         }
