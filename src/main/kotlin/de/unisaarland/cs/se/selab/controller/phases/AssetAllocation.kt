@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.controller.phases
 
 import de.unisaarland.cs.se.selab.model.*
 import de.unisaarland.cs.se.selab.util.AssetManager
+import de.unisaarland.cs.se.selab.util.Dijkstra
 
 class AssetAllocation {
 
@@ -25,6 +26,15 @@ class AssetAllocation {
                     if (emergency.assignedVehicleIDs.isNotEmpty()) emergency.canRequest = true
                     if (!emergency.isFulfilled() && emergency.canRequest) {
                         // request
+                        for (req in emergency.currentRequiredAssets) {
+
+                        }
+                        val nextNearestBase = Dijkstra.getNextNearestBase(
+                            model.graph,
+                            mainBase.vertexID,
+                            mainBase.baseType,
+                            setOf()
+                        )
 
                     }
                 }
@@ -73,4 +83,5 @@ class AssetAllocation {
         vehiclesCanReroute.addAll(vehicles.filter { it.status == VehicleStatus.RETURNING })
         return vehiclesCanReroute
     }
+
 }
