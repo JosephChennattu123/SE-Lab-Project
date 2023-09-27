@@ -41,21 +41,21 @@ class ValidatorManager {
         this.dotParser = dotParser
         this.jsonParser = jsonParser
 
-        dotParser.parse()
+        // dotParser.parse()
         if (!validateGraph()) {
             Logger.logFileInvalid(dotParser.graphFilePath)
             return null
         }
         Logger.logParsingValidationSuccess(dotParser.graphFilePath)
 
-        jsonParser.parseAssets()
+        // jsonParser.parseAssets()
         if (!validateBases() || !validateVehicles()) {
             Logger.logFileInvalid(jsonParser.assetsFilePath)
             return null
         }
         Logger.logParsingValidationSuccess(jsonParser.assetsFilePath)
 
-        jsonParser.parseEmergenciesEvents()
+        // jsonParser.parseEmergenciesEvents()
         if (!validateEmergencies() || !validateEvent()) {
             Logger.logFileInvalid(jsonParser.emergenciesEventsFilePath)
             return null

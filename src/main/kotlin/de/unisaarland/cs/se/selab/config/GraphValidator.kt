@@ -249,7 +249,7 @@ class GraphValidator {
             for (outEdge: Int in outgoingEdges) {
                 val newVillageName = villageNames[outEdge] ?: return false
                 vertexVillage = vertexVillage ?: newVillageName
-                if (vertexVillage != newVillageName && newVillageName != countyName) {
+                if (vertexVillage != newVillageName && newVillageName != countyName!!) {
                     return false
                 }
             }
