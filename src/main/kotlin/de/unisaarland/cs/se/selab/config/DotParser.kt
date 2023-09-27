@@ -168,6 +168,10 @@ class DotParser(val graphFilePath: String) {
         return edgeIdToSecondaryType
     }
 
+    fun validateSyntax(): Boolean {
+        TODO()
+    }
+
     private fun matchRegex(regex: Regex, string: String): String {
         val matchResult = regex.find(string)
         val matchedString = matchResult?.groupValues?.get(1) ?: run {
