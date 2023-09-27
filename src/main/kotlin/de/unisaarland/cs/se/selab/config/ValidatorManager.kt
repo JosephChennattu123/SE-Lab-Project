@@ -32,7 +32,7 @@ class ValidatorManager {
      * @param jsonParser the parser for the json files
      * @return Emcc the EMCC-object
      * */
-    fun validate(dotParser: DotParser, jsonParser: JsonParser): ControlCenter? {
+    fun validate(dotParser: DotParser, jsonParser: JsonParser, maxTick: Int?): ControlCenter? {
         TODO()
     }
 
