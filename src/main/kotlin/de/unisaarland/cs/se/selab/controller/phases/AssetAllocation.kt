@@ -30,9 +30,10 @@ class AssetAllocation {
                             val nextNearestBase = Dijkstra.getNextNearestBase(
                                 model.graph,
                                 mainBase.vertexID,
-                                req.vehicleType.getBaseType(req.vehicleType)
+                                req.vehicleType.getBaseType(req.vehicleType),
                                 setOf()
                             )
+
                         }
 
 
