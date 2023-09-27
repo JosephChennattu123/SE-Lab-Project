@@ -25,10 +25,10 @@ class GraphValidator {
 
         val functions = listOf(
             ::validateVertexIds,
+            ::validateEdgeConnectsExistingVertices,
             ::validateVerticesConnected,
             ::validateNoSelfLoops,
             ::validateNoDuplicateConnections,
-            ::validateEdgeConnectsExistingVertices,
             ::validateSameVertexSameVillageOrCounty,
             ::validateRoadNamesUniqueInVillage,
             ::validateMainStreetExistInVillages,
@@ -90,12 +90,10 @@ class GraphValidator {
      * @return true if all vertices are connected to the graph
      */
     private fun validateVerticesConnected(): Boolean {
-        val vertexIds = this.vertexIds
         val edges = dotParser!!.parseEdges()
         val sourceTarget = dotParser!!.parseSourceAndTarget(edges)
-
         val verticesInEdges: Set<Int> = sourceTarget.values.flatMap { (first, second) -> listOf(first, second) }.toSet()
-        return verticesInEdges.containsAll(vertexIds)
+        return verticesInEdges.containsAll(this.vertexIds)
     }
 
     /**
@@ -104,10 +102,9 @@ class GraphValidator {
      * @return true if there are no self loops at vertices
      */
     private fun validateNoSelfLoops(): Boolean {
-        val vertexIds: List<Int> = dotParser!!.parseVertexIds()
         val edges = dotParser!!.parseEdges()
         val soureTarget = dotParser!!.parseSourceAndTarget(edges)
-        for (id in vertexIds) {
+        for (id in this.vertexIds) {
             if (soureTarget.containsValue(Pair(id, id))) {
                 return false
             }
@@ -121,12 +118,12 @@ class GraphValidator {
      * @return true if no duplicate connections exist between to vertices
      */
     private fun validateNoDuplicateConnections(): Boolean {
-        val vertexIds = this.vertexIds
         val edges = dotParser!!.parseEdges()
         val sourceTarget = dotParser!!.parseSourceAndTarget(edges)
         for (pair in sourceTarget.values) {
-            val v = sourceTarget.values.count { (first, second) -> pair.first == first && pair.second == second }
-            if (v > 1) {
+            val v1 = sourceTarget.values.count { (first, second) -> pair.first == first && pair.second == second }
+            val v2 = sourceTarget.values.count { (first, second) -> pair.second == first && pair.first == second }
+            if (v1 + v2 > 1) {
                 return false
             }
         }
@@ -134,11 +131,14 @@ class GraphValidator {
     }
 
     /**
-     * Checks that vertices connected to and edge do exist
+     * Checks that vertices connected to an edge do exist
      * @return true if edges are connected to existing vertices
      */
     private fun validateEdgeConnectsExistingVertices(): Boolean {
-        TODO()
+        val edges = dotParser!!.parseEdges()
+        val sourceTarget = dotParser!!.parseSourceAndTarget(edges)
+        val verticesInEdges: Set<Int> = sourceTarget.values.flatMap { (first, second) -> listOf(first, second) }.toSet()
+        return vertexIds.containsAll(verticesInEdges)
     }
 
     /**
