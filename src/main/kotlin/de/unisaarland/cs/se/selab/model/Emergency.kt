@@ -93,7 +93,19 @@ class Emergency(
 /**
  * Type of the emergency */
 enum class EmergencyType {
-    FIRE, ACCIDENT, CRIME, MEDICAL
+    FIRE, ACCIDENT, CRIME, MEDICAL;
+
+    companion object {
+        fun fromString(value: String): EmergencyType? {
+            return when (value) {
+                "FIRE" -> FIRE
+                "ACCIDENT" -> ACCIDENT
+                "CRIME" -> CRIME
+                "MEDICAL" -> MEDICAL
+                else -> null
+            }
+        }
+    }
 }
 
 /**
