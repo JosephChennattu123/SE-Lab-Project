@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.controller.phases
 
 import de.unisaarland.cs.se.selab.model.*
 import de.unisaarland.cs.se.selab.util.Dijkstra
+import de.unisaarland.cs.se.selab.util.Logger
 
 /**
  * Iterates through all vehicles and emergencies and updates their states and fields
@@ -39,53 +40,72 @@ class UpdatePhase {
         for (emergency in emergencies) {
             emergency.decrementTimer()
         }
-        for (emergency in emergencies) {
-            if (emergency.status == EmergencyStatus.WAITING_FOR_ASSETS) {
-                if (emergency.canStart()) {
-                    emergency.changeStatus(EmergencyStatus.BEING_HANDLED)
-                }
+        val handleableEmergencies = emergencies.filter {
+            it.status == EmergencyStatus.WAITING_FOR_ASSETS && it.canStart()
+        }.toList()
+
+        for (emergency in handleableEmergencies) {
+            emergency.changeStatus(EmergencyStatus.BEING_HANDLED)
+            Logger.logEmergencyHandlingStart(emergency.id)
+        }
+
+        val resolvableEmergencies = emergencies.filter {
+            it.status == EmergencyStatus.BEING_HANDLED && it.handleTime == 0 && it.maxDuration > it.timeElapsed
+        }.toList()
+
+        for (emergency in resolvableEmergencies) {
+            emergency.changeStatus(EmergencyStatus.RESOLVED)
+            Logger.logEmergencyResolve(emergency.id)
+            for (vehicleID in emergency.assignedVehicleIDs) {
+                val vehicle = model.getVehicleById(vehicleID)!!
+                vehicle.status =
+                    VehicleStatus.RETURNING // change status for all vehicles of this emergency to RETURNING
+                setReturnPath(vehicle, model)
             }
         }
-        for (emergency in emergencies) {
-            if (emergency.status == EmergencyStatus.BEING_HANDLED) {
-                if (emergency.handleTime == 0 && emergency.maxDuration > emergency.timeElapsed) {
-                    emergency.changeStatus(EmergencyStatus.RESOLVED)
-                    for (vehicleID in emergency.assignedVehicleIDs) {
-                        val vehicle = model.getVehicleById(vehicleID)!!
-                        vehicle.status =
-                            VehicleStatus.RETURNING // change status for all vehicles of this emergency to RETURNING
-                        val path =
-                            Dijkstra.getShortestPathFromVertexToVertex( // calculate path back to base for vehicle
-                                model.graph,
-                                vehicle.positionTracker.path.vertexPath[vehicle.positionTracker.currentVertexIndex],
-                                model.getBaseById(vehicle.baseID)!!.vertexID,
-                                vehicle.height
-                            )
-                        vehicle.setNewPath(path)
-                    }
-                }
+
+        val failingEmergencies = emergencies.filter {
+            it.status == EmergencyStatus.BEING_HANDLED && it.timeElapsed >= it.maxDuration
+        }.toList()
+        for (emergency in failingEmergencies) {
+            emergency.changeStatus(EmergencyStatus.FAILED)
+            Logger.logEmergencyResolve(emergency.id)
+            for (vehicleID in emergency.assignedVehicleIDs) {
+                val vehicle = model.getVehicleById(vehicleID)!!
+                vehicle.status = VehicleStatus.RETURNING
+                setReturnPath(vehicle, model)
             }
         }
     }
 
-private fun processActiveEvents() {
-    // todo
-}
+    private fun setReturnPath(vehicle: Vehicle, model: Model) {
+        val path = Dijkstra.getShortestPathFromVertexToVertex( // calculate path back to base for vehicle
+            model.graph,
+            vehicle.positionTracker.path.vertexPath[vehicle.positionTracker.currentVertexIndex],
+            model.getBaseById(vehicle.baseID)!!.vertexID,
+            vehicle.height
+        )
+        vehicle.setNewPath(path)
+    }
 
-private fun processPostponedEvents() {
-    // todo
-}
+    private fun processActiveEvents() {
+        // todo
+    }
 
-private fun timeUpdate(model: Model) {
-    // todo
-}
+    private fun processPostponedEvents() {
+        // todo
+    }
 
-private fun printLog(vehicles: List<Vehicle>) {
-    // todo
-}
+    private fun timeUpdate(model: Model) {
+        // todo
+    }
 
-private fun collectArrivedV(vehicles: List<Vehicle>): List<Vehicle> {
-    // todo
-    return TODO()
-}
+    private fun printLog(vehicles: List<Vehicle>) {
+        // todo
+    }
+
+    private fun collectArrivedV(vehicles: List<Vehicle>): List<Vehicle> {
+        // todo
+        return TODO()
+    }
 }
