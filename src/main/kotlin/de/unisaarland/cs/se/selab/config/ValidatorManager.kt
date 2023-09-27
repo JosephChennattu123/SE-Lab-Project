@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.controller.ControlCenter
 import de.unisaarland.cs.se.selab.controller.events.Event
 import de.unisaarland.cs.se.selab.model.Base
 import de.unisaarland.cs.se.selab.model.Emergency
+import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Vehicle
 import de.unisaarland.cs.se.selab.model.map.Edge
 import de.unisaarland.cs.se.selab.model.map.Graph
@@ -30,12 +31,17 @@ class ValidatorManager {
      *
      * @param dotParser the parser for the dot-file
      * @param jsonParser the parser for the json files
+     * @param maxTick the maximum amount of ticks the simulation will run (originates from the command-line arguments)
      * @return the ControlCenter-object
      * */
-    fun validate(dotParser: DotParser, jsonParser: JsonParser): ControlCenter? {
+    fun validate(dotParser: DotParser, jsonParser: JsonParser, maxTick: Int?): ControlCenter? {
+        // TODO
         dotParser.parse()
         val graphValidator = GraphValidator()
         this.graph = graphValidator.validate(dotParser)
+        if (graph == null) {
+            return null
+        }
 
         jsonParser.parseAssets()
         val baseValidator = BaseValidator()
@@ -50,8 +56,43 @@ class ValidatorManager {
         val eventValidator = EventValidator()
         this.events = eventValidator.validate()
 
-        controlCenter = ControlCenter()
-        TODO()
+        val basesMap = bases.map { Pair(it.baseId, it) }.toMap()
+        val vehiclesMap = vehicles.map { Pair(it.vehicleID, it) }.toMap()
+        val emergenciesMap = emergencies.map { Pair(it.id, it) }.toMap()
+        val eventsMap = events.map { Pair(it.id, it) }.toMap()
+
+        val vehiclesToBasesMap = vehicles.map { Pair(it.vehicleID, it.baseID) }.toMap()
+        val tickToEmergencyId: MutableMap<Int, List<Int>> = mutableMapOf()
+
+        emergencies.map { it.scheduledTick }.toSet().associateWithTo(tickToEmergencyId) {
+            val elements: MutableList<Int> = mutableListOf()
+            for (em in emergencies) {
+                if (em.scheduledTick == it) {
+                    elements.add(em.id)
+                }
+            }
+            elements
+        }
+
+
+        val tickToEventId: MutableMap<Int, List<Int>> = mutableMapOf()
+        events.map { it.start }.toSet().associateWithTo(tickToEmergencyId) {
+            val elements: MutableList<Int> = mutableListOf()
+            for (ev in events) {
+                if (ev.start == it) {
+                    elements.add(ev.id)
+                }
+            }
+            elements
+        }
+
+        val model = Model(
+            graph!!, maxTick, basesMap, vehiclesMap, vehiclesToBasesMap, emergenciesMap, tickToEmergencyId,
+            eventsMap, tickToEventId
+        )
+
+        controlCenter = ControlCenter(model)
+        return controlCenter
     }
 
     /**
