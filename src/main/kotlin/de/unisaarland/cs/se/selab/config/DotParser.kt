@@ -36,7 +36,7 @@ class DotParser(val graphFilePath: String) {
         val regexForVertexId = """\s*([0-9]+)\s*;""".toRegex()
         val unParsedVertices = regexFromCurlyToEdge.find(fileContent)
         val noCurlyNoEdge = unParsedVertices?.groupValues?.get(0)
-        val matchResults = regexForVertexId.findAll(noCurlyNoEdge ?: "")
+        val matchResults = regexForVertexId.findAll(noCurlyNoEdge.orEmpty())
         return matchResults.map { it.groupValues[1].toInt() }.toList()
     }
 
