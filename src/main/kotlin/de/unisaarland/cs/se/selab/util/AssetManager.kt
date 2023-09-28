@@ -308,16 +308,10 @@ object AssetManager {
         requirements: List<EmergencyRequirement>
     ) {
         for (v in vehiclesToCheck) {
-            var found = false
-            for (r in requirements) {
-                if (v.vehicleType == r.vehicleType && v.staffCapacity <= model.getBaseById(v.baseID)!!.currStaff) {
-                    // if vehicle is needed and base has enough staff
-                    found = true
-                }
-            }
-            if (!found) { // if v does not fit any of the requirements, remove it from the list
+            if (!requirements.any { v.vehicleType == it.vehicleType
+                        && v.staffCapacity <= model.getBaseById(v.baseID)!!.currStaff })
+            // if v does not fit any of the requirements, remove it from the list
                 vehiclesToCheck.remove(v)
-            }
         }
     }
 
