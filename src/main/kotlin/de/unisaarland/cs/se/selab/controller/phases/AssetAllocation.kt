@@ -100,7 +100,7 @@ class AssetAllocation {
                 model.graph,
                 mainBase.vertexID,
                 VehicleType.getBaseType(req.vehicleType),
-                setOf()
+                emptySet()
             )
             if (nextNearestBase != null) {
                 val requestNew = Request.createNewRequest(
