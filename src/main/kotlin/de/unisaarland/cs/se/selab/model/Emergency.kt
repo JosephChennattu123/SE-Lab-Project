@@ -24,10 +24,10 @@ class Emergency(
 ) {
 
     var canRequest: Boolean = false
-    var requiredAssets: List<EmergencyRequirement> = listOf()
-    var currentRequiredAssets: MutableList<EmergencyRequirement> = mutableListOf()
-    var assignedVehicleIDs: MutableList<Int> = mutableListOf()
-    var availableVehicleIDs: MutableList<Int> = mutableListOf()
+    var requiredAssets: List<EmergencyRequirement> = emptyList()
+    val currentRequiredAssets: MutableList<EmergencyRequirement> = mutableListOf()
+    val assignedVehicleIDs: MutableList<Int> = mutableListOf()
+    val availableVehicleIDs: MutableList<Int> = mutableListOf()
     var mainBaseID: Int? = null
 
     /**
