@@ -220,7 +220,8 @@ object AssetManager {
                 }
 
                 if (req.assetType != null) {
-                    val originalReq = oldEmergency.requiredAssets.first {it.vehicleType == v.vehicleType} // get original requirement
+                    val originalReq =
+                        oldEmergency.requiredAssets.first { it.vehicleType == v.vehicleType } // get original requirement
                     req.amountOfAsset = originalReq.amountOfAsset!!
                     for (v2 in model.getVehiclesByIds(oldEmergency.assignedVehicleIDs)) {
                         if (v2.vehicleType == v.vehicleType) { // go through all vehicles of same type as v
@@ -256,16 +257,10 @@ object AssetManager {
         model: Model, vehiclesToCheck: MutableList<Vehicle>, requirements: List<EmergencyRequirement>
     ) {
         for (v in vehiclesToCheck) {
-            var found = false
-            for (r in requirements) {
-                if (v.vehicleType == r.vehicleType && v.staffCapacity <= model.getBaseById(v.baseID)!!.currStaff) {
-                    // if vehicle is needed and base has enough staff
-                    found = true
-                }
-            }
-            if (!found) { // if v does not fit any of the requirements, remove it from the list
+            if (!requirements.any { v.vehicleType == it.vehicleType
+                        && v.staffCapacity <= model.getBaseById(v.baseID)!!.currStaff })
+            // if v does not fit any of the requirements, remove it from the list
                 vehiclesToCheck.remove(v)
-            }
         }
     }
 }
