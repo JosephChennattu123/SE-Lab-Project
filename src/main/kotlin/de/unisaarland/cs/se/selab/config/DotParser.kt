@@ -168,7 +168,7 @@ class DotParser(val graphFilePath: String) {
     private fun matchRegex(regex: Regex, string: String): String {
         val matchResult = regex.find(string)
         val matchedString = matchResult?.groupValues?.get(1) ?: run {
-            Logger.logFileInvalid(graphFilePath)
+            Logger.logParsingValidationResult(graphFilePath, false)
             parsingErrorOccurred = true
             "" // default value
         }
@@ -181,12 +181,12 @@ class DotParser(val graphFilePath: String) {
     fun validateSyntax() {
         val reconstructedFile = reconstructValidFile()
         if (parsingErrorOccurred) {
-            Logger.logFileInvalid(graphFilePath)
+            Logger.logParsingValidationResult(graphFilePath, false)
             error("Parsing error occurred.")
         }
         val originalFileNoSpaces = fileContent.replace(whitespace, "")
         if (reconstructedFile != originalFileNoSpaces) {
-            Logger.logFileInvalid(graphFilePath)
+            Logger.logParsingValidationResult(graphFilePath, false)
             error("Parsing error occurred.")
         }
     }

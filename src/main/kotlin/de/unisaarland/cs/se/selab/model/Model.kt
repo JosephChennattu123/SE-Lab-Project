@@ -9,7 +9,6 @@ import de.unisaarland.cs.se.selab.model.map.Graph
  * @param vehicleToBase
  * @param emergencies
  * */
-
 class Model(
     val graph: Graph,
     val maxTick: Int?, // optional command-line argument
@@ -27,9 +26,6 @@ class Model(
     var roadToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
     var vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
     var requests: MutableList<Request> = mutableListOf()
-    var numReroutedAssets: Int = 0
-    var numFailedEmergencies: Int = 0
-    var numResolvedEmergency: Int = 0
 
     /** returns emergency object with respect to its id */
     fun getAssignedEmergencyById(emId: Int): Emergency? {
@@ -92,7 +88,7 @@ class Model(
     }
 
     /** @returns list of all current events */
-    fun getCurrentEvents(): List<Event> {
+    fun getCurrentEventsObjects(): List<Event> {
         return currentEvents.mapNotNull { events[it] }
     }
 

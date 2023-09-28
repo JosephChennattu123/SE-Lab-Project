@@ -14,7 +14,7 @@ import org.json.JSONObject
  * @param assetsFilePath path to the file for assets (bases and vehicles)
  * @param emergenciesEventsFilePath path to the file for emergencies and events
  * */
-class JsonParser(assetsFilePath: String, emergenciesEventsFilePath: String) {
+class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: String) {
 
     private val assetJson = JSONObject(assetsFilePath)
     private val scenarioJson = JSONObject(emergenciesEventsFilePath)

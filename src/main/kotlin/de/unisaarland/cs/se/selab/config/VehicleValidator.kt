@@ -14,7 +14,12 @@ class VehicleValidator : BasicValidator() {
      *
      * @return the list of vehicles created
      */
-    fun validate(): List<Vehicle> {
+    fun validate(): List<Vehicle>? {
+        validateStaffBounds()
+        validateHeightBounds()
+        validateBaseExists()
+        validateBasesNessesaryStaff()
+        validateLadderLenght()
         TODO()
     }
 
