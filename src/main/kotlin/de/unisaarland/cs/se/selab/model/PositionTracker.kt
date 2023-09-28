@@ -26,19 +26,19 @@ class PositionTracker {
      * is reset to 0 and position on edge is updated  * */
 
     fun assignPath(path: Path): Boolean {
-        if (path.vertexPath == this.path.vertexPath && path.edgeWeights == this.path.edgeWeights &&
+        return if (path.vertexPath == this.path.vertexPath && path.edgeWeights == this.path.edgeWeights &&
             path.totalTicksToArrive == this.path.totalTicksToArrive
         ) {
-            return false
+            false
         } else {
             if (path.vertexPath[0] == this.path.vertexPath[currentVertexIndex]) {
                 this.path = path
-                return true
+                true
             } else {
                 positionOnEdge = this.path.edgeWeights[currentVertexIndex] - positionOnEdge
                 currentVertexIndex = 0
                 this.path = path
-                return true
+                true
             }
         }
     }

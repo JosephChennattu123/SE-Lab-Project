@@ -69,17 +69,19 @@ class ValidatorManager {
     }
 
     private fun buildModel(maxTick: Int?): Model {
-        val basesMap = bases!!.associateBy { it.baseId }
-        val vehiclesMap = vehicles!!.associateBy { it.vehicleID }
-        val emergenciesMap = emergencies!!.associateBy { it.id }
-        val eventsMap = events!!.associateBy { it.id }
+        val emergenciesList = emergencies as List<Emergency>
+        val eventsList = events as List<Event>
 
-        val vehiclesToBasesMap = vehicles!!.associate { Pair(it.vehicleID, it.baseID) }
+        val basesMap = (bases as List<Base>).associateBy { it.baseId }
+        val vehiclesMap = (vehicles as List<Vehicle>).associateBy { it.vehicleID }
+        val emergenciesMap = emergenciesList.associateBy { it.id }
+        val eventsMap = eventsList.associateBy { it.id }
+
+        val vehiclesToBasesMap = (vehicles as List<Vehicle>).associate { Pair(it.vehicleID, it.baseID) }
         val tickToEmergencyId: MutableMap<Int, List<Int>> = mutableMapOf()
-
-        emergencies!!.map { it.scheduledTick }.toSet().associateWithTo(tickToEmergencyId) {
+        emergenciesList.map { it.scheduledTick }.toSet().associateWithTo(tickToEmergencyId) {
             val elements: MutableList<Int> = mutableListOf()
-            for (em in emergencies!!) {
+            for (em in emergenciesList) {
                 if (em.scheduledTick == it) {
                     elements.add(em.id)
                 }
@@ -88,9 +90,9 @@ class ValidatorManager {
         }
 
         val tickToEventId: MutableMap<Int, List<Int>> = mutableMapOf()
-        events!!.map { it.start }.toSet().associateWithTo(tickToEmergencyId) {
+        eventsList.map { it.start }.toSet().associateWithTo(tickToEmergencyId) {
             val elements: MutableList<Int> = mutableListOf()
-            for (ev in events!!) {
+            for (ev in eventsList) {
                 if (ev.start == it) {
                     elements.add(ev.id)
                 }
@@ -98,7 +100,7 @@ class ValidatorManager {
             elements
         }
         return Model(
-            graph!!, maxTick, basesMap, vehiclesMap, vehiclesToBasesMap, emergenciesMap, tickToEmergencyId,
+            graph as Graph, maxTick, basesMap, vehiclesMap, vehiclesToBasesMap, emergenciesMap, tickToEmergencyId,
             eventsMap, tickToEventId
         )
     }
@@ -121,7 +123,7 @@ class ValidatorManager {
      * */
     private fun validateGraph(): Boolean {
         val graphValidator = GraphValidator()
-        this.graph = graphValidator.validate(dotParser!!)
+        this.graph = graphValidator.validate(dotParser as DotParser)
         return graph != null
     }
 
