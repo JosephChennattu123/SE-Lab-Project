@@ -7,13 +7,19 @@ import java.io.File
  * parses the dot-file
  * @param graphFilePath the name of the file that contains the graph information
  * */
-class DotParser(val graphFilePath: String) {
+class DotParser(var graphFilePath: String) {
 
-    private val fileContent = File(graphFilePath).readText()
+    private var fileContent = ""
     private val regexId = """([_a-zA-Z]+|\d*\.*\d*)""".toRegex()
     private val whitespace = """\s""".toRegex()
 
     private var parsingErrorOccurred: Boolean = false
+
+    init {
+        val osPath = graphFilePath.replace("/", File.separator)
+        val file = File(osPath)
+        fileContent = file.readText()
+    }
 
     /**
      * extracts the county name from the file.
