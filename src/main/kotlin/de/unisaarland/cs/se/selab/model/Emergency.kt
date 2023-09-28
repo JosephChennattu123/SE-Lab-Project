@@ -53,9 +53,31 @@ class Emergency(
     }
 
     /**
-     * begin handling the emergency if all assets have arrived */
-    fun handle() {
-        TODO()
+     * Updates the number of available assets for each vehicle after emergency starts being handled */
+    fun handle(model: Model) {
+        availableVehicleIDs.sort()
+        val policeVehicles = model.getVehiclesByIds(availableVehicleIDs) // List of all police vehicles
+            .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.POLICE_STATION }
+        val hospitalVehicles = model.getVehiclesByIds(availableVehicleIDs)
+            // List of all hospital vehicles
+            .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.HOSPITAL }
+        val fireVehicles = model.getVehiclesByIds(availableVehicleIDs) // List of all fire vehicles
+            .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.FIRE_STATION }
+        var criminalReq: Int? = requiredAssets.first { it.assetType == AssetType.CRIMINAL }.amountOfAsset
+        // finds the assetAmount of the requirement that corresponds to police vehicles
+        var patientReq: Int? = requiredAssets.first() { it.assetType == AssetType.PATIENT }.amountOfAsset
+        // finds the assetAmount of the requirement that corresponds to ambulances
+        var waterReq: Int? = requiredAssets.first() { it.assetType == AssetType.WATER }.amountOfAsset
+        // finds the assetAmount of the requirement that corresponds to firetrucks
+        policeVehicles.forEach {
+            criminalReq = it.handleEmergency(criminalReq ?: 0)
+        }
+        hospitalVehicles.forEach {
+            patientReq = it.handleEmergency(patientReq ?: 0)
+        }
+        fireVehicles.forEach {
+            waterReq = it.handleEmergency(waterReq ?: 0)
+        }
     }
 
     /**

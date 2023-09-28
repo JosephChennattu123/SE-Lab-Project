@@ -78,17 +78,10 @@ class UpdatePhase {
         handleableEmergencies.forEach { emergency ->
             emergency.changeStatus(EmergencyStatus.BEING_HANDLED)
             Logger.logEmergencyHandlingStart(emergency.id)
-            emergency.requiredAssets.forEach { requirement ->
-                var amount = requirement.amountOfAsset
-                if (amount != null) {
-                    model.getVehiclesByIds(emergency.availableVehicleIDs).forEach {
-                        if (it.vehicleType == requirement.vehicleType) {
-                            amount = it.handleEmergency(amount!!)
-                            // every call of handleEmergency reduces the still required amount of asset
-                        }
-                    }
-                }
-            }
+            /**
+             * Goes through all vehicles by type of Base and subtracts available assets from them
+             */
+            emergency.handle(model)
         }
 
 
