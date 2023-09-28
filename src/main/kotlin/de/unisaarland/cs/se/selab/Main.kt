@@ -6,7 +6,6 @@ import de.unisaarland.cs.se.selab.config.ValidatorManager
 import de.unisaarland.cs.se.selab.util.Logger
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
-import kotlinx.cli.default
 import kotlinx.cli.required
 
 /**
@@ -31,10 +30,10 @@ fun main(args: Array<String>) {
         ArgType.Int,
         description = "Maximum allowed number of simulation ticks"
     )
-    val outPath by parser.option(
+    val outPath: String? by parser.option(
         ArgType.String,
         description = "Path to output file. Uses 'stdout' by default"
-    ).default("stdout")
+    )
     parser.parse(args)
 
     Logger.outputFile = outPath
