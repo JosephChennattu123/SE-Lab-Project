@@ -49,7 +49,7 @@ class ValidatorManager {
         Logger.logParsingValidationResult(dotParser.graphFilePath, true)
 
         // jsonParser.parseAssets()
-        if (!validateBases() || !validateVehicles()) {
+        if (!validateBases(graph as Graph) || !validateVehicles()) {
             Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
             return null
         }
@@ -111,7 +111,7 @@ class ValidatorManager {
      * @return true if validation was successful
      * */
     private fun validateVehicles(): Boolean {
-        val vehicleValidator = VehicleValidator()
+        val vehicleValidator = VehicleValidator(jsonParser as JsonParser)
         this.vehicles = vehicleValidator.validate()
         return vehicles != null
     }
@@ -132,10 +132,10 @@ class ValidatorManager {
      *
      * @return true if validation was successful
      * */
-    private fun validateBases(): Boolean {
-        val baseValidator = BaseValidator()
-        this.bases = baseValidator.validate()
-        TODO()
+    private fun validateBases(graph: Graph): Boolean {
+        val baseValidator = BaseValidator(jsonParser as JsonParser)
+        this.bases = baseValidator.validate(graph)
+        return bases != null
     }
 
     /**
@@ -144,7 +144,7 @@ class ValidatorManager {
      * @return true if validation was successful
      * */
     private fun validateEmergencies(): Boolean {
-        val emergencyValidator = EmergencyValidator()
+        val emergencyValidator = EmergencyValidator(jsonParser as JsonParser)
         this.emergencies = emergencyValidator.validate()
         TODO()
     }
@@ -155,7 +155,7 @@ class ValidatorManager {
      * @return true if validation was successful
      * */
     private fun validateEvent(): Boolean {
-        val eventValidator = EventValidator()
+        val eventValidator = EventValidator(jsonParser as JsonParser)
         this.events = eventValidator.validate()
         TODO()
     }
