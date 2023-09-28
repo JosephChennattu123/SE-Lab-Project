@@ -40,17 +40,19 @@ class UpdatePhase {
                 VehicleStatus.BUSY -> {
                     if (vehicle.decreaseBusyTicks()) vehicle.status = VehicleStatus.AT_BASE
                 }
+
                 VehicleStatus.RETURNING, VehicleStatus.ASSIGNED, VehicleStatus.TO_EMERGENCY -> {
                     vehicle.driveUpdate()
                 }
+
                 else -> {}
             }
         }
     }
 
     private fun processEmergencies(emergencies: List<Emergency>, model: Model) {
-        for (emergency in emergencies) {
-            emergency.decrementTimer()
+        emergencies.forEach {
+            it.decrementTimer()
         }
         val failingEmergencies = emergencies.filter {
             it.timeElapsed >= it.maxDuration
@@ -69,20 +71,21 @@ class UpdatePhase {
         }.toList()
 
 
-        for (emergency in ongoingEmergencies) {
-            emergency.changeStatus(EmergencyStatus.WAITING_FOR_ASSETS)
+        ongoingEmergencies.forEach {
+            it.changeStatus(EmergencyStatus.WAITING_FOR_ASSETS)
         }
 
-        for (emergency in handleableEmergencies) {
+        handleableEmergencies.forEach { emergency ->
             emergency.changeStatus(EmergencyStatus.BEING_HANDLED)
             Logger.logEmergencyHandlingStart(emergency.id)
-            for (requirement in emergency.requiredAssets) {
+            emergency.requiredAssets.forEach { requirement ->
                 var amount = requirement.amountOfAsset
                 if (amount != null) {
-                    for (v in (model.getVehiclesByIds(emergency.availableVehicleIDs))) {
-                        if (v.vehicleType == requirement.vehicleType)
-                        amount = v.handleEmergency(amount!!)
-                        // every call of handleEmergency reduces the still required amount of asset
+                    model.getVehiclesByIds(emergency.availableVehicleIDs).forEach {
+                        if (it.vehicleType == requirement.vehicleType) {
+                            amount = it.handleEmergency(amount!!)
+                            // every call of handleEmergency reduces the still required amount of asset
+                        }
                     }
                 }
             }
