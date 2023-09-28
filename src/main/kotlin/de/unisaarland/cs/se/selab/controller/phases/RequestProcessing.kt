@@ -38,7 +38,7 @@ class RequestProcessing {
 
             // get the list of vehicleIds belonging to the base and then get the list of concrete
             // vehicles from the model
-            val vehiclesId = base!!.vehicles
+            val vehiclesId = (base as Base).vehicles
             var vehicles = model.getVehiclesByIds(vehiclesId)
 
             // filter out the vehicles that are not in base by checking the status
