@@ -89,12 +89,12 @@ class GraphValidator {
     }
 
     private fun buildGraph(): Graph? {
-        val graph = Graph()
         val vertices: MutableMap<Int, Vertex> = mutableMapOf()
         for (vertexId in vertexIds as Set<Int>) {
             val vertex = Vertex(vertexId, null, null)
             vertices[vertexId] = vertex
         }
+        val graph = Graph(vertices)
         for (connections: Map.Entry<Int, List<Connection>> in edges as Map<Int, List<Connection>>) {
             for (edge: Connection in connections.value) {
                 val source: Vertex? = vertices[edge.sourceId]
@@ -102,8 +102,15 @@ class GraphValidator {
                 if (source == null || target == null) {
                     return null
                 }
-                val property = RoadProperties(edge.primary, edge.secondary, edge.weight, edge.height)
-                graph.addEdge(source, target, property, edge.villageName, edge.roadName)
+                val property = RoadProperties(
+                    edge.primary,
+                    edge.secondary,
+                    edge.villageName,
+                    edge.roadName,
+                    edge.weight,
+                    edge.height
+                )
+                graph.addEdge(source, target, property)
             }
         }
         return graph
