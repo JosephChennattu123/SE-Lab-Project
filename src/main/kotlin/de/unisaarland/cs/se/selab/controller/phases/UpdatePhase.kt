@@ -1,20 +1,33 @@
 package de.unisaarland.cs.se.selab.controller.phases
 
-import de.unisaarland.cs.se.selab.model.*
+import de.unisaarland.cs.se.selab.model.Emergency
+import de.unisaarland.cs.se.selab.model.EmergencyStatus
+import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.Vehicle
+import de.unisaarland.cs.se.selab.model.VehicleStatus
 import de.unisaarland.cs.se.selab.util.Dijkstra
 import de.unisaarland.cs.se.selab.util.Logger
 
 /**
- * Iterates through all vehicles and emergencies and updates their states and fields
+ * Update phase
+ * In this phase the elements of the simulation get updated.
  */
 class UpdatePhase {
+    var eventOccured: Boolean = false
 
     /**
      * begins the update phase processing
      */
     fun execute(model: Model) {
+        // TODO check all code, everything in this method might be wrong, it was used to fix detekt problems
+        collectArrivedV(model.getSortedVehicleList())
         processVehicles(model.getSortedVehicleList())
-        processEmergencies(model.getAssignedEmergenciesObjects(), model)
+        printLog(model.getSortedVehicleList())
+        processEmergencies(model.getCurrentEmergencies(), model) // TODO needs checking might be wrong
+        processActiveEvents()
+        processPostponedEvents()
+        timeUpdate(model)
+        TODO()
     }
 
     /**
@@ -40,42 +53,53 @@ class UpdatePhase {
         for (emergency in emergencies) {
             emergency.decrementTimer()
         }
-        val handleableEmergencies = emergencies.filter {
-            it.status == EmergencyStatus.WAITING_FOR_ASSETS && it.canStart()
+        val failingEmergencies = emergencies.filter {
+            it.timeElapsed >= it.maxDuration
         }.toList()
+
+        val resolvableEmergencies = emergencies.filter {
+            it.status == EmergencyStatus.BEING_HANDLED && it.handleTime == 0 && it.timeElapsed < it.maxDuration
+        }.toList()
+
+        val ongoingEmergencies = emergencies.filter {
+            it.status == EmergencyStatus.ONGOING && it.isFulfilled() && it.timeElapsed < it.maxDuration
+        }.toList()
+
+        val handleableEmergencies = emergencies.filter {
+            it.status == EmergencyStatus.WAITING_FOR_ASSETS && it.canStart() && it.timeElapsed < it.maxDuration
+        }.toList()
+
+
+        for (emergency in ongoingEmergencies) {
+            emergency.changeStatus(EmergencyStatus.WAITING_FOR_ASSETS)
+        }
 
         for (emergency in handleableEmergencies) {
             emergency.changeStatus(EmergencyStatus.BEING_HANDLED)
             Logger.logEmergencyHandlingStart(emergency.id)
         }
 
-        val resolvableEmergencies = emergencies.filter {
-            it.status == EmergencyStatus.BEING_HANDLED && it.handleTime == 0 && it.maxDuration > it.timeElapsed
-        }.toList()
 
         for (emergency in resolvableEmergencies) {
             emergency.changeStatus(EmergencyStatus.RESOLVED)
             Logger.logEmergencyResolve(emergency.id)
-            for (vehicleID in emergency.assignedVehicleIDs) {
-                val vehicle = model.getVehicleById(vehicleID)!!
-                vehicle.status =
-                    VehicleStatus.RETURNING // change status for all vehicles of this emergency to RETURNING
-                setReturnPath(vehicle, model)
-            }
+            endEmergency(emergency, model)
         }
 
-        val failingEmergencies = emergencies.filter {
-            it.status == EmergencyStatus.BEING_HANDLED && it.timeElapsed >= it.maxDuration
-        }.toList()
         for (emergency in failingEmergencies) {
             emergency.changeStatus(EmergencyStatus.FAILED)
             Logger.logEmergencyResolve(emergency.id)
-            for (vehicleID in emergency.assignedVehicleIDs) {
-                val vehicle = model.getVehicleById(vehicleID)!!
-                vehicle.status = VehicleStatus.RETURNING
-                setReturnPath(vehicle, model)
-            }
+            endEmergency(emergency, model)
         }
+    }
+
+    private fun endEmergency(emergency: Emergency, model: Model) {
+        for (vehicleID in emergency.assignedVehicleIDs) {
+            val vehicle = model.getVehicleById(vehicleID)!!
+            vehicle.status = VehicleStatus.RETURNING // change status for all vehicles of this emergency to RETURNING
+            setReturnPath(vehicle, model)
+        }
+        model.assignedEmergencies.remove(emergency.id) // remove failed emergencies from model
     }
 
     private fun setReturnPath(vehicle: Vehicle, model: Model) {
@@ -89,6 +113,7 @@ class UpdatePhase {
     }
 
     private fun processActiveEvents() {
+        >>>>>>>>> Temporary merge branch 2
         // todo
     }
 
