@@ -1,4 +1,5 @@
 package de.unisaarland.cs.se.selab.model
+
 /** @param vehicleId
  * @param baseId
  * @param height
@@ -25,7 +26,7 @@ class FireTruck(
     val waterCapacity: Int? = null
 
     override fun setBusy() {
-        busyTicks = (waterCapacity!! - waterLevel!!) / THREE_HUNDRED
+        busyTicks = (waterCapacity as Int - waterLevel as Int) / THREE_HUNDRED
         if (busyTicks != 0) {
             status = VehicleStatus.BUSY
         }
@@ -34,13 +35,13 @@ class FireTruck(
 
     override fun handleEmergency(amount: Int): Int {
         status = VehicleStatus.HANDLING
-        var returnAmount = amount - (waterCapacity!! - waterLevel!!)
-        if (returnAmount < 0) {
+        val returnAmount = amount - (waterCapacity as Int - waterLevel as Int)
+        return if (returnAmount < 0) {
             waterLevel = waterCapacity + returnAmount
-            return 0
+            0
         } else {
             waterLevel = waterCapacity
-            return returnAmount
+            returnAmount
         }
     }
 

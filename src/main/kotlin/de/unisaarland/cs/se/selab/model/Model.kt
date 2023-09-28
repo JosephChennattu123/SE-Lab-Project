@@ -9,7 +9,6 @@ import de.unisaarland.cs.se.selab.model.map.Graph
  * @param vehicleToBase
  * @param emergencies
  * */
-
 class Model(
     val graph: Graph,
     val maxTick: Int?, // optional command-line argument
@@ -22,11 +21,11 @@ class Model(
     var tickToEventId: Map<Int, List<Int>>
 ) {
     var currentTick: Int = 0
-    var assignedEmergencies: MutableList<Int> = mutableListOf()
-    var currentEvents: MutableList<Int> = mutableListOf()
-    var roadToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
-    var vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
-    var requests: MutableList<Request> = mutableListOf()
+    val assignedEmergencies: MutableList<Int> = mutableListOf()
+    val currentEvents: MutableList<Int> = mutableListOf()
+    val roadToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
+    val vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
+    val requests: MutableList<Request> = mutableListOf()
 
     /** returns emergency object with respect to its id */
     fun getAssignedEmergencyById(emId: Int): Emergency? {
@@ -52,7 +51,7 @@ class Model(
      *  please use this function to fetch the
      * emergency started in this tick*/
     fun getCurrentEmergencies(): List<Emergency> {
-        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick] ?: listOf()
+        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick].orEmpty()
         return listOfStartedEmergencies.mapNotNull { emergencies[it] }
     }
 
@@ -89,7 +88,7 @@ class Model(
     }
 
     /** @returns list of all current events */
-    fun getCurrentEvents(): List<Event> {
+    fun getCurrentEventsObjects(): List<Event> {
         return currentEvents.mapNotNull { events[it] }
     }
 
@@ -122,7 +121,8 @@ class Model(
 
     /** add vehicleEvent to a map of vehicle id to postponed events */
     fun addVehicleEvent(vehicleId: Int, eventId: Event) {
-        val vehicleEventsPost: MutableList<Event> = vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
+        val vehicleEventsPost: MutableList<Event> =
+            vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
         vehicleEventsPost.add(eventId)
         vehicleToPostponedEvents[vehicleId] = vehicleEventsPost
     }
