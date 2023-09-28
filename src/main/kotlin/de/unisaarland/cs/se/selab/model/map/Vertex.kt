@@ -16,7 +16,7 @@ class Vertex(val vertexId: Int, val baseId: Int?, val baseType: BaseType?) {
      * adds an outgoing edge to the vertex.
      * @param edge the edge to add
      * */
-    fun addEdgeOutgoingEdge(edge: Edge) {
+    fun addOutgoingEdge(edge: Edge) {
         outgoingEdges + edge
     }
 
@@ -24,7 +24,7 @@ class Vertex(val vertexId: Int, val baseId: Int?, val baseType: BaseType?) {
      * adds an ingoing edge to the vertex.
      * @param edge the edge to add
      * */
-    fun addEdgeIngoingEdge(edge: Edge) {
+    fun addIngoingEdge(edge: Edge) {
         ingoingEdges + edge
     }
 
