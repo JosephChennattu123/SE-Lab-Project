@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.util
 
 import java.io.File
+import java.io.PrintWriter
 
 /**
  * The logger is responsible to log the important events of the simulation
@@ -13,9 +14,15 @@ object Logger {
     var numFailedEmergencies: Int = 0
     var numResolvedEmergency: Int = 0
 
+    var printWriter: PrintWriter? = null
+
+    init {
+        printWriter = PrintWriter(System.out)
+    }
+
     private fun printLog(output: String) {
         if (outputFile == null) {
-            println(output)
+            printWriter?.println(output)
         } else {
             File(outputFile).writeText(
                 output,

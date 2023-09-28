@@ -22,10 +22,10 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     private val assetSchema = getSchema(this::class.java, "assets.schema")
     private val scenarioSchema = getSchema(this::class.java, "scenario.schema")
 
-    var bases: List<BaseInfo> = listOf()
-    var vehicles: List<VehicleInfo> = listOf()
-    var events: List<EventInfo> = listOf()
-    var emergencies: List<EmergencyInfo> = listOf()
+    var bases: List<BaseInfo> = emptyList()
+    var vehicles: List<VehicleInfo> = emptyList()
+    var events: List<EventInfo> = emptyList()
+    var emergencies: List<EmergencyInfo> = emptyList()
 
     /**
      * parses the bases
@@ -47,7 +47,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
         val doctors = base.getInt(cfgDoctors)
         val dogs = base.getInt(cfgDogs)
         val location = base.getInt(cfgLocation)
-        bases + BaseInfo(id, BaseType.fromString(type)!!, staff, doctors, dogs, location)
+        bases + BaseInfo(id, BaseType.fromString(type) as BaseType, staff, doctors, dogs, location)
     }
 
     /**
@@ -75,7 +75,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
         vehicles + VehicleInfo(
             id,
             baseID,
-            VehicleType.fromString(type)!!,
+            VehicleType.fromString(type) as VehicleType,
             staffCapacity,
             height,
             criminalCapacity,
@@ -111,7 +111,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
             tick,
             village,
             roadName,
-            emergencyType!!,
+            emergencyType as EmergencyType,
             severity,
             handleTime,
             maxDuration
@@ -145,9 +145,9 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
         val eventInfo = EventInfo(
             id,
             tick,
-            eventType!!,
+            eventType as EventType,
             duration,
-            roadType!!,
+            roadType as PrimaryType,
             factor,
             oneWayStreet,
             source,
