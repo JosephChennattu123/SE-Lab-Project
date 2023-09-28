@@ -88,7 +88,7 @@ class UpdatePhase {
 
         for (emergency in failingEmergencies) {
             emergency.changeStatus(EmergencyStatus.FAILED)
-            Logger.logEmergencyResolve(emergency.id)
+            Logger.logEmergencyFailed(emergency.id)
             endEmergency(emergency, model)
         }
     }
