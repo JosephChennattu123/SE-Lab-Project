@@ -22,6 +22,8 @@ class Base(
     var vehicles: MutableList<Int>,
     var assignedEmergencies: MutableList<Int>
 ) {
+    val currStaff : Int
+
     /**
      * Adds an emergency to the list of emergencies assigned to this base.
      *
