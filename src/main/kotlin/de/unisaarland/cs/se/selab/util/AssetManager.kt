@@ -366,22 +366,9 @@ object AssetManager {
                 } else {
                     req = EmergencyRequirement(vehicle.vehicleType, 1, null)
                     oldEmergency.currentRequiredAssets.add(req)
+                    TODO()
                 }
 
-                if (req.assetType != null) {
-                    val originalReq =
-                        oldEmergency.requiredAssets.first { it.vehicleType == vehicle.vehicleType } // get original requirement
-                    req.amountOfAsset = originalReq.amountOfAsset!!
-                    for (v2 in model.getVehiclesByIds(oldEmergency.assignedVehicleIDs)) {
-                        if (v2.vehicleType == vehicle.vehicleType) { // go through all vehicles of same type as vehicle
-                            // and add up their total asset capacity (vehicle should not be part of this list anymore)
-                            req.amountOfAsset = req.amountOfAsset!! - v2.maxAssetCapacity
-                        } // req.amountOfAsset is now the actual missing amount of asset to fulfill the requirement
-                    }
-                }
-                var newReq: EmergencyRequirement
-                oldEmergency.currentRequiredAssets.add(newReq)
-                emergency.addAsset(vehicle)
             }
         }
     }
