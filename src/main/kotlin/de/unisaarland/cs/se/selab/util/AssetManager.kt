@@ -312,7 +312,8 @@ object AssetManager {
         // remove vehicles that do not fit the requirement type or do not fulfill staff requirements.
         filterAssetsByRequirement(model, vehicles, emergency.currentRequiredAssets)
 
-        // remove vehicles that cannot reach the emergency in time.
+        // find vehicles that cannot reach the emergency in time.
+        val vehiclesThatCannotReachInTime = mutableListOf<Vehicle>()
         for (vehicle in vehicles) {
             when (vehicle.status) {
                 VehicleStatus.AT_BASE -> {
@@ -325,7 +326,7 @@ object AssetManager {
                     )
 
                     if (!emergency.canReachInTime(newPath.totalTicksToArrive)) {
-                        vehicles.remove(vehicle)
+                        vehiclesThatCannotReachInTime.add(vehicle)
                     }
                 }
 
@@ -341,12 +342,15 @@ object AssetManager {
                         vehicle.height
                     )
                     if (!emergency.canReachInTime(newPath.totalTicksToArrive)) {
-                        vehicles.remove(vehicle)
+                        vehiclesThatCannotReachInTime.add(vehicle)
                     }
                 }
                 else -> {}
             }
         }
+        // remove vehicles that cannot reach the emergency in time.
+        vehicles.removeAll(vehiclesThatCannotReachInTime)
+
         filterAssetsByOptimalSolution(vehicles, emergency.currentRequiredAssets)
         for (vehicle in vehicles) {
             if (vehicle) { // if vehicle will be reallocated
