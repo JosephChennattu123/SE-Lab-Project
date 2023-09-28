@@ -356,15 +356,15 @@ object AssetManager {
             if (vehicle) { // if vehicle will be reallocated
                 val oldEmergency = model.getAssignedEmergencyById(vehicle.emergencyID!!)
                 var req: EmergencyRequirement
-                if (oldEmergency!!.currentRequiredAssets.any { it.vehicleType == vehicle.vehicleType }) { // if old emergency had
-                    // requirement of type vehicle.VehicleType
+                if (oldEmergency!!.currentRequiredAssets.any { it.vehicleType == vehicle.vehicleType }) { // if old
+                    // emergency already has requirement of type vehicle.VehicleType
                     req =
                         oldEmergency.currentRequiredAssets.first { it.vehicleType == vehicle.vehicleType }
                     // find requirement that needs to be changed
 
                     req.numberOfVehicles++ // increase the number of current needed vehicles of this type by 1
                 } else {
-                    req = EmergencyRequirement(vehicle.vehicleType, null, 1, null)
+                    req = EmergencyRequirement(vehicle.vehicleType, 1, null)
                     oldEmergency.currentRequiredAssets.add(req)
                 }
 
