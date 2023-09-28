@@ -28,28 +28,7 @@ class GraphValidator {
     fun validate(dotParser: DotParser): Graph? {
         this.dotParser = dotParser
 
-        val functions = listOf(
-            ::validateVertexIds,
-            ::validateEdgeConnectsExistingVertices,
-            ::validateVerticesConnected,
-            ::validateNoSelfLoops,
-            ::validateNoDuplicateConnections,
-            ::validateRoadNamesUniqueInVillage,
-            ::validateSameVertexSameVillageOrCounty,
-            ::validateMainStreetExistInVillages,
-            ::validateSideStreetExists,
-            ::validateNonZeroRoadWeights,
-            ::validateMinimumRoadHeight,
-            ::validateMaximumTunnelHeight,
-            ::validateVillageNameNotCountyName
-        )
-
-        for (i in functions) {
-            val returnValue = i()
-            if (!returnValue) {
-                return null
-            }
-        }
+        if (!doValidation()) return null
 
         if (vertexIds == null) {
             return null
@@ -73,11 +52,20 @@ class GraphValidator {
             val (source, target) = sourceTargetMap.getValue(it)
             val weight = weights.getValue(it)
             val height = heights.getValue(it)
-            val primaryType = PrimaryType.valueOf(primaryTypes.getValue(it))
-            val secondaryType = SecondaryType.valueOf(secondaryTypes.getValue(it))
+            val primaryType = PrimaryType.fromString(primaryTypes.getValue(it))
+            val secondaryType = SecondaryType.fromString(secondaryTypes.getValue(it))
             val villageName = villageNames.getValue(it)
             val roadName = roadNames.getValue(it)
-            Connection(source, target, weight, height, primaryType, secondaryType, villageName, roadName)
+            Connection(
+                source,
+                target,
+                weight,
+                height,
+                primaryType as PrimaryType,
+                secondaryType as SecondaryType,
+                villageName,
+                roadName
+            )
         }
 
         edges = mutableMapOf()
@@ -86,6 +74,32 @@ class GraphValidator {
         }
 
         return buildGraph()
+    }
+
+    private fun doValidation(): Boolean {
+        val functions = listOf(
+            ::validateVertexIds,
+            ::validateEdgeConnectsExistingVertices,
+            ::validateVerticesConnected,
+            ::validateNoSelfLoops,
+            ::validateNoDuplicateConnections,
+            ::validateRoadNamesUniqueInVillage,
+            ::validateSameVertexSameVillageOrCounty,
+            ::validateMainStreetExistInVillages,
+            ::validateSideStreetExists,
+            ::validateNonZeroRoadWeights,
+            ::validateMinimumRoadHeight,
+            ::validateMaximumTunnelHeight,
+            ::validateVillageNameNotCountyName
+        )
+
+        for (i in functions) {
+            val returnValue = i()
+            if (!returnValue) {
+                return false
+            }
+        }
+        return true
     }
 
     private fun buildGraph(): Graph? {
@@ -261,25 +275,42 @@ class GraphValidator {
         for ((_, value) in vertexIdToEdges) {
             var vertexVillage: String? = null
 
-            val outgoingEdges = value.first
-            val incomingEdges = value.second
+            val outgoingEdgesIds = value.first
+            val incomingEdgesIds = value.second
+
+            val outgoingEdges = outgoingEdgesIds.filter { villageNames.getValue(it) == countyName as String }
+            val incomingEdges = incomingEdgesIds.filter { villageNames.getValue(it) == countyName as String }
             for (outEdge: Int in outgoingEdges) {
                 val newVillageName = villageNames[outEdge] ?: return false
                 vertexVillage = vertexVillage ?: newVillageName
-                if (vertexVillage != newVillageName && newVillageName != countyName as String) {
-                    return false
-                }
+                if (checkValidConnectedEdge(primaryTypes, outEdge, vertexVillage, newVillageName)) return false
             }
             for (inEdge: Int in incomingEdges) {
                 val newVillageName = villageNames[inEdge] ?: return false
                 vertexVillage = vertexVillage ?: newVillageName
-                val primaryType = primaryTypes[inEdge]
-                if (vertexVillage != newVillageName && primaryType != "countyRoad") {
-                    return false
-                }
+                if (checkValidConnectedEdge(primaryTypes, inEdge, vertexVillage, newVillageName)) return false
             }
         }
         return true
+    }
+
+    /**
+     * @param primaryTypes
+     * @param edge
+     * @param vertexVillage current name of village
+     * @param newVillageName new name of village
+     */
+    private fun checkValidConnectedEdge(
+        primaryTypes: Map<Int, String>,
+        edge: Int,
+        vertexVillage: String?,
+        newVillageName: String
+    ): Boolean {
+        val primaryType = primaryTypes[edge]
+        if (vertexVillage != newVillageName && primaryType != "countyRoad") {
+            return true
+        }
+        return false
     }
 
     /**

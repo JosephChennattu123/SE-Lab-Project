@@ -7,6 +7,7 @@ import de.unisaarland.cs.se.selab.util.Logger
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.required
+import java.io.PrintWriter
 
 /**
  * This is the entry point of the simulation.
@@ -14,17 +15,18 @@ import kotlinx.cli.required
 fun main(args: Array<String>) {
     // parse command line arguments.
     val parser = ArgParser("Saarvive and Thrive")
-    val mapPath by parser.option(
+    PrintWriter(System.out).println(args)
+    val map by parser.option(
         ArgType.String,
-        description = "Path to the DOT file. (always required)"
+        description = "Path to the DOT file."
     ).required()
-    val assetsPath by parser.option(
+    val assets by parser.option(
         ArgType.String,
-        description = "Path to the JSON file with assets. (always required)"
+        description = "Path to the JSON file with assets."
     ).required()
-    val scenarioPath by parser.option(
+    val scenario by parser.option(
         ArgType.String,
-        description = "Path to the scenario JSON file with emergencies and events. (always required)"
+        description = "Path to the scenario JSON file with emergencies and events."
     ).required()
     val ticks by parser.option(
         ArgType.Int,
@@ -39,8 +41,8 @@ fun main(args: Array<String>) {
     Logger.outputFile = outPath
 
     // validate the input files and create the control center.
-    val dotParser = DotParser(mapPath)
-    val jsonParse = JsonParser(assetsPath, scenarioPath)
+    val dotParser = DotParser(map)
+    val jsonParse = JsonParser(assets, scenario)
     val validator = ValidatorManager()
     val controlCenter = validator.validate(dotParser, jsonParse, ticks)
 
