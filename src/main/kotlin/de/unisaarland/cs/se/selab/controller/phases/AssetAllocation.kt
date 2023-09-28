@@ -20,42 +20,7 @@ class AssetAllocation {
     fun execute(model: Model) {
         val sortedEmergencies = sortEmergencies(model.getAssignedEmergenciesObjects())
         for (emergency in sortedEmergencies) {
-            // allocate
-            if (emergency.status == EmergencyStatus.ONGOING) {
-                val mainBase = model.getBaseById(emergency.mainBaseID!!)!!
-                val vehicles = sortAtBaseVehicles(model.getVehiclesByIds(mainBase.vehicles))
-                AssetManager.allocateAssetsToEmergency(model, emergency, vehicles)
-                if (!emergency.isFulfilled()) {
-                    // reallocate
-                    val vehiclesCanReroute =
-                        getVehiclesCanReroute(emergency, mainBase, vehicles, model)
-                    AssetManager.allocateAssetsToEmergency(model, emergency, vehiclesCanReroute)
-                    // if allocate & reallocate not failed, then change this canRequest
-                    if (emergency.assignedVehicleIDs.isNotEmpty()) emergency.canRequest = true
-                    if (!emergency.isFulfilled() && emergency.canRequest) {
-                        // request
-                        for (req in emergency.currentRequiredAssets) {
-                            val nextNearestBase = Dijkstra.getNextNearestBase(
-                                model.graph,
-                                mainBase.vertexID,
-                                VehicleType.getBaseType(req.vehicleType),
-                                setOf()
-                            )
-                            if (nextNearestBase != null) {
-                                val requestNew = Request.createNewRequest(
-                                    mainBase.baseId,
-                                    emergency.id,
-                                    nextNearestBase,
-                                    setOf(mainBase.baseId, nextNearestBase)
-                                )
-                                model.addRequest(requestNew)
-                                Logger.logRequest(requestNew.requestId, nextNearestBase, emergency.id)
-                            }
-                            // no else?
-                        }
-                    }
-                }
-            }
+            handleEmergency(model, emergency)
         }
     }
 
@@ -99,5 +64,56 @@ class AssetAllocation {
         }
         vehiclesCanReroute.addAll(vehicles.filter { it.status == VehicleStatus.RETURNING })
         return vehiclesCanReroute
+    }
+
+    private fun handleEmergency(model: Model, emergency: Emergency) {
+        if (emergency.status != EmergencyStatus.ONGOING) return
+        val mainBase = model.getBaseById(
+            emergency.mainBaseID
+                ?: throw IllegalArgumentException("Emergency should have mainBase!")
+        ) ?: throw IllegalArgumentException("Wrong base ID!")
+        val vehicles = sortAtBaseVehicles(model.getVehiclesByIds(mainBase.vehicles))
+
+        AssetManager.allocateAssetsToEmergency(model, emergency, vehicles)
+        if (!emergency.isFulfilled()) {
+            reallocateAssets(model, emergency, mainBase, vehicles)
+        }
+    }
+
+    private fun reallocateAssets(model: Model, emergency: Emergency, mainBase: Base, vehicles: List<Vehicle>) {
+        val vehiclesCanReroute =
+            getVehiclesCanReroute(emergency, mainBase, vehicles, model)
+        AssetManager.allocateAssetsToEmergency(model, emergency, vehiclesCanReroute)
+        // if allocate & reallocate not failed, then change this canRequest
+        if (emergency.assignedVehicleIDs.isNotEmpty()) emergency.canRequest = true
+        if (!emergency.isFulfilled() && emergency.canRequest) {
+            creatRequest(model, emergency, mainBase)
+        }
+    }
+
+    private fun creatRequest(model: Model, emergency: Emergency, mainBase: Base) {
+        for (req in emergency.currentRequiredAssets) {
+            val nextNearestBase = Dijkstra.getNextNearestBase(
+                model.graph,
+                mainBase.vertexID,
+                VehicleType.getBaseType(req.vehicleType),
+                setOf()
+            )
+            if (nextNearestBase != null) {
+                val requestNew = Request.createNewRequest(
+                    mainBase.baseId,
+                    emergency.id,
+                    nextNearestBase,
+                    setOf(mainBase.baseId, nextNearestBase)
+                )
+                model.addRequest(requestNew)
+                Logger.logRequest(
+                    requestNew.requestId,
+                    nextNearestBase,
+                    emergency.id
+                )
+            }
+            // no else?
+        }
     }
 }
