@@ -12,6 +12,9 @@ import de.unisaarland.cs.se.selab.util.AssetManager
 import de.unisaarland.cs.se.selab.util.Dijkstra
 import de.unisaarland.cs.se.selab.util.Logger
 
+/**
+ * Phase for allocation, reallocation and request creation for assets.
+ * */
 class AssetAllocation {
 
     /**
