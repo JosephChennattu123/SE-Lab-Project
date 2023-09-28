@@ -77,6 +77,16 @@ class UpdatePhase {
         for (emergency in handleableEmergencies) {
             emergency.changeStatus(EmergencyStatus.BEING_HANDLED)
             Logger.logEmergencyHandlingStart(emergency.id)
+            for (requirement in emergency.requiredAssets) {
+                var amount = requirement.amountOfAsset
+                if (amount != null) {
+                    for (v in (model.getVehiclesByIds(emergency.availableVehicleIDs))) {
+                        if (v.vehicleType == requirement.vehicleType)
+                        amount = v.handleEmergency(amount!!)
+                        // every call of handleEmergency reduces the still required amount of asset
+                    }
+                }
+            }
         }
 
 
