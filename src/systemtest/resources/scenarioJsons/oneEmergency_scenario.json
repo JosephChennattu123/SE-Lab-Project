@@ -1,0 +1,16 @@
+{
+  "events": [
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Saarbruecken",
+      "roadName": "Eisenbahnstrasse",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 13
+    }
+  ]
+}
