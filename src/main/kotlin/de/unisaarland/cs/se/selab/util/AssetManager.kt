@@ -309,78 +309,76 @@ object AssetManager {
         emergency: Emergency,
         vehicles: MutableList<Vehicle>
     ) {
-
+        // remove vehicles that do not fit the requirement type or do not fulfill staff requirements.
         filterAssetsByRequirement(model, vehicles, emergency.currentRequiredAssets)
 
-        for (v in vehicles) {
-            when (v.status) {
+        // remove vehicles that cannot reach the emergency in time.
+        for (vehicle in vehicles) {
+            when (vehicle.status) {
                 VehicleStatus.AT_BASE -> {
                     // If vehicle is currently at base, calculate drive time from base to emergency
-                    val p = Dijkstra.getShortestPathFromVertexToEdge(
+                    val newPath = Dijkstra.getShortestPathFromVertexToEdge(
                         model.graph,
-                        model.getBaseById(v.baseID)!!.vertexID,
+                        model.getBaseById(vehicle.baseID)!!.vertexID,
                         emergency.location,
-                        v.height
+                        vehicle.height
                     )
 
-                    if (!emergency.canReachInTime(p.totalTicksToArrive)) {
-                        vehicles.remove(v)
+                    if (!emergency.canReachInTime(newPath.totalTicksToArrive)) {
+                        vehicles.remove(vehicle)
                     }
                 }
 
                 VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
                     // If vehicle is currently on the road,
                     // calculate drive time from their precise position on the edge to emergency
-
-                    val pt = v.positionTracker
-                    val p = Dijkstra.getShortestPathFromEdgeToEdge(
+                    val pt = vehicle.positionTracker
+                    val newPath = Dijkstra.getShortestPathFromEdgeToEdge(
                         model.graph,
                         pt.path.vertexPath[pt.currentVertexIndex],
                         pt.path.vertexPath[pt.currentVertexIndex + 1],
                         pt.positionOnEdge,
                         emergency.location,
-                        v.height
+                        vehicle.height
                     )
-                    if (!emergency.canReachInTime(p.totalTicksToArrive)) {
-                        vehicles.remove(v)
+                    if (!emergency.canReachInTime(newPath.totalTicksToArrive)) {
+                        vehicles.remove(vehicle)
                     }
                 }
-
                 else -> {}
             }
-
         }
         filterAssetsByOptimalSolution(vehicles, emergency.currentRequiredAssets)
-        for (v in vehicles) {
-            if (v) { // if v will be reallocated
-                val oldEmergency = model.getAssignedEmergencyById(v.emergencyID!!)
+        for (vehicle in vehicles) {
+            if (vehicle) { // if vehicle will be reallocated
+                val oldEmergency = model.getAssignedEmergencyById(vehicle.emergencyID!!)
                 var req: EmergencyRequirement
-                if (oldEmergency!!.currentRequiredAssets.any { it.vehicleType == v.vehicleType }) { // if old emergency had
-                    // requirement of type v.VehicleType
+                if (oldEmergency!!.currentRequiredAssets.any { it.vehicleType == vehicle.vehicleType }) { // if old emergency had
+                    // requirement of type vehicle.VehicleType
                     req =
-                        oldEmergency.currentRequiredAssets.first { it.vehicleType == v.vehicleType }
+                        oldEmergency.currentRequiredAssets.first { it.vehicleType == vehicle.vehicleType }
                     // find requirement that needs to be changed
 
                     req.numberOfVehicles++ // increase the number of current needed vehicles of this type by 1
                 } else {
-                    req = EmergencyRequirement(v.vehicleType, null, 1, null)
+                    req = EmergencyRequirement(vehicle.vehicleType, null, 1, null)
                     oldEmergency.currentRequiredAssets.add(req)
                 }
 
                 if (req.assetType != null) {
                     val originalReq =
-                        oldEmergency.requiredAssets.first { it.vehicleType == v.vehicleType } // get original requirement
+                        oldEmergency.requiredAssets.first { it.vehicleType == vehicle.vehicleType } // get original requirement
                     req.amountOfAsset = originalReq.amountOfAsset!!
                     for (v2 in model.getVehiclesByIds(oldEmergency.assignedVehicleIDs)) {
-                        if (v2.vehicleType == v.vehicleType) { // go through all vehicles of same type as v
-                            // and add up their total asset capacity (v should not be part of this list anymore)
+                        if (v2.vehicleType == vehicle.vehicleType) { // go through all vehicles of same type as vehicle
+                            // and add up their total asset capacity (vehicle should not be part of this list anymore)
                             req.amountOfAsset = req.amountOfAsset!! - v2.maxAssetCapacity
                         } // req.amountOfAsset is now the actual missing amount of asset to fulfill the requirement
                     }
                 }
                 var newReq: EmergencyRequirement
                 oldEmergency.currentRequiredAssets.add(newReq)
-                emergency.addAsset(v)
+                emergency.addAsset(vehicle)
             }
         }
     }
