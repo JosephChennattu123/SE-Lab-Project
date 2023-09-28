@@ -5,7 +5,7 @@ import de.unisaarland.cs.se.selab.model.Base
 /**
  * Validates the bases
  */
-class BaseValidator : BasicValidator() {
+class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
     override var requiredProperties: List<String> = listOf("id", "baseType", "staff", "location")
 
     /**

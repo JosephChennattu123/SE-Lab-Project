@@ -5,7 +5,7 @@ import de.unisaarland.cs.se.selab.controller.events.Event
 /**
  * Validates the events
  */
-class EventValidator : BasicValidator() {
+class EventValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
 
     override var requiredProperties: List<String> = listOf("id", "type", "tick", "duration")
 
