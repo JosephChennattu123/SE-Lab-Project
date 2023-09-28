@@ -4,7 +4,6 @@ import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.Location
 import de.unisaarland.cs.se.selab.model.Path
 import de.unisaarland.cs.se.selab.model.map.Graph
-import de.unisaarland.cs.se.selab.model.map.SecondaryType
 import de.unisaarland.cs.se.selab.model.map.Vertex
 
 /**
@@ -125,12 +124,11 @@ object Dijkstra {
         val isOneWay: List<Boolean> = mutableListOf()
         for (i in 0 until path.size - 2) {
             weights + graph.getEdge(path[i], path[i + 1]).getWeight()
-            isOneWay + (
+            isOneWay +
                 graph.getEdge(
                     path[i],
                     path[i + 1]
-                ).properties.secondaryType == SecondaryType.ONE_WAY
-                )
+                ).isOneWay()
         }
         return Path(
             path,

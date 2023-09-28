@@ -5,7 +5,7 @@ import de.unisaarland.cs.se.selab.model.Vehicle
 /**
  * Validates the vehicles
  */
-class VehicleValidator : BasicValidator() {
+class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
 
     override var requiredProperties: List<String> = listOf("id", "baseId", "vehicleType", "staffCapacity")
 

@@ -5,7 +5,7 @@ import de.unisaarland.cs.se.selab.model.Emergency
 /**
  * Validates emergencies
  */
-class EmergencyValidator : BasicValidator() {
+class EmergencyValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
     override var requiredProperties: List<String> =
         listOf("id", "tick", "village", "roadName", "emergencyType", "severity", "handleTime", "maxDuration")
 
