@@ -1,9 +1,12 @@
 package de.unisaarland.cs.se.selab.util
 
+import de.unisaarland.cs.se.selab.model.AssetType
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.EmergencyRequirement
 import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Vehicle
+import de.unisaarland.cs.se.selab.model.VehicleStatus
+import de.unisaarland.cs.se.selab.model.VehicleType
 
 /**
  * Returns requirements for emergencies and handles the allocation of assets to emergencies */
@@ -202,33 +205,34 @@ object AssetManager {
         }
         filterAssetsByOptimalSolution(vehicles, emergency.currentRequiredAssets)
         for (v in vehicles) {
-            val oldEmergency = model.getAssignedEmergencyById(v.emergencyID!!) // ONLY FOR REALLOCATED VEHICLES
-            for (req in oldEmergency!!.currentRequiredAssets) { // if currentRequirement for this AssetType exists
-                if (req.vehicleType == v.vehicleType) { // find requirement that needs to be changed
-                    // (there should only be 1 req of same type as v)
+            if (v) { // if v will be reallocated
+                val oldEmergency = model.getAssignedEmergencyById(v.emergencyID!!)
+                var req: EmergencyRequirement
+                if (oldEmergency!!.currentRequiredAssets.any { it.vehicleType == v.vehicleType }) { // if old emergency had
+                    // requirement of type v.VehicleType
+                    req = oldEmergency.currentRequiredAssets.first { it.vehicleType == v.vehicleType }
+                    // find requirement that needs to be changed
+
                     req.numberOfVehicles++ // increase the number of current needed vehicles of this type by 1
-                    // to compensate for loss of v
-                    if (req.assetType != null) {
-                        var originalreq: EmergencyRequirement? = null
-                        for (oReq in oldEmergency.requiredAssets) { // find original requirement that corresponds to
-                            // req
-                            if (oReq.vehicleType == v.vehicleType) {
-                                originalreq = oReq
-                            }
-                        }
-                        req.amountOfAsset = originalreq!!.amountOfAsset!!
-                        for (v2 in model.getVehiclesByIds(oldEmergency.assignedVehicleIDs)) {
-                            if (v2.vehicleType == v.vehicleType) { // go through all vehicles of same type as v
-                                // and add up their total asset capacity (v should not be part of this list anymore)
-                                req.amountOfAsset = req.amountOfAsset!! - v2.maxAssetCapacity
-                            } // req.amountOfAsset is now the actual missing amount of asset to fulfill the requirement
-                        }
+                } else {
+                    req = EmergencyRequirement(v.vehicleType, null, 1, null)
+                    oldEmergency.currentRequiredAssets.add(req)
+                }
+
+                if (req.assetType != null) {
+                    val originalReq = oldEmergency.requiredAssets.first {it.vehicleType == v.vehicleType} // get original requirement
+                    req.amountOfAsset = originalReq.amountOfAsset!!
+                    for (v2 in model.getVehiclesByIds(oldEmergency.assignedVehicleIDs)) {
+                        if (v2.vehicleType == v.vehicleType) { // go through all vehicles of same type as v
+                            // and add up their total asset capacity (v should not be part of this list anymore)
+                            req.amountOfAsset = req.amountOfAsset!! - v2.maxAssetCapacity
+                        } // req.amountOfAsset is now the actual missing amount of asset to fulfill the requirement
                     }
                 }
+                var newReq: EmergencyRequirement
+                oldEmergency.currentRequiredAssets.add(newReq)
+                emergency.addAsset(v)
             }
-            var newReq: EmergencyRequirement
-            oldEmergency.currentRequiredAssets.add(newReq)
-            emergency.addAsset(v)
         }
     }
 
