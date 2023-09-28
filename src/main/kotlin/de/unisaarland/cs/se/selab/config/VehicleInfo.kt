@@ -11,7 +11,7 @@ import de.unisaarland.cs.se.selab.model.VehicleType
  * @param staffCapacity the amount of staff that fit into that vehicle
  * @param vehicleHeight the height of the vehicle
  */
-class VehicleInfo(
+data class VehicleInfo(
     val id: Int,
     val baseId: Int,
     val vehicleType: VehicleType,

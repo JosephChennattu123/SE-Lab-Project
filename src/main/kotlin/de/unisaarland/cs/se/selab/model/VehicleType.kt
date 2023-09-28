@@ -1,4 +1,5 @@
 package de.unisaarland.cs.se.selab.model
+
 /** enum class for Vehicle Type */
 enum class VehicleType {
     AMBULANCE,
@@ -51,6 +52,4 @@ enum class VehicleType {
             }
         }
     }
-
-
 }

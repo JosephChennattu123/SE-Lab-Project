@@ -45,5 +45,20 @@ class Base(
  * The `BaseType` enum represents the types of bases that can exist in the simulation.
  */
 enum class BaseType {
-    FIRE_STATION, POLICE_STATION, HOSPITAL
+    FIRE_STATION, POLICE_STATION, HOSPITAL;
+
+    companion object {
+        /**
+         * @param value possibly a value of this enum
+         * @return a BaseType if the string matched a value else null
+         */
+        fun fromString(value: String): BaseType? {
+            return when (value) {
+                "FIRE_STATION" -> FIRE_STATION
+                "POLICE_STATION" -> POLICE_STATION
+                "HOSPITAL" -> HOSPITAL
+                else -> null
+            }
+        }
+    }
 }

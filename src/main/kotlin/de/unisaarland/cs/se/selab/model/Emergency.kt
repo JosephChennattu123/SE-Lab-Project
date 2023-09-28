@@ -55,6 +55,7 @@ class Emergency(
     /**
      * begin handling the emergency if all assets have arrived */
     fun handle() {
+        TODO()
     }
 
     /**
@@ -107,6 +108,10 @@ enum class EmergencyType {
     FIRE, ACCIDENT, CRIME, MEDICAL;
 
     companion object {
+        /**
+         * @param value possibly a value of this enum
+         * @return a EmergencyType if the string matched a value else null
+         */
         fun fromString(value: String): EmergencyType? {
             return when (value) {
                 "FIRE" -> FIRE

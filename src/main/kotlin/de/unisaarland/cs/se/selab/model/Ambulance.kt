@@ -1,4 +1,5 @@
 package de.unisaarland.cs.se.selab.model
+
 /** @param vehicleId
  * @param baseId
  * @param height

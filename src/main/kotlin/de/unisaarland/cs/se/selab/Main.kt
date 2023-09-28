@@ -48,7 +48,6 @@ fun main(args: Array<String>) {
     // run the simulation.
     if (controlCenter != null) {
         controlCenter.simulate()
-        // TODO call gather statistics here.
     } else {
         error("controlCenter is null")
     }
