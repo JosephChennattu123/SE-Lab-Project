@@ -12,7 +12,7 @@ class PositionTracker {
 
     /** updates Position: updates the value of current Vertex index and position on Edge*/
     fun updatePosition() {
-        var distance = path.edgeWeights[currentVertexIndex] - (positionOnEdge + SPEED)
+        val distance = path.edgeWeights[currentVertexIndex] - (positionOnEdge + SPEED)
         if (distance > 0) {
             positionOnEdge + SPEED
         } else {
@@ -26,19 +26,19 @@ class PositionTracker {
      * is reset to 0 and position on edge is updated  * */
 
     fun assignPath(path: Path): Boolean {
-        if (path.vertexPath == this.path.vertexPath && path.edgeWeights == this.path.edgeWeights &&
+        return if (path.vertexPath == this.path.vertexPath && path.edgeWeights == this.path.edgeWeights &&
             path.totalTicksToArrive == this.path.totalTicksToArrive
         ) {
-            return false
+            false
         } else {
             if (path.vertexPath[0] == this.path.vertexPath[currentVertexIndex]) {
                 this.path = path
-                return true
+                true
             } else {
                 positionOnEdge = this.path.edgeWeights[currentVertexIndex] - positionOnEdge
                 currentVertexIndex = 0
                 this.path = path
-                return true
+                true
             }
         }
     }
