@@ -6,8 +6,6 @@ import de.unisaarland.cs.se.selab.model.Path
 import de.unisaarland.cs.se.selab.model.map.Graph
 import de.unisaarland.cs.se.selab.model.map.SecondaryType
 import de.unisaarland.cs.se.selab.model.map.Vertex
-import java.util.*
-import kotlin.collections.HashMap
 
 /**
  * Util class to calculate the shortest path on a graph using Dijkstra's algorithm.
@@ -120,15 +118,26 @@ object Dijkstra {
         height: Int
     ): Path {
         val parentMap = HashMap<Int, Int>()
-        val distanceFromSourceVertex = dijkstraAlgorithm(graph, sourceVertex, false, height, parentMap)
+        val distanceFromSourceVertex =
+            dijkstraAlgorithm(graph, sourceVertex, false, height, parentMap)
         val path = reconstructPath(sourceVertex, targetVertex, parentMap)
         val weights: List<Int> = mutableListOf()
         val isOneWay: List<Boolean> = mutableListOf()
         for (i in 0 until path.size - 2) {
             weights + graph.getEdge(path[i], path[i + 1]).getWeight()
-            isOneWay + (graph.getEdge(path[i], path[i + 1]).properties.secondaryType == SecondaryType.ONE_WAY)
+            isOneWay + (
+                graph.getEdge(
+                    path[i],
+                    path[i + 1]
+                ).properties.secondaryType == SecondaryType.ONE_WAY
+                )
         }
-        return Path(path, weights, isOneWay, roundToNextTen(distanceFromSourceVertex[targetVertex]!! / speed))
+        return Path(
+            path,
+            weights,
+            isOneWay,
+            roundToNextTen(distanceFromSourceVertex[targetVertex]!! / speed)
+        )
     }
 
     /**
@@ -147,9 +156,19 @@ object Dijkstra {
     ): Path {
         val edge = graph.getEdge(location)
         val pathToEdgeSource =
-            getShortestPathFromVertexToVertex(graph, sourceVertex, edge.sourceVertex.vertexId, height)
+            getShortestPathFromVertexToVertex(
+                graph,
+                sourceVertex,
+                edge.sourceVertex.vertexId,
+                height
+            )
         val pathToEdgeTarget =
-            getShortestPathFromVertexToVertex(graph, sourceVertex, edge.targetVertex.vertexId, height)
+            getShortestPathFromVertexToVertex(
+                graph,
+                sourceVertex,
+                edge.targetVertex.vertexId,
+                height
+            )
         return if (pathToEdgeSource.totalTicksToArrive < pathToEdgeTarget.totalTicksToArrive) {
             pathToEdgeSource
         } else {
@@ -175,8 +194,10 @@ object Dijkstra {
         height: Int
     ): Path {
         val edge = graph.getEdge(sourceVertex, targetVertex)
-        val pathFromSource = getShortestPathFromVertexToVertex(graph, sourceVertex, destinationVertex, height)
-        val pathFromTarget = getShortestPathFromVertexToVertex(graph, targetVertex, destinationVertex, height)
+        val pathFromSource =
+            getShortestPathFromVertexToVertex(graph, sourceVertex, destinationVertex, height)
+        val pathFromTarget =
+            getShortestPathFromVertexToVertex(graph, targetVertex, destinationVertex, height)
         // update path from target to include the remaining edge.
         // add remaining edge to be travelled.
         val path: List<Int> = mutableListOf()
@@ -190,7 +211,7 @@ object Dijkstra {
         val isOneWay: List<Boolean> = mutableListOf()
         isOneWay + true
         isOneWay + pathFromTarget.isOneWay
-        val oneWayPath: Path = Path(path, weights, isOneWay, roundToNextTen(weights.sum()) / speed)
+        val oneWayPath = Path(path, weights, isOneWay, roundToNextTen(weights.sum()) / speed)
         // check if it is shorter to travel back to source and then to destination.
         if (pathFromSource.getTotalDistance() + currentDistanceOnEdge <
             pathFromTarget.getTotalDistance() + (edge.getWeight() - currentDistanceOnEdge)
@@ -214,8 +235,8 @@ object Dijkstra {
     }
 
     /**
-     * finds the all nearest bases to the given vertex.
-     * @param vertexId the vertex to which bases needs to find the shortest path to.
+     * finds the all the nearest bases to the given vertex.
+     * @param vertexId the vertex to which bases need to find the shortest path to.
      * @return map of all bases and their distances to the given vertex.
      * */
     private fun findNearestBases(
@@ -225,7 +246,8 @@ object Dijkstra {
         excludedBases: Set<Int> = setOf()
     ): HashMap<Int, Int>? {
         val nearestBases = HashMap<Int, Int>()
-        val distanceFromSourceVertex = dijkstraAlgorithm(graph, vertexId, true, parentMap = HashMap())
+        val distanceFromSourceVertex =
+            dijkstraAlgorithm(graph, vertexId, true, parentMap = HashMap())
         val filterVertices = distanceFromSourceVertex.keys.filter {
             !excludedBases.contains(it) && graph.vertices[it]?.baseType == baseType
         }
@@ -267,7 +289,8 @@ object Dijkstra {
 
         while (visited.containsValue(false)) {
             // find the vertex with the minimum distance from the source vertex.
-            val currentVertex = getMinDistance(graph.vertices.values.toMutableList(), distancesFromSource, visited)
+            val currentVertex =
+                getMinDistance(graph.vertices.values.toMutableList(), distancesFromSource, visited)
             visited[currentVertex.vertexId] = true
 
             // relax all edges of the vertex.
