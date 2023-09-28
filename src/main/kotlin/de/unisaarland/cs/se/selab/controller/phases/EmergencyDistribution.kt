@@ -5,6 +5,10 @@ import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.util.Dijkstra
 import de.unisaarland.cs.se.selab.util.Logger
 
+/**
+ * Emergency distribution phase
+ * In this phase emergencies get distributed to the bases.
+ */
 class EmergencyDistribution {
 
 

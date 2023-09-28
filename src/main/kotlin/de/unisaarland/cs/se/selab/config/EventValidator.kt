@@ -8,12 +8,16 @@ import de.unisaarland.cs.se.selab.controller.events.Event
 class EventValidator : BasicValidator() {
 
     override var requiredProperties: List<String> = listOf("id", "type", "tick", "duration")
+
     /**
      * Validates the information for events and creates events.
      *
      * @return the list of events created
      */
-    fun validate(): List<Event> {
+    fun validate(): List<Event>? {
+        validateFactor()
+        validateEdgeAndVerticesExists()
+        validateVehicleExist()
         TODO()
     }
 

@@ -12,6 +12,7 @@ object AssetManager {
      * @param severity Severity of the emergency
      * @return List of EmergencyRequirements */
     fun getFireRequirements(severity: Int): List<EmergencyRequirement> {
+        severity
         TODO()
     }
 
@@ -19,6 +20,7 @@ object AssetManager {
      * @param severity Severity of the emergency
      * @return List of EmergencyRequirements */
     fun getMedicalRequirements(severity: Int): List<EmergencyRequirement> {
+        severity
         TODO()
     }
 
@@ -26,6 +28,7 @@ object AssetManager {
      * @param severity Severity of the emergency
      * @return List of EmergencyRequirements */
     fun getAccidentRequirements(severity: Int): List<EmergencyRequirement> {
+        severity
         TODO()
     }
 
@@ -33,6 +36,7 @@ object AssetManager {
      * @param severity Severity of the emergency
      * @return List of EmergencyRequirements */
     fun getCrimeRequirements(severity: Int): List<EmergencyRequirement> {
+        severity
         TODO()
     }
 
@@ -41,7 +45,12 @@ object AssetManager {
      * @param emergency The emergency to allocate to
      * @param vehicles The list of vehicles to assign to the emergency */
     fun allocateAssetsToEmergency(model: Model, emergency: Emergency, vehicles: List<Vehicle>) {
-        // TODO
+        model
+        emergency
+        val vehiclesToCheck = vehicles.toMutableList()
+        filterAssetsByRequirement(vehiclesToCheck.toMutableList(), emergency.currentRequiredAssets)
+        filterAssetsByOptimalSolution(vehiclesToCheck, emergency.currentRequiredAssets)
+        TODO()
     }
 
     /**
@@ -52,7 +61,9 @@ object AssetManager {
         vehicles: MutableList<Vehicle>,
         requirements: MutableList<EmergencyRequirement>
     ) {
-        // TODO
+        vehicles
+        requirements
+        TODO()
     }
 
     /**
@@ -63,6 +74,8 @@ object AssetManager {
         vehiclesToCheck: MutableList<Vehicle>,
         requirements: List<EmergencyRequirement>
     ) {
-        // TODO
+        vehiclesToCheck
+        requirements
+        TODO()
     }
 }

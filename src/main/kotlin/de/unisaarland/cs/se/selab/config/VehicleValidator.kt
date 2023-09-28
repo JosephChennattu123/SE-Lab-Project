@@ -8,12 +8,18 @@ import de.unisaarland.cs.se.selab.model.Vehicle
 class VehicleValidator : BasicValidator() {
 
     override var requiredProperties: List<String> = listOf("id", "baseId", "vehicleType", "staffCapacity")
+
     /**
      * Validates the information for vehicles and creates vehicles.
      *
      * @return the list of vehicles created
      */
-    fun validate(): List<Vehicle> {
+    fun validate(): List<Vehicle>? {
+        validateStaffBounds()
+        validateHeightBounds()
+        validateBaseExists()
+        validateBasesNessesaryStaff()
+        validateLadderLenght()
         TODO()
     }
 
