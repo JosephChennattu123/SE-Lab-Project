@@ -19,8 +19,9 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
     }
 
     override fun applyEffect(model: Model) {
-        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
-        currentEdge.properties.factor = this.factor!!
+        require(source != null && target != null && factor != null) { "Source,Target or Factor should not be null" }
+        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int) as Edge
+        currentEdge.properties.factor = this.factor as Int
     }
 
     override fun decrementTimer() {
@@ -28,7 +29,7 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
     }
 
     override fun removeEffect(model: Model) {
-        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
+        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int) as Edge
         currentEdge.properties.factor = BASE_FACTOR
     }
 }

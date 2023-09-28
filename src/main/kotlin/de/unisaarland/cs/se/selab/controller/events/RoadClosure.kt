@@ -18,8 +18,15 @@ class RoadClosure(id: Int, start: Int, duration: Int, sourceId: Int, targetId: I
     }
 
     override fun applyEffect(model: Model) {
-        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
-        currentEdge.closed = true
+        require(source != null && target != null) { "source or target should not be null" }
+        val currentEdge1: Edge? = model.graph.getEdge(source as Int, target as Int)
+        val currentEdge2: Edge? = model.graph.getEdge(target as Int, source as Int)
+        if (currentEdge1 != null) {
+            currentEdge1.closed = true
+        }
+        if (currentEdge2 != null) {
+            currentEdge2.closed = true
+        }
     }
 
     override fun decrementTimer() {
@@ -27,7 +34,13 @@ class RoadClosure(id: Int, start: Int, duration: Int, sourceId: Int, targetId: I
     }
 
     override fun removeEffect(model: Model) {
-        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
-        currentEdge.closed = false
+        val currentEdge1: Edge? = model.graph.getEdge(source as Int, target as Int)
+        val currentEdge2: Edge? = model.graph.getEdge(target as Int, source as Int)
+        if (currentEdge1 != null) {
+            currentEdge1.closed = false
+        }
+        if (currentEdge2 != null) {
+            currentEdge2.closed = false
+        }
     }
 }

@@ -15,8 +15,8 @@ class ConstructionSite(
     id: Int,
     start: Int,
     duration: Int,
-    sourceId: Int,
-    targetId: Int,
+    val sourceId: Int,
+    val targetId: Int,
     factor: Int,
     val oneway: Boolean
 ) :
@@ -28,10 +28,11 @@ class ConstructionSite(
     }
 
     override fun applyEffect(model: Model) {
-        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
-        currentEdge.closed = true
-        if (this.factor != null) {
-            currentEdge.properties.factor = this.factor!!
+        require(source != null && target != null) { "Source and Target must not be null" }
+        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int) as Edge
+        currentEdge.closed = oneway
+        factor?.let {
+            currentEdge.properties.factor = it
         }
     }
 
@@ -40,7 +41,8 @@ class ConstructionSite(
     }
 
     override fun removeEffect(model: Model) {
-        val currentEdge: Edge = model.graph.getEdge(source!!, target!!)
+        require(source != null && target != null) { "Source and Target must not be null" }
+        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int) as Edge
         currentEdge.closed = false
         currentEdge.properties.factor = BASE_FACTOR
     }

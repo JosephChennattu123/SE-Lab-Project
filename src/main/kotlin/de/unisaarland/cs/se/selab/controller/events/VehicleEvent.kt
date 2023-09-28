@@ -12,7 +12,12 @@ import de.unisaarland.cs.se.selab.model.VehicleStatus
 class VehicleEvent(val vehicleId: Int, id: Int, start: Int, duration: Int) :
     Event(id, EventType.VEHICLE_UNAVAILABLE, start, duration) {
     override fun applyEffect(model: Model) {
-        val vehicleObject: Vehicle = model.getVehicleById(vehicleId)!!
+        require(model.getVehicleById(vehicleId) != null) {
+            "vehicle id should not be" +
+                " null and vehicle should exist"
+        }
+
+        val vehicleObject: Vehicle = model.getVehicleById(vehicleId) as Vehicle
         if (vehicleObject.status == VehicleStatus.AT_BASE) {
             vehicleObject.status = VehicleStatus.UNAVAILABLE
         }
@@ -23,7 +28,7 @@ class VehicleEvent(val vehicleId: Int, id: Int, start: Int, duration: Int) :
     }
 
     override fun removeEffect(model: Model) {
-        val vehicleObject: Vehicle = model.getVehicleById(vehicleId)!!
+        val vehicleObject: Vehicle = model.getVehicleById(vehicleId) as Vehicle
         if (vehicleObject.status == VehicleStatus.UNAVAILABLE) {
             vehicleObject.status = VehicleStatus.AT_BASE
         }
