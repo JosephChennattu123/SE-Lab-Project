@@ -2,15 +2,29 @@ package de.unisaarland.cs.se.selab.controller.phases
 
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
-
 import de.unisaarland.cs.se.selab.model.Vehicle
 import de.unisaarland.cs.se.selab.model.VehicleStatus
 
-
+/**
+ * Update phase
+ * In this phase the elements of the simulation get updated.
+ */
 class UpdatePhase {
+    var eventOccured: Boolean = false
+
+    /**
+     * @param model the model
+     */
     fun execute(model: Model) {
+        // TODO check all code, everything in this method might be wrong, it was used to fix detekt problems
+        collectArrivedV(model.getSortedVehicleList())
         processVehicles(model.getSortedVehicleList())
-        processEmergencies(model.getAssignedEmergenciesObjects())
+        printLog(model.getSortedVehicleList())
+        processEmergencies(model.getCurrentEmergencies()) // TODO needs checking might be wrong
+        processActiveEvents()
+        processPostponedEvents()
+        timeUpdate(model)
+        TODO()
     }
 
     /**
@@ -40,6 +54,7 @@ class UpdatePhase {
     }
 
     private fun processActiveEvents() {
+>>>>>>>>> Temporary merge branch 2
         // todo
     }
 

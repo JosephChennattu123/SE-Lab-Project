@@ -1,32 +1,59 @@
 package de.unisaarland.cs.se.selab.model
 
+/** @param vehicleId
+ * @param baseId
+ * @param height
+ * @param staffCapacity
+ * @param maxAssetCapacity */
 class FireTruck(
-    vehicleId: Int, baseId: Int, vehicleType: VehicleType, height: Int,
-    staffCapacity: Int, maxAssetCapacity: Int
+    vehicleId: Int,
+    baseId: Int,
+    vehicleType: VehicleType,
+    height: Int,
+    staffCapacity: Int,
+    maxAssetCapacity: Int
 ) : Vehicle(
-    vehicleId, baseId,
-    vehicleType, height, staffCapacity, maxAssetCapacity
+    vehicleId,
+    baseId,
+    vehicleType,
+    height,
+    staffCapacity,
+    maxAssetCapacity
 ) {
 
     var waterLevel: Int? = null
-    var ladderLength: Int? = null
+    val ladderLength: Int? = null
+    val waterCapacity: Int? = null
 
-    override fun setBusy(): Boolean {
-        TODO()
+    override fun setBusy() {
+        busyTicks = (waterCapacity!! - waterLevel!!) / THREE_HUNDRED
+        if (busyTicks != 0) {
+            status = VehicleStatus.BUSY
+        }
+        status = VehicleStatus.AT_BASE
     }
 
     override fun handleEmergency(amount: Int): Int {
-        //todo
-        return -1
+        status = VehicleStatus.HANDLING
+        var returnAmount = amount - (waterCapacity!! - waterLevel!!)
+        if (returnAmount < 0) {
+            waterLevel = waterCapacity + returnAmount
+            return 0
+        } else {
+            waterLevel = waterCapacity
+            return returnAmount
+        }
     }
 
-    fun refill(): Unit {
-        //todo
-
-    }
-
+    /** checks if vehicle is filled up with water */
     fun isFull(): Boolean {
-        //todo
-        return true
+        return waterCapacity == waterLevel
+    }
+
+    /** resets vehicle assets possessed to zero */
+    override fun resetAfterBusy() {
+        waterLevel = waterCapacity
     }
 }
+
+const val THREE_HUNDRED: Int = 300

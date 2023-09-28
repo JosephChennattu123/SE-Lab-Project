@@ -1,6 +1,9 @@
 package de.unisaarland.cs.se.selab.util
 
-import de.unisaarland.cs.se.selab.model.*
+import de.unisaarland.cs.se.selab.model.Emergency
+import de.unisaarland.cs.se.selab.model.EmergencyRequirement
+import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.Vehicle
 
 /**
  * Returns requirements for emergencies and handles the allocation of assets to emergencies */
@@ -236,7 +239,9 @@ object AssetManager {
     private fun filterAssetsByOptimalSolution(
         vehicles: MutableList<Vehicle>, requirements: MutableList<EmergencyRequirement>
     ) {
-        // TODO
+        vehicles
+        requirements
+        TODO()
     }
 
     /**

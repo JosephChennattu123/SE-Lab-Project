@@ -8,7 +8,8 @@ package de.unisaarland.cs.se.selab.model
  * @param severity Severity of the emergency, dictates requirements
  * @param handleTime amount of rounds needed to resolve the emergency
  * @param maxDuration amount of rounds until the emergency fails
- * @param location Precise location of the emergency */
+ * @param location Precise location of the emergency
+ * @property canRequest true if at least one allocation or reallocation was not fail*/
 class Emergency(
     var id: Int,
     var scheduledTick: Int,
@@ -21,6 +22,8 @@ class Emergency(
     var status: EmergencyStatus = EmergencyStatus.ONGOING
 
 ) {
+
+    var canRequest: Boolean = false
     var requiredAssets: List<EmergencyRequirement> = listOf()
     var currentRequiredAssets: MutableList<EmergencyRequirement> = mutableListOf()
     var assignedVehicleIDs: MutableList<Int> = mutableListOf()
@@ -32,6 +35,7 @@ class Emergency(
      * @param v vehicle to be assigned */
     fun addAsset(v: Vehicle) {
         assignedVehicleIDs.add(v.vehicleID)
+
     }
 
     /**
@@ -52,7 +56,7 @@ class Emergency(
     /**
      * begin handling the emergency if all assets have arrived */
     fun handle() {
-        // TODO
+        TODO()
     }
 
     /**
@@ -93,7 +97,7 @@ class Emergency(
             changeStatus(EmergencyStatus.FAILED)
             return true
         }
-        if (handleTime == 0) {
+        if (handleTime <= 0) {
             changeStatus(EmergencyStatus.RESOLVED)
             return true
         }
@@ -104,7 +108,23 @@ class Emergency(
 /**
  * Type of the emergency */
 enum class EmergencyType {
-    FIRE, ACCIDENT, CRIME, MEDICAL
+    FIRE, ACCIDENT, CRIME, MEDICAL;
+
+    companion object {
+        /**
+         * @param value possibly a value of this enum
+         * @return a EmergencyType if the string matched a value else null
+         */
+        fun fromString(value: String): EmergencyType? {
+            return when (value) {
+                "FIRE" -> FIRE
+                "ACCIDENT" -> ACCIDENT
+                "CRIME" -> CRIME
+                "MEDICAL" -> MEDICAL
+                else -> null
+            }
+        }
+    }
 }
 
 /**

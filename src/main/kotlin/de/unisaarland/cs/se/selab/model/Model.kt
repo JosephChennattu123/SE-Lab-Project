@@ -9,7 +9,6 @@ import de.unisaarland.cs.se.selab.model.map.Graph
  * @param vehicleToBase
  * @param emergencies
  * */
-
 class Model(
     val graph: Graph,
     val maxTick: Int?, // optional command-line argument
@@ -89,7 +88,7 @@ class Model(
     }
 
     /** @returns list of all current events */
-    fun getCurrentEvents(): List<Event> {
+    fun getCurrentEventsObjects(): List<Event> {
         return currentEvents.mapNotNull { events[it] }
     }
 
@@ -122,7 +121,8 @@ class Model(
 
     /** add vehicleEvent to a map of vehicle id to postponed events */
     fun addVehicleEvent(vehicleId: Int, eventId: Event) {
-        val vehicleEventsPost: MutableList<Event> = vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
+        val vehicleEventsPost: MutableList<Event> =
+            vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
         vehicleEventsPost.add(eventId)
         vehicleToPostponedEvents[vehicleId] = vehicleEventsPost
     }
