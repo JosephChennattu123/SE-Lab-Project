@@ -35,7 +35,13 @@ class Emergency(
      * @param v vehicle to be assigned */
     fun addAsset(v: Vehicle) {
         assignedVehicleIDs.add(v.vehicleID)
+    }
 
+    /**
+     * remove an assigned vehicle from the emergency.
+     * */
+    fun removedAssignedVehicle(v: Vehicle) {
+        assignedVehicleIDs.remove(v.vehicleID)
     }
 
     /**
@@ -66,7 +72,6 @@ class Emergency(
         return maxDuration - (timeElapsed + handleTime) > ticks
     }
 
-
     /**
      * @return if the emergency has been assigned all of its necessary assets */
     fun isFulfilled(): Boolean {
@@ -86,7 +91,6 @@ class Emergency(
     fun decrementTimer() {
         timeElapsed++
         if (status == EmergencyStatus.BEING_HANDLED) handleTime--
-
     }
 
     /**
