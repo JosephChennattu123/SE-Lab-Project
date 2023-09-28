@@ -14,7 +14,7 @@ import de.unisaarland.cs.se.selab.util.Logger
  * In this phase the elements of the simulation get updated.
  */
 class UpdatePhase {
-    var eventOccured: Boolean = false
+    var eventOccurred: Boolean = false
 
     /**
      * begins the update phase processing
@@ -91,13 +91,13 @@ class UpdatePhase {
 
         for (emergency in resolvableEmergencies) {
             emergency.changeStatus(EmergencyStatus.RESOLVED)
-            Logger.logEmergencyResolve(emergency.id)
+            Logger.logEmergencyResult(emergency.id, true)
             endEmergency(emergency, model)
         }
 
         for (emergency in failingEmergencies) {
             emergency.changeStatus(EmergencyStatus.FAILED)
-            Logger.logEmergencyFailed(emergency.id)
+            Logger.logEmergencyResult(emergency.id, false)
             endEmergency(emergency, model)
         }
     }
