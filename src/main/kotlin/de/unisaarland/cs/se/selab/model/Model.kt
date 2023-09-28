@@ -51,7 +51,7 @@ class Model(
      *  please use this function to fetch the
      * emergency started in this tick*/
     fun getCurrentEmergencies(): List<Emergency> {
-        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick] ?: listOf()
+        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick].orEmpty()
         return listOfStartedEmergencies.mapNotNull { emergencies[it] }
     }
 

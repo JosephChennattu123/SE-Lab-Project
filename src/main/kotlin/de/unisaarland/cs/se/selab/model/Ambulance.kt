@@ -28,19 +28,29 @@ class Ambulance(
         if (patientPresent == true) status = VehicleStatus.BUSY
     }
 
+/** Essentially handle emergency */
     override fun handleEmergency(amount: Int): Int {
         status = VehicleStatus.HANDLING
-        if (amount > 0) {
-            if (!patientPresent!!) patientPresent = true
-            return amount - 1
+        if (patientPresent != null) {
+            if (amount > 0) {
+                if (patientPresent == false
+                ) {
+                    patientPresent = true
+                }
+                return amount - 1
+            }
+            return 0
         }
-        return 0
+        return amount
     }
 
     /** checks if vehicle is filled up with patients */
     fun isFull(): Boolean {
-        if (patientPresent != null) return patientPresent!!
-        return false
+        return if (patientPresent == null) {
+            false
+        } else {
+            patientPresent as Boolean
+        }
     }
 
     /** resets vehicle assets possessed to zero */

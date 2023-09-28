@@ -12,7 +12,7 @@ class PositionTracker {
 
     /** updates Position: updates the value of current Vertex index and position on Edge*/
     fun updatePosition() {
-        var distance = path.edgeWeights[currentVertexIndex] - (positionOnEdge + SPEED)
+        val distance = path.edgeWeights[currentVertexIndex] - (positionOnEdge + SPEED)
         if (distance > 0) {
             positionOnEdge + SPEED
         } else {

@@ -20,7 +20,7 @@ class RushHour(id: Int, start: Int, duration: Int, val roadTypes: List<PrimaryTy
         for (currentEdge in model.graph.getEdges()) {
             for (currentPrimaryType in roadTypes) {
                 if (currentEdge.properties.roadType == currentPrimaryType) {
-                    require(factor != null) { "Factor should not be null" }
+                    requireNotNull(factor) { "Factor should not be null" }
                     currentEdge.properties.factor = factor as Int
                 }
             }

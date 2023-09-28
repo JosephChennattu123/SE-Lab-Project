@@ -12,7 +12,7 @@ import de.unisaarland.cs.se.selab.model.VehicleStatus
 class VehicleEvent(val vehicleId: Int, id: Int, start: Int, duration: Int) :
     Event(id, EventType.VEHICLE_UNAVAILABLE, start, duration) {
     override fun applyEffect(model: Model) {
-        require(model.getVehicleById(vehicleId) != null) {
+        requireNotNull(model.getVehicleById(vehicleId)) {
             "vehicle id should not be" +
                 " null and vehicle should exist"
         }
