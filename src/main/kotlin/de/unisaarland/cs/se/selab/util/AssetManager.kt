@@ -332,12 +332,11 @@ object AssetManager {
                 VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
                     // If vehicle is currently on the road,
                     // calculate drive time from their precise position on the edge to emergency
-                    val pt = vehicle.positionTracker
                     val newPath = Dijkstra.getShortestPathFromEdgeToEdge(
                         model.graph,
-                        pt.path.vertexPath[pt.currentVertexIndex],
-                        pt.path.vertexPath[pt.currentVertexIndex + 1],
-                        pt.positionOnEdge,
+                        vehicle.getCurrentVertexID(),
+                        vehicle.getNextVertexID(),
+                        vehicle.getDistanceOnEdge(),
                         emergency.location,
                         vehicle.height
                     )
@@ -404,14 +403,19 @@ object AssetManager {
         vehiclesToCheck: MutableList<Vehicle>,
         requirements: List<EmergencyRequirement>
     ) {
-        for (v in vehiclesToCheck) {
+        val vehiclesToBeRemoved = mutableListOf<Vehicle>()
+        for (vehicle in vehiclesToCheck) {
+            // check if the vehicle type does not match the requirement type
+            // or if the base does not have enough staff to send the vehicle.
             if (!requirements.any {
-                    v.vehicleType == it.vehicleType
-                            && v.staffCapacity <= model.getBaseById(v.baseID)!!.currStaff
-                })
-            // if v does not fit any of the requirements, remove it from the list
-                vehiclesToCheck.remove(v)
+                    vehicle.vehicleType != it.vehicleType
+                            && vehicle.staffCapacity > model.getBaseById(vehicle.baseID)!!.currStaff
+                }) {
+                // collect vehicles that needed to be removed.
+                vehiclesToBeRemoved.add(vehicle)
+            }
         }
+        vehiclesToCheck.removeAll(vehiclesToBeRemoved)
     }
 
     /**
