@@ -5,10 +5,26 @@ import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Vehicle
 import de.unisaarland.cs.se.selab.model.VehicleStatus
 
+/**
+ * Update phase
+ * In this phase the elements of the simulation get updated.
+ */
 class UpdatePhase {
+    var eventOccured: Boolean = false
+
+    /**
+     * @param model the model
+     */
     fun execute(model: Model) {
+        // TODO check all code, everything in this method might be wrong, it was used to fix detekt problems
+        collectArrivedV(model.getSortedVehicleList())
         processVehicles(model.getSortedVehicleList())
-        processEmergencies(model.getAssignedEmergencies())
+        printLog(model.getSortedVehicleList())
+        processEmergencies(model.getCurrentEmergencies()) // TODO needs checking might be wrong
+        processActiveEvents()
+        processPostponedEvents()
+        timeUpdate(model)
+        TODO()
     }
 
     /**
@@ -20,9 +36,11 @@ class UpdatePhase {
                 VehicleStatus.BUSY -> {
                     if (vehicle.decreaseBusyTicks()) vehicle.status = VehicleStatus.AT_BASE
                 }
+
                 VehicleStatus.RETURNING, VehicleStatus.ASSIGNED, VehicleStatus.TO_EMERGENCY -> {
                     vehicle.driveUpdate()
                 }
+
                 else -> {}
             }
         }
@@ -35,26 +53,29 @@ class UpdatePhase {
                 else -> {}
             }
         }
+        TODO()
     }
 
     private fun processActiveEvents() {
-        // todo
+        TODO()
     }
 
     private fun processPostponedEvents() {
-        // todo
+        TODO()
     }
 
     private fun timeUpdate(model: Model) {
-        // todo
+        model
+        TODO()
     }
 
     private fun printLog(vehicles: List<Vehicle>) {
-        // todo
+        vehicles
+        TODO()
     }
 
     private fun collectArrivedV(vehicles: List<Vehicle>): List<Vehicle> {
-        // todo
-        return TODO()
+        vehicles
+        TODO()
     }
 }
