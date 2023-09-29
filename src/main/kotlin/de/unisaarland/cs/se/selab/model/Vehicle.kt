@@ -12,8 +12,8 @@ abstract class Vehicle(
     val vehicleType: VehicleType,
     val height: Int,
     val staffCapacity: Int,
-    val maxAssetCapacity: Int,
-    val currentNumberOfAssets: Int = maxAssetCapacity
+    val maxAssetCapacity: Int?,
+    val currentNumberOfAssets: Int? = maxAssetCapacity
 ) {
     var emergencyID: Int? = null
     var status: VehicleStatus = VehicleStatus.AT_BASE

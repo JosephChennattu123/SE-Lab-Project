@@ -17,7 +17,7 @@ data class VehicleInfo(
     val vehicleType: VehicleType,
     val staffCapacity: Int,
     val vehicleHeight: Int,
-    val criminalCapacity: Int,
-    val ladderLength: Int,
-    val waterCapacity: Int
+    val criminalCapacity: Int?,
+    val ladderLength: Int?,
+    val waterCapacity: Int?
 )

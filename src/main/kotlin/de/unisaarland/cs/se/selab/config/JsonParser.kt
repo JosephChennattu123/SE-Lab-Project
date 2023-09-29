@@ -17,16 +17,30 @@ import java.io.File
  * */
 class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: String) {
 
-    private val assetJson = JSONObject(File(assetsFilePath))
-    private val scenarioJson = JSONObject(File(emergenciesEventsFilePath))
+    private val assetJson = JSONObject(File(assetsFilePath).readText())
+    private val scenarioJson = JSONObject(File(emergenciesEventsFilePath).readText())
 
     private val assetSchema = getSchema(this::class.java, "assets.schema")
     private val scenarioSchema = getSchema(this::class.java, "simulation.schema")
 
-    private var bases: List<BaseInfo> = emptyList()
-    private var vehicles: List<VehicleInfo> = emptyList()
-    private var events: List<EventInfo> = emptyList()
-    private var emergencies: List<EmergencyInfo> = emptyList()
+    private val bases: MutableList<BaseInfo> = mutableListOf()
+    private val vehicles: MutableList<VehicleInfo> = mutableListOf()
+    private val events: MutableList<EventInfo> = mutableListOf()
+    private val emergencies: MutableList<EmergencyInfo> = mutableListOf()
+
+    /**
+     * Runs the assets schema validation
+     */
+    fun validateAssetsSchema() {
+        assetSchema?.validate(assetJson)
+    }
+
+    /**
+     * Runs the scenario schema validation
+     */
+    fun validateScenarioSchema() {
+        scenarioSchema?.validate(scenarioSchema)
+    }
 
     /**
      * parses the bases
@@ -41,14 +55,13 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     }
 
     private fun parseBase(base: JSONObject) {
-        assetSchema?.validate(base)
         val id = base.getInt(cfgId)
         val type = base.getString(cfgBaseType)
         val staff = base.getInt(cfgStaff)
-        val doctors = base.getInt(cfgDoctors)
-        val dogs = base.getInt(cfgDogs)
+        val doctors = base.opt(cfgDoctors) as Int?
+        val dogs = base.opt(cfgDogs) as Int?
         val location = base.getInt(cfgLocation)
-        bases + BaseInfo(id, BaseType.fromString(type) as BaseType, staff, doctors, dogs, location)
+        bases.add(BaseInfo(id, BaseType.fromString(type) as BaseType, location, staff, doctors, dogs))
     }
 
     /**
@@ -64,24 +77,25 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     }
 
     private fun parseVehicle(vehicle: JSONObject) {
-        assetSchema?.validate(vehicle)
         val id = vehicle.getInt(cfgId)
         val type = vehicle.getString(cfgVehicleType)
         val baseID = vehicle.getInt(cfgBaseId)
         val staffCapacity = vehicle.getInt(cfgStaffCapacity)
         val height = vehicle.getInt(cfgHeight)
-        val criminalCapacity = vehicle.getInt(cfgCriminalCapacity)
-        val ladderLength = vehicle.getInt(cfgLadderLength)
-        val waterCapacity = vehicle.getInt(cfgWaterCapacity)
-        vehicles + VehicleInfo(
-            id,
-            baseID,
-            VehicleType.fromString(type) as VehicleType,
-            staffCapacity,
-            height,
-            criminalCapacity,
-            ladderLength,
-            waterCapacity
+        val criminalCapacity = vehicle.opt(cfgCriminalCapacity) as Int?
+        val ladderLength = vehicle.opt(cfgLadderLength) as Int?
+        val waterCapacity = vehicle.opt(cfgWaterCapacity) as Int?
+        vehicles.add(
+            VehicleInfo(
+                id,
+                baseID,
+                VehicleType.fromString(type) as VehicleType,
+                staffCapacity,
+                height,
+                criminalCapacity,
+                ladderLength,
+                waterCapacity
+            )
         )
     }
 
@@ -98,7 +112,6 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     }
 
     private fun parseEmergency(emergency: JSONObject) {
-        scenarioSchema?.validate(emergency)
         val id = emergency.getInt(cfgId)
         val tick = emergency.getInt(cfgTick)
         val village = emergency.getString(cfgVillage)
@@ -107,15 +120,17 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
         val severity = emergency.getInt(cfgSeverity)
         val handleTime = emergency.getInt(cfgHandleTime)
         val maxDuration = emergency.getInt(cfgMaxDuration)
-        emergencies + EmergencyInfo(
-            id,
-            tick,
-            village,
-            roadName,
-            emergencyType as EmergencyType,
-            severity,
-            handleTime,
-            maxDuration
+        emergencies.add(
+            EmergencyInfo(
+                id,
+                tick,
+                village,
+                roadName,
+                emergencyType as EmergencyType,
+                severity,
+                handleTime,
+                maxDuration
+            )
         )
     }
 
@@ -132,29 +147,31 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     }
 
     private fun parseEvent(event: JSONObject) {
-        scenarioSchema?.validate(event)
         val id = event.getInt(cfgId)
         val tick = event.getInt(cfgTick)
         val eventType = EventType.fromString(event.getString(cfgEventType))
         val duration = event.getInt(cfgDuration)
-        val roadType = PrimaryType.fromString(event.getString(cfgRoadType))
-        val factor = event.getInt(cfgFactor)
-        val oneWayStreet = event.getBoolean(cfgOneWayStreet)
-        val source = event.getInt(cfgSource)
-        val target = event.getInt(cfgTarget)
-        val vehicleID = event.getInt(cfgVehicleId)
+
+        val roadTypeString = event.opt(cfgRoadType) as String?
+        val roadType = PrimaryType.fromString(roadTypeString as String)
+        val factor = event.opt(cfgFactor) as Int?
+        val oneWayStreet = event.opt(cfgOneWayStreet) as Boolean?
+        val source = event.opt(cfgSource) as Int?
+        val target = event.opt(cfgTarget) as Int?
+        val vehicleID = event.opt(cfgVehicleId) as Int?
         val eventInfo = EventInfo(
             id,
             tick,
             eventType as EventType,
             duration,
-            roadType as PrimaryType,
+            roadType,
             factor,
             oneWayStreet,
             source,
             target,
         )
         eventInfo.vehicleId = vehicleID
+        events.add(eventInfo)
     }
 
     private val cfgId: String = "id"
@@ -172,7 +189,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     private val cfgVehicleType: String = "vehicleType"
     private val cfgBaseId: String = "baseID"
     private val cfgStaffCapacity: String = "staffCapacity"
-    private val cfgHeight: String = "height"
+    private val cfgHeight: String = "vehicleHeight"
     private val cfgCriminalCapacity: String = "criminalCapacity"
     private val cfgLadderLength: String = "ladderLength"
     private val cfgWaterCapacity: String = "waterCapacity"
