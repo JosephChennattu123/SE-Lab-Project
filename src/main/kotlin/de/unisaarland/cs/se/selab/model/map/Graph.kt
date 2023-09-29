@@ -8,6 +8,8 @@ import de.unisaarland.cs.se.selab.model.Location
  */
 class Graph(val vertices: MutableMap<Int, Vertex>) {
 
+    private val countyNames: MutableSet<String> = mutableSetOf()
+    private val villageNames: MutableSet<String> = mutableSetOf()
     private val villages: MutableMap<String, MutableMap<String, Edge>> = mutableMapOf()
 
     /**
@@ -39,6 +41,20 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
     }
 
     /**
+     * @return the set of village names
+     */
+    fun getVillageNames(): Set<String> {
+        return this.villageNames
+    }
+
+    /**
+     * @return the set of county names
+     */
+    fun getCountyNames(): Set<String> {
+        return this.countyNames
+    }
+
+    /**
      * creates and connects vertices via an edge.
      * @param source the source-vertex
      * @param target th target-vertex
@@ -53,5 +69,10 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
         source.addOutgoingEdge(edge)
         target.addIngoingEdge(edge)
         villages.getOrPut(properties.villageName) { mutableMapOf() }[properties.roadName] = edge
+        if (properties.roadType == PrimaryType.COUNTY) {
+            countyNames.add(properties.villageName)
+        } else {
+            villageNames.add(properties.villageName)
+        }
     }
 }
