@@ -22,11 +22,11 @@ class EventInfo(
     val tick: Int,
     val eventType: EventType,
     val duration: Int,
-    val roadType: PrimaryType,
-    val factor: Int,
-    val oneWayStreet: Boolean,
-    val source: Int,
-    val target: Int,
+    val roadType: PrimaryType?,
+    val factor: Int?,
+    val oneWayStreet: Boolean?,
+    val source: Int?,
+    val target: Int?,
 ) {
     var vehicleId: Int? = null
 }

@@ -19,7 +19,7 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      */
     fun validate(graph: Graph): List<Base>? {
         val jsonParserObj = jsonParser as JsonParser
-        val baseInfos = jsonParserObj.bases
+        val baseInfos = jsonParserObj.parseBases()
 
         baseInfos.forEach { baseInfo ->
             if (!validateDogsOnlyInPoliceStations(baseInfo) || !validateDoctorsOnlyInHospitals(baseInfo)) {
