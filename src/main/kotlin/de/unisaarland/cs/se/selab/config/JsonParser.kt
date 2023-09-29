@@ -39,7 +39,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
      * Runs the scenario schema validation
      */
     fun validateScenarioSchema() {
-        scenarioSchema?.validate(scenarioSchema)
+        scenarioSchema?.validate(scenarioJson)
     }
 
     /**

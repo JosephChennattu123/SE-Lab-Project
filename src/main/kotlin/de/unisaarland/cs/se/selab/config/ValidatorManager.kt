@@ -19,8 +19,6 @@ class ValidatorManager {
     private var vehicles: List<Vehicle>? = null
     private var bases: List<Base>? = null
 
-    // private var vertices: List<Vertex>? = null
-    // private var edges: List<Edge>? = null
     private var graph: Graph? = null
     private var events: List<Event>? = null
     private var emergencies: List<Emergency>? = null
@@ -159,7 +157,7 @@ class ValidatorManager {
     private fun validateEmergencies(): Boolean {
         val emergencyValidator = EmergencyValidator(jsonParser as JsonParser)
         this.emergencies = emergencyValidator.validate()
-        TODO()
+        return emergencies != null
     }
 
     /**
@@ -170,6 +168,6 @@ class ValidatorManager {
     private fun validateEvent(): Boolean {
         val eventValidator = EventValidator(jsonParser as JsonParser)
         this.events = eventValidator.validate()
-        TODO()
+        return events != null
     }
 }
