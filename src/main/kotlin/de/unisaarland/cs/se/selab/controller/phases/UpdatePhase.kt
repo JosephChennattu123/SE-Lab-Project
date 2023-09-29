@@ -3,7 +3,6 @@ package de.unisaarland.cs.se.selab.controller.phases
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.EmergencyStatus
 import de.unisaarland.cs.se.selab.model.Model
-
 import de.unisaarland.cs.se.selab.model.Vehicle
 import de.unisaarland.cs.se.selab.model.VehicleStatus
 import de.unisaarland.cs.se.selab.util.Dijkstra
@@ -40,11 +39,12 @@ class UpdatePhase {
                 VehicleStatus.BUSY -> {
                     if (vehicle.decreaseBusyTicks()) vehicle.status = VehicleStatus.AT_BASE
                 }
-
-                VehicleStatus.RETURNING, VehicleStatus.ASSIGNED, VehicleStatus.TO_EMERGENCY -> {
+                VehicleStatus.ASSIGNED -> {
+                    vehicle.status = VehicleStatus.TO_EMERGENCY
+                }
+                VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
                     vehicle.driveUpdate()
                 }
-
                 else -> {}
             }
         }
@@ -70,7 +70,6 @@ class UpdatePhase {
             it.status == EmergencyStatus.WAITING_FOR_ASSETS && it.canStart() && it.timeElapsed < it.maxDuration
         }.toList()
 
-
         ongoingEmergencies.forEach {
             it.changeStatus(EmergencyStatus.WAITING_FOR_ASSETS)
         }
@@ -83,7 +82,6 @@ class UpdatePhase {
              */
             emergency.handle(model)
         }
-
 
         for (emergency in resolvableEmergencies) {
             emergency.changeStatus(EmergencyStatus.RESOLVED)

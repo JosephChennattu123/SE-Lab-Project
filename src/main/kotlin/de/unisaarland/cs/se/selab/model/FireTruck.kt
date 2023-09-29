@@ -25,12 +25,9 @@ class FireTruck(
     val ladderLength: Int? = null
     val waterCapacity: Int? = null
 
-    override fun setBusy() {
+    override fun setBusy(): Boolean {
         busyTicks = (waterCapacity as Int - waterLevel as Int) / THREE_HUNDRED
-        if (busyTicks != 0) {
-            status = VehicleStatus.BUSY
-        }
-        status = VehicleStatus.AT_BASE
+        return busyTicks != 0
     }
 
     override fun handleEmergency(amount: Int): Int {
