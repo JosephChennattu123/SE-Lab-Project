@@ -152,8 +152,18 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
         val eventType = EventType.fromString(event.getString(cfgEventType))
         val duration = event.getInt(cfgDuration)
 
-        val roadTypeString = event.opt(cfgRoadType) as String?
-        val roadType = PrimaryType.fromString(roadTypeString as String)
+        var roadTypes: List<PrimaryType>? = null
+        val roadTypesArray = event.opt(cfgRoadType)
+        if (roadTypesArray != null) {
+            val roadTypesCollect: MutableList<PrimaryType> = mutableListOf()
+            for (obj in roadTypesArray as JSONArray) {
+                roadTypesCollect.add(PrimaryType.fromString(obj as String) as PrimaryType)
+            }
+            if (roadTypesCollect.isNotEmpty()) {
+                roadTypes = roadTypesCollect.toSet().toList()
+            }
+        }
+
         val factor = event.opt(cfgFactor) as Int?
         val oneWayStreet = event.opt(cfgOneWayStreet) as Boolean?
         val source = event.opt(cfgSource) as Int?
@@ -164,7 +174,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
             tick,
             eventType as EventType,
             duration,
-            roadType,
+            roadTypes,
             factor,
             oneWayStreet,
             source,
@@ -195,7 +205,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     private val cfgWaterCapacity: String = "waterCapacity"
 
     // emergency related keys.
-    private val cfgEmergencies: String = "emergencies"
+    private val cfgEmergencies: String = "emergencyCalls"
     private val cfgTick: String = "tick"
     private val cfgVillage: String = "village"
     private val cfgRoadName: String = "roadName"
@@ -208,7 +218,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     private val cfgEvents: String = "events"
     private val cfgEventType: String = "type"
     private val cfgDuration: String = "duration"
-    private val cfgRoadType: String = "roadType"
+    private val cfgRoadType: String = "type"
     private val cfgFactor: String = "factor"
     private val cfgOneWayStreet: String = "oneWayStreet"
     private val cfgSource: String = "source"
