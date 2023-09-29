@@ -17,12 +17,13 @@ class Reroute {
             it.status == VehicleStatus.TO_EMERGENCY || it.status == VehicleStatus.RETURNING
         }
         drivingVehicles.forEach {
-            val vPath = it.positionTracker.path.vertexPath
-            it.positionTracker.path = Dijkstra.getShortestPathFromEdgeToEdge(
+            val vPosT = it.positionTracker
+            val vPath = vPosT.path.vertexPath
+            vPosT.path = Dijkstra.getShortestPathFromEdgeToEdge(
                 model.graph,
-                vPath[it.positionTracker.currentVertexIndex],
-                vPath[it.positionTracker.currentVertexIndex + 1],
-                it.positionTracker.positionOnEdge,
+                vPath[vPosT.currentVertexIndex],
+                vPath[vPosT.currentVertexIndex + 1],
+                vPosT.positionOnEdge,
                 model.getAssignedEmergencyById(it.emergencyID!!)!!.location,
                 it.height
             )
