@@ -3,6 +3,12 @@ package de.unisaarland.cs.se.selab.model
 import de.unisaarland.cs.se.selab.controller.events.Event
 import de.unisaarland.cs.se.selab.model.map.Graph
 
+/**@param graph
+ * @param maxTick
+ * @param vehicles
+ * @param vehicleToBase
+ * @param emergencies
+ * */
 class Model(
     val graph: Graph,
     val maxTick: Int?, // optional command-line argument
@@ -15,11 +21,11 @@ class Model(
     var tickToEventId: Map<Int, List<Int>>
 ) {
     var currentTick: Int = 0
-    var assignedEmergencies: MutableList<Int> = mutableListOf()
-    var currentEvents: MutableList<Int> = mutableListOf()
-    var roadToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
-    var vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
-    var requests: MutableList<Request> = mutableListOf()
+    val assignedEmergencies: MutableList<Int> = mutableListOf()
+    val currentEvents: MutableList<Int> = mutableListOf()
+    val roadToPostponedEvents: MutableMap<Int, MutableList<Int>> = mutableMapOf()
+    val vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
+    val requests: MutableList<Request> = mutableListOf()
 
     /** returns emergency object with respect to its id */
     fun getAssignedEmergencyById(emId: Int): Emergency? {
@@ -32,27 +38,30 @@ class Model(
     }
 
     /** adds a new emergency to the list of current assigned emergencies */
-    fun addToAssignedEmergencies(emId: Int): Unit {
+    fun addToAssignedEmergencies(emId: Int) {
         assignedEmergencies.add(emId)
     }
 
     /** removed an emergency from the list of assigned emergencies */
-    fun removeFromAssignedEmergencies(emId: Int): Unit {
+    fun removeFromAssignedEmergencies(emId: Int) {
         assignedEmergencies.remove(emId)
     }
 
-    /** returns list of started Emergencies. To people implementing/testing Emergency Distribution please use this function to fetch the
+    /** returns list of started Emergencies. To people implementing/testing Emergency Distribution
+     *  please use this function to fetch the
      * emergency started in this tick*/
     fun getCurrentEmergencies(): List<Emergency> {
-
-        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick] ?: listOf()
+        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick].orEmpty()
         return listOfStartedEmergencies.mapNotNull { emergencies[it] }
     }
 
-    /** Returns list of assigned emergencies. To people implementing/testing phases apart from Emergency Distribution please use this function to retrieve
-     * all active emergencies. Logic is that during emergency distribution will add the activated emergency into the assigned list immediately*/
+    /** Returns list of assigned emergencies. To people implementing/testing phases apart from
+     * Emergency Distribution please use this function to retrieve all active emergencies. Logic
+     * is that during emergency distribution will add the activated emergency into the assigned
+     * list immediately
+     * */
 
-    fun getAssignedEmergencies(): List<Emergency> {
+    fun getAssignedEmergenciesObjects(): List<Emergency> {
         return assignedEmergencies.mapNotNull { emergencies[it] }
     }
 
@@ -61,17 +70,11 @@ class Model(
         return bases[baseId]
     }
 
-    /** returns all vehicles */
-    fun getAllVehicles(): Map<Int, Vehicle> {
-        return vehicles
-    }
-
     /**
      * @return all the vehicles sorted by id.
      * */
     fun getSortedVehicleList(): List<Vehicle> {
         return vehicles.entries.sortedBy { it.key }.map { it.value }.toList()
-
     }
 
     /** returns a single vehicle for an id */
@@ -85,8 +88,8 @@ class Model(
     }
 
     /** @returns list of all current events */
-    fun getCurrentEvents(): List<Event> {
-        return currentEvents.mapNotNull { events[it] }
+    fun getCurrentEventsObjects(): List<Event> {
+        return currentEvents.distinct().mapNotNull { events[it] }
     }
 
     /** @returns all events */
@@ -111,15 +114,15 @@ class Model(
 
     /** add roadEvent to a map of road id to postponed events */
     fun addRoadEvent(roadId: Int, eventId: Event) {
-        val roadEventsPost: MutableList<Event> = roadToPostponedEvents[roadId] ?: mutableListOf()
-        roadEventsPost.add(eventId)
+        val roadEventsPost: MutableList<Int> = roadToPostponedEvents[roadId] ?: mutableListOf()
+        roadEventsPost.add(eventId.id)
         roadToPostponedEvents[roadId] = roadEventsPost
-
     }
 
     /** add vehicleEvent to a map of vehicle id to postponed events */
     fun addVehicleEvent(vehicleId: Int, eventId: Event) {
-        val vehicleEventsPost: MutableList<Event> = vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
+        val vehicleEventsPost: MutableList<Event> =
+            vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
         vehicleEventsPost.add(eventId)
         vehicleToPostponedEvents[vehicleId] = vehicleEventsPost
     }

@@ -3,10 +3,14 @@ package de.unisaarland.cs.se.selab.config
 /**
  * The basic class for the Validators (not graph)
  * */
-abstract class BasicValidator {
+abstract class BasicValidator(jsonParser: JsonParser) {
 
     protected abstract var requiredProperties: List<String>
     protected var jsonParser: JsonParser? = null
+
+    init {
+        this.jsonParser = jsonParser
+    }
 
     /**
      * Validate ids.

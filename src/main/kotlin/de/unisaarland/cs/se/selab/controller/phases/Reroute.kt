@@ -4,8 +4,10 @@ import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.VehicleStatus
 import de.unisaarland.cs.se.selab.util.Dijkstra
 
-/***
- * Reroute calculates new paths for all vehicles that are current on a road after an event has occurred
+/**
+ * Reroute Phase.
+ * Checks if rerouting of vehicles is needed when events could have occurred and
+ * reroutes them if necessary.
  */
 class Reroute {
     /**
