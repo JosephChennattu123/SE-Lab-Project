@@ -15,6 +15,7 @@ class Edge(
     var properties: RoadProperties,
     var activeEventId: Int? = null,
     var closed: Boolean = false,
+    var activeEmergencyId: Int? = null
 ) {
 
     companion object {
@@ -29,6 +30,7 @@ class Edge(
             properties: RoadProperties,
             activeEventId: Int? = null,
             closed: Boolean = false,
+            activeEmergencyId: Int? = null
         ): Edge {
             val newEdge = Edge(
                 currentAvailableEdgeId,
@@ -36,7 +38,9 @@ class Edge(
                 targetVertex,
                 properties,
                 activeEventId,
-                closed
+                closed,
+                activeEmergencyId
+
             )
             currentAvailableEdgeId++
             return newEdge
