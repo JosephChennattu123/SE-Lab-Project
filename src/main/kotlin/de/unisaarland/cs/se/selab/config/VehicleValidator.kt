@@ -14,6 +14,8 @@ private const val LADDERMIN = 30
 private const val LADDERMAX = 70
 private const val CRIMINALSMIN = 1
 private const val CRIMINALSMAX = 4
+private const val STAFFMAXIMUM = 12
+private const val VEHICLEMAXHEIGHT = 5
 
 /**
  * Validates the vehicles
@@ -32,18 +34,16 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
         val vehicleInfos = jsonParserObj.parseVehicles()
 
         vehicleInfos.forEach { vehicleInfo ->
-            if (vehicleInfo.vehicleType == VehicleType.FIRE_TRUCK_LADDER) {
-                validateLadderLenght(vehicleInfo)
-            } else if (vehicleInfo.ladderLength != null) {
+            if (!validateOptionalProperties(vehicleInfo) || !validateAssetCapacity(vehicleInfo)) {
                 return null
             }
-            if (vehicleInfo.vehicleType in listOf(VehicleType.FIRE_TRUCK_WATER, VehicleType.POLICE_CAR)) {
-                validateAssetCapacity(vehicleInfo)
+
+            if (!validateStaffBounds(vehicleInfo) || !validateHeightBounds(vehicleInfo)) {
+                return null
             }
-            validateStaffBounds(vehicleInfo)
-            validateHeightBounds(vehicleInfo)
-            validateBaseExists(vehicleInfo, bases)
-            validateBasesNessesaryStaff(vehicleInfo, bases)
+            if (validateBaseExists(vehicleInfo, bases)) {
+                validateBasesNessesaryStaff(vehicleInfo, bases)
+            }
         }
         return vehicleInfos.map {
             when (it.vehicleType) {
@@ -81,6 +81,19 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
         }.toList()
     }
 
+    private fun validateOptionalProperties(vehicleInfo: VehicleInfo): Boolean {
+        if (vehicleInfo.vehicleType != VehicleType.FIRE_TRUCK_LADDER && vehicleInfo.ladderLength != null) {
+            return false
+        }
+        if (vehicleInfo.vehicleType != VehicleType.FIRE_TRUCK_WATER && vehicleInfo.waterCapacity != null) {
+            return false
+        }
+        if (vehicleInfo.vehicleType != VehicleType.POLICE_CAR && vehicleInfo.criminalCapacity != null) {
+            return false
+        }
+        return true
+    }
+
     /**
      * Checks the asset capacity is the right amount
      */
@@ -109,8 +122,7 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      * @return true if staff bounds where matched
      */
     private fun validateStaffBounds(vehicleInfo: VehicleInfo): Boolean {
-        vehicleInfo
-        TODO()
+        return vehicleInfo.staffCapacity in 1..STAFFMAXIMUM
     }
 
     /**
@@ -119,8 +131,7 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      * @return true if height bounds where matched
      */
     private fun validateHeightBounds(vehicleInfo: VehicleInfo): Boolean {
-        vehicleInfo
-        TODO()
+        return vehicleInfo.vehicleHeight in 1..VEHICLEMAXHEIGHT
     }
 
     /**
@@ -129,9 +140,7 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      * @return true if bases exist
      * */
     private fun validateBaseExists(vehicleInfo: VehicleInfo, bases: List<Base>): Boolean {
-        vehicleInfo
-        bases
-        TODO()
+        return bases.any { it.baseId == vehicleInfo.baseId }
     }
 
     /**
@@ -140,18 +149,7 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      * @return true if bases have enough staff to fully staff each of the vehicles
      */
     private fun validateBasesNessesaryStaff(vehicleInfo: VehicleInfo, bases: List<Base>): Boolean {
-        vehicleInfo
-        bases
-        TODO()
-    }
-
-    /**
-     * Check that the ladderlenght is in bounds (for FIRE_TRUCK_LADDER)
-     *
-     * @return true if bounds where matched
-     */
-    private fun validateLadderLenght(vehicleInfo: VehicleInfo): Boolean {
-        vehicleInfo
-        TODO()
+        val base = bases.first { it.baseId == vehicleInfo.baseId }
+        return base.numStaff >= vehicleInfo.staffCapacity
     }
 }
