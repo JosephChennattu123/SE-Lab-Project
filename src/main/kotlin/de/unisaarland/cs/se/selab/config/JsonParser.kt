@@ -23,10 +23,10 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     private val assetSchema = getSchema(this::class.java, "assets.schema")
     private val scenarioSchema = getSchema(this::class.java, "simulation.schema")
 
-    var bases: List<BaseInfo> = emptyList()
-    var vehicles: List<VehicleInfo> = emptyList()
-    var events: List<EventInfo> = emptyList()
-    var emergencies: List<EmergencyInfo> = emptyList()
+    private var bases: List<BaseInfo> = emptyList()
+    private var vehicles: List<VehicleInfo> = emptyList()
+    private var events: List<EventInfo> = emptyList()
+    private var emergencies: List<EmergencyInfo> = emptyList()
 
     /**
      * parses the bases
