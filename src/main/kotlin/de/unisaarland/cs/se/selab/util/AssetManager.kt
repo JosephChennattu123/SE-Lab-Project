@@ -345,13 +345,14 @@ object AssetManager {
                         vehiclesThatCannotReachInTime.add(vehicle)
                     }
                 }
+
                 else -> {}
             }
         }
         // remove vehicles that cannot reach the emergency in time.
         vehicles.removeAll(vehiclesThatCannotReachInTime)
-
-        filterAssetsByOptimalSolution(vehicles, emergency.currentRequiredAssets)
+        val mainBase = emergency.mainBaseID?.let { model.getBaseById(it) }!!
+        filterAssetsByOptimalSolution(mainBase, vehicles, emergency.currentRequiredAssets)
         for (vehicle in vehicles) {
             if (vehicle) { // if vehicle will be reallocated
                 val oldEmergency = model.getAssignedEmergencyById(vehicle.emergencyID!!)
@@ -378,11 +379,31 @@ object AssetManager {
      * @param vehicles List of vehicles to check
      * @param requirements List of requirements to check the list of vehicles against */
     private fun filterAssetsByOptimalSolution(
-        vehicles: MutableList<Vehicle>, requirements: MutableList<EmergencyRequirement>
+        mainBase: Base,
+        vehicles: MutableList<Vehicle>,
+        requirements: MutableList<EmergencyRequirement>
     ) {
-        vehicles
-        requirements
-        TODO()
+        val vehicleIds = vehicles.map { it.vehicleID }
+        val idToVehicleMap = vehicles.associateBy { it.vehicleID }
+        for (size in requirements.size downTo 1) {
+            val combinationsOfIds = computeCombinations(vehicleIds, size)
+            val validCombinations =
+                mutableListOf<List<Int>>() // combinations that fulfill the requirements
+            for (combination in combinationsOfIds) {
+                val subsetToCheck: List<Vehicle> =
+                    idToVehicleMap.filter { combination.contains(it.key) }.values.toList()
+                if (checkIfVehiclesFulfillRequirements(mainBase, subsetToCheck, requirements)) {
+                    validCombinations.add(combination)
+                }
+            }
+            if (validCombinations.isNotEmpty()) {
+                // remove all vehicles that are not part of the valid combinations
+                vehicles.removeAll(vehicles.filter {
+                    !validCombinations.flatten().contains(it.vehicleID)
+                })
+                break
+            }
+        }
     }
 
     /**
@@ -432,7 +453,6 @@ object AssetManager {
         for (vehicle in vehiclesToBeReallocated) {
             emergency.removedAssignedVehicle(vehicle)
             vehicle.emergencyID = null
-            vehicle.status = VehicleStatus.AT_BASE
         }
     }
 
@@ -485,6 +505,51 @@ object AssetManager {
         removedFulfilledRequirements(emergency)
     }
 
+    private fun checkIfVehiclesFulfillRequirements(
+        mainBase: Base,
+        vehicles: List<Vehicle>,
+        requirements: List<EmergencyRequirement>
+    ): Boolean {
+        for (requirement in requirements) {
+
+            if (!isThereEnoughStaffAtBase(mainBase, vehicles)) {
+                return false
+            }
+
+            val requiredType = requirement.vehicleType
+            var totalVehiclesNeeded = requirement.numberOfVehicles
+            var totalAssetsNeeded = requirement.amountOfAsset
+
+            for (vehicle in vehicles) {
+                // check if the type matches
+                // and decrement the required number of vehicles if matches.
+                if (vehicle.vehicleType != requiredType) {
+                    continue
+                }
+                totalVehiclesNeeded--
+                // do not decease the current assets if it has no assets.
+                if (totalAssetsNeeded == null || totalAssetsNeeded == 0) {
+                    continue
+                }
+                // if the vehicle has assets, decrease the current assets
+                if (vehicle.vehicleType != VehicleType.FIRE_TRUCK_LADDER) {
+                    totalAssetsNeeded -= vehicle.currentNumberOfAssets
+                    continue
+                }
+                // for ladders if the ladder is not long enough, do not decrease the current assets.
+                if (totalAssetsNeeded < vehicle.currentNumberOfAssets) {
+                    totalAssetsNeeded = 0
+                    continue
+                }
+            }
+            // update the current requirements.
+            if (totalVehiclesNeeded == 0 || totalAssetsNeeded!! > 0) {
+                return false
+            }
+        }
+        return true
+    }
+
     /**
      * removes fulfilled requirements from the emergency.
      * */
@@ -497,5 +562,23 @@ object AssetManager {
             }
         }
         currentRequirements.removeAll(requirementsToRemove)
+    }
+
+    private fun isThereEnoughStaffAtBase(base: Base, vehicles: List<Vehicle>): Boolean {
+        return base.currStaff >= vehicles.sumOf { it.staffCapacity }
+    }
+
+    private fun computeCombinations(ids: List<Int>, size: Int): List<List<Int>> {
+        if (size == 0) {
+            return listOf(listOf())
+        }
+        if (ids.isEmpty()) {
+            return listOf()
+        }
+        val head = ids.first()
+        val tail = ids.drop(1)
+        val withHead = computeCombinations(tail, size - 1).map { listOf(head) + it }
+        val withoutHead = computeCombinations(tail, size)
+        return withHead + withoutHead
     }
 }
