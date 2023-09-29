@@ -1,8 +1,10 @@
 package de.unisaarland.cs.se.selab.controller.phases
 
+import de.unisaarland.cs.se.selab.controller.events.Event
 import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.EmergencyType
 import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.map.Edge
 import de.unisaarland.cs.se.selab.util.Dijkstra
 import de.unisaarland.cs.se.selab.util.Logger
 
@@ -33,7 +35,11 @@ class EmergencyDistribution {
             // Iterate over emergencies and get the nearest base using one of the Dijkstra methods.
             var nearestBaseId: Int? = 0
             val loc = e.location
-
+            val edge = model.graph.getEdge(loc)
+            val activeEvent = edge.activeEventId?.let { model.getEventById(it) as? Event }
+            if (activeEvent != null) {
+                handleActiveRoadClosureEvent(activeEvent, edge, model)
+            }
             if (e.type == EmergencyType.CRIME) {
                 nearestBaseId = Dijkstra.getNearestBaseToEdge(graph, loc, BaseType.POLICE_STATION)
             }
@@ -52,6 +58,19 @@ class EmergencyDistribution {
 
             // Log the assignment.
             Logger.logEmergencyAssigned(e.id, nearestBaseId)
+        }
+    }
+
+    /**used to solve the issue for road Closure on a road to assign emergency */
+    fun handleActiveRoadClosureEvent(activeEvent: Event, edge: Edge, model: Model) {
+        if (activeEvent.eventType == de.unisaarland.cs.se.selab.controller.events.EventType.ROAD_CLOSURE) {
+            model.roadToPostponedEvents[edge.edgeId]?.let { postponedEventsList ->
+                if (postponedEventsList.isNotEmpty()) {
+                    postponedEventsList.add(edge.activeEventId as Int)
+                    model.currentEvents.remove(edge.edgeId)
+                    edge.activeEventId = null
+                }
+            }
         }
     }
 }
