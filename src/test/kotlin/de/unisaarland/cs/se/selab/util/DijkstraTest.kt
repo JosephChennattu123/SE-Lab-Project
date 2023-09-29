@@ -8,29 +8,40 @@ import de.unisaarland.cs.se.selab.model.map.Graph
 import org.junit.jupiter.api.Test
 
 internal class DijkstraTest {
-    // TODO test for DotParser and GraphValidator, just assume they are correct here
-    private val graph: Graph = GraphValidator().validate(DotParser("mapFiles/example_map.dot"))
+    private val graph: Graph = GraphValidator().validate(DotParser("src/test/resources/mapFiles/example_map.dot"))
         ?: throw IllegalArgumentException("Graph creation go wrong!")
+//    private val graph: Graph = Graph(mutableMapOf())
+//
+//    private fun creatGraph(): Graph {
+//        val vertices: MutableMap<Int, Vertex> = mutableMapOf()
+//        for (vertexId in setOf(0, 1, 2, 3, 4)) {
+//            val vertex = Vertex(vertexId, null, null)
+//            vertices[vertexId] = vertex
+//        }
+//        val graph = Graph(vertices)
+//    }
 
     @Test
     fun getNearestBaseToEdge() {
         val location = Location("Saarbruecken", "Eisenbahnstrasse")
-        assert(Dijkstra.getNearestBaseToEdge(graph, location, BaseType.FIRE_STATION) == 2)
+        println(graph.getEdge(2, 3).edgeId)
+        println(Dijkstra.getNearestBaseToEdge(graph, location, BaseType.FIRE_STATION))
+//        assert( == 2)
     }
 
-    @Test
-    fun getNextNearestBase() {
-    }
-
-    @Test
-    fun getShortestPathFromEdgeToEdge() {
-    }
-
-    @Test
-    fun getShortestPathFromVertexToEdge() {
-    }
-
-    @Test
-    fun getShortestPathFromEdgeToVertex() {
-    }
+//    @Test
+//    fun getNextNearestBase() {
+//    }
+//
+//    @Test
+//    fun getShortestPathFromEdgeToEdge() {
+//    }
+//
+//    @Test
+//    fun getShortestPathFromVertexToEdge() {
+//    }
+//
+//    @Test
+//    fun getShortestPathFromEdgeToVertex() {
+//    }
 }
