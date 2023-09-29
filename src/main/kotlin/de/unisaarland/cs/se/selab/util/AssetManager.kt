@@ -22,15 +22,13 @@ object AssetManager {
     /**
      * @param severity Severity of the emergency
      * @return List of EmergencyRequirements
-     * */
+     */
     fun getFireRequirements(severity: Int): List<EmergencyRequirement> {
         return when (severity) {
             1 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.FIRE_TRUCK_WATER,
-                        2,
-                        WATER1200
+                        VehicleType.FIRE_TRUCK_WATER, 2, WATER1200
                     )
                 )
             }
@@ -38,24 +36,13 @@ object AssetManager {
             2 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.FIRE_TRUCK_WATER,
-                        VEHICLECOUNT4,
-                        WATER3000
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.FIRE_TRUCK_LADDER,
-                        1,
-                        LADDERLENGTH30
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.FIREFIGHTER_TRANSPORTER,
-                        1,
-                        null
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.AMBULANCE,
-                        1,
-                        1
+                        VehicleType.FIRE_TRUCK_WATER, VEHICLECOUNT4, WATER3000
+                    ), EmergencyRequirement(
+                        VehicleType.FIRE_TRUCK_LADDER, 1, LADDERLENGTH30
+                    ), EmergencyRequirement(
+                        VehicleType.FIREFIGHTER_TRANSPORTER, 1, null
+                    ), EmergencyRequirement(
+                        VehicleType.AMBULANCE, 1, 1
                     )
                 )
             }
@@ -63,32 +50,17 @@ object AssetManager {
             3 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.FIRE_TRUCK_WATER,
-                        VEHICLECOUNT6,
-                        WATER5400
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.FIRE_TRUCK_LADDER,
-                        2,
-                        LADDERLENGTH40
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.FIREFIGHTER_TRANSPORTER,
-                        2,
-                        null
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.AMBULANCE,
-                        2,
-                        2
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.EMERGENCY_DOCTOR_CAR,
-                        1,
-                        1
+                        VehicleType.FIRE_TRUCK_WATER, VEHICLECOUNT6, WATER5400
+                    ), EmergencyRequirement(
+                        VehicleType.FIRE_TRUCK_LADDER, 2, LADDERLENGTH40
+                    ), EmergencyRequirement(
+                        VehicleType.FIREFIGHTER_TRANSPORTER, 2, null
+                    ), EmergencyRequirement(
+                        VehicleType.AMBULANCE, 2, 2
+                    ), EmergencyRequirement(
+                        VehicleType.EMERGENCY_DOCTOR_CAR, 1, 1
                     )
                 )
-
             }
 
             else -> {
@@ -99,15 +71,14 @@ object AssetManager {
 
     /**
      * @param severity Severity of the emergency
-     * @return List of EmergencyRequirements */
+     * @return List of EmergencyRequirements
+     */
     fun getAccidentRequirements(severity: Int): List<EmergencyRequirement> {
         return when (severity) {
             1 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.FIRE_TRUCK_TECHNICAL,
-                        1,
-                        null
+                        VehicleType.FIRE_TRUCK_TECHNICAL, 1, null
                     )
                 )
             }
@@ -115,24 +86,13 @@ object AssetManager {
             2 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.FIRE_TRUCK_TECHNICAL,
-                        2,
-                        null
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.POLICE_MOTOR_CYCLE,
-                        1,
-                        null
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.POLICE_CAR,
-                        1,
-                        null
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.AMBULANCE,
-                        1,
-                        1
+                        VehicleType.FIRE_TRUCK_TECHNICAL, 2, null
+                    ), EmergencyRequirement(
+                        VehicleType.POLICE_MOTOR_CYCLE, 1, null
+                    ), EmergencyRequirement(
+                        VehicleType.POLICE_CAR, 1, 0
+                    ), EmergencyRequirement(
+                        VehicleType.AMBULANCE, 1, 1
                     )
                 )
             }
@@ -140,29 +100,15 @@ object AssetManager {
             3 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.FIRE_TRUCK_TECHNICAL,
-                        VEHICLECOUNT4,
-                        null
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.POLICE_MOTOR_CYCLE,
-                        2,
-                        null
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.POLICE_CAR,
-                        VEHICLECOUNT4,
-                        null
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.AMBULANCE,
-                        3,
-                        2
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.EMERGENCY_DOCTOR_CAR,
-                        1,
-                        1
+                        VehicleType.FIRE_TRUCK_TECHNICAL, VEHICLECOUNT4, null
+                    ), EmergencyRequirement(
+                        VehicleType.POLICE_MOTOR_CYCLE, 2, null
+                    ), EmergencyRequirement(
+                        VehicleType.POLICE_CAR, VEHICLECOUNT4, 0
+                    ), EmergencyRequirement(
+                        VehicleType.AMBULANCE, 3, 2
+                    ), EmergencyRequirement(
+                        VehicleType.EMERGENCY_DOCTOR_CAR, 1, 1
                     )
                 )
             }
@@ -175,15 +121,14 @@ object AssetManager {
 
     /**
      * @param severity Severity of the emergency
-     * @return List of EmergencyRequirements */
+     * @return List of EmergencyRequirements
+     */
     fun getCrimeRequirements(severity: Int): List<EmergencyRequirement> {
         return when (severity) {
             1 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.POLICE_CAR,
-                        1,
-                        1
+                        VehicleType.POLICE_CAR, 1, 1
                     )
                 )
             }
@@ -191,19 +136,11 @@ object AssetManager {
             2 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.POLICE_CAR,
-                        VEHICLECOUNT4,
-                        CRIMINALCAPACITY4
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.K9_POLICE_CAR,
-                        1,
-                        1
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.AMBULANCE,
-                        1,
-                        null
+                        VehicleType.POLICE_CAR, VEHICLECOUNT4, CRIMINALCAPACITY4
+                    ), EmergencyRequirement(
+                        VehicleType.K9_POLICE_CAR, 1, 1
+                    ), EmergencyRequirement(
+                        VehicleType.AMBULANCE, 1, 0
                     )
                 )
             }
@@ -211,29 +148,15 @@ object AssetManager {
             3 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.POLICE_CAR,
-                        VEHICLECOUNT6,
-                        CRIMINALCAPACITY8
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.POLICE_MOTOR_CYCLE,
-                        2,
-                        null
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.K9_POLICE_CAR,
-                        2,
-                        2
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.AMBULANCE,
-                        2,
-                        1
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.FIREFIGHTER_TRANSPORTER,
-                        1,
-                        null
+                        VehicleType.POLICE_CAR, VEHICLECOUNT6, CRIMINALCAPACITY8
+                    ), EmergencyRequirement(
+                        VehicleType.POLICE_MOTOR_CYCLE, 2, null
+                    ), EmergencyRequirement(
+                        VehicleType.K9_POLICE_CAR, 2, 2
+                    ), EmergencyRequirement(
+                        VehicleType.AMBULANCE, 2, 1
+                    ), EmergencyRequirement(
+                        VehicleType.FIREFIGHTER_TRANSPORTER, 1, null
                     )
                 )
             }
@@ -246,15 +169,14 @@ object AssetManager {
 
     /**
      * @param severity Severity of the emergency
-     * @return list of EmergencyRequirements for this emergency */
+     * @return list of EmergencyRequirements for this emergency
+     */
     fun getMedicalRequirements(severity: Int): List<EmergencyRequirement> {
         return when (severity) {
             1 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.AMBULANCE,
-                        1,
-                        null
+                        VehicleType.AMBULANCE, 1, 0
                     )
                 )
             }
@@ -262,14 +184,9 @@ object AssetManager {
             2 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.AMBULANCE,
-                        2,
-                        2
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.EMERGENCY_DOCTOR_CAR,
-                        1,
-                        1
+                        VehicleType.AMBULANCE, 2, 2
+                    ), EmergencyRequirement(
+                        VehicleType.EMERGENCY_DOCTOR_CAR, 1, 1
                     )
                 )
             }
@@ -277,19 +194,11 @@ object AssetManager {
             3 -> {
                 listOf(
                     EmergencyRequirement(
-                        VehicleType.AMBULANCE,
-                        VEHICLECOUNT5,
-                        PATIENTCAPACITY5
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.EMERGENCY_DOCTOR_CAR,
-                        2,
-                        2
-                    ),
-                    EmergencyRequirement(
-                        VehicleType.FIRE_TRUCK_TECHNICAL,
-                        2,
-                        null
+                        VehicleType.AMBULANCE, VEHICLECOUNT5, PATIENTCAPACITY5
+                    ), EmergencyRequirement(
+                        VehicleType.EMERGENCY_DOCTOR_CAR, 2, 2
+                    ), EmergencyRequirement(
+                        VehicleType.FIRE_TRUCK_TECHNICAL, 2, null
                     )
                 )
             }
@@ -303,11 +212,10 @@ object AssetManager {
     /**
      * @param model The model
      * @param emergency The emergency to allocate to
-     * @param vehicles The list of vehicles to assign to the emergency */
+     * @param vehicles The list of vehicles to assign to the emergency
+     */
     fun allocateAssetsToEmergency(
-        model: Model,
-        emergency: Emergency,
-        vehicles: MutableList<Vehicle>
+        model: Model, emergency: Emergency, vehicles: MutableList<Vehicle>
     ) {
         // remove vehicles that do not fit the requirement type or do not fulfill staff requirements.
         filterAssetsByRequirement(model, vehicles, emergency.currentRequiredAssets)
@@ -319,10 +227,7 @@ object AssetManager {
                 VehicleStatus.AT_BASE -> {
                     // If vehicle is currently at base, calculate drive time from base to emergency
                     val newPath = Dijkstra.getShortestPathFromVertexToEdge(
-                        model.graph,
-                        model.getBaseById(vehicle.baseID)!!.vertexID,
-                        emergency.location,
-                        vehicle.height
+                        model.graph, model.getBaseById(vehicle.baseID)!!.vertexID, emergency.location, vehicle.height
                     )
 
                     if (!emergency.canReachInTime(newPath.totalTicksToArrive)) {
@@ -354,18 +259,22 @@ object AssetManager {
         val mainBase = emergency.mainBaseID?.let { model.getBaseById(it) }!!
         filterAssetsByOptimalSolution(mainBase, vehicles, emergency.currentRequiredAssets)
         for (vehicle in vehicles) {
-            if (vehicle) { // if vehicle will be reallocated
+            if (vehicle /* has been reallocated */) {
                 val oldEmergency = model.getAssignedEmergencyById(vehicle.emergencyID!!)
                 var req: EmergencyRequirement
                 if (oldEmergency!!.currentRequiredAssets.any { it.vehicleType == vehicle.vehicleType }) { // if old
                     // emergency already has requirement of type vehicle.VehicleType
-                    req =
-                        oldEmergency.currentRequiredAssets.first { it.vehicleType == vehicle.vehicleType }
+                    req = oldEmergency.currentRequiredAssets.first { it.vehicleType == vehicle.vehicleType }
                     // find requirement that needs to be changed
 
                     req.numberOfVehicles++ // increase the number of current needed vehicles of this type by 1
                 } else {
-                    req = EmergencyRequirement(vehicle.vehicleType, 1, null)
+                    var neededAssets = when (vehicle.vehicleType) {
+                        VehicleType.AMBULANCE, VehicleType.FIRE_TRUCK_WATER, VehicleType.POLICE_CAR -> 0
+                        else -> null
+                    }
+
+                    req = EmergencyRequirement(vehicle.vehicleType, 1, neededAssets)
                     oldEmergency.currentRequiredAssets.add(req)
                     TODO()
                 }
@@ -377,7 +286,8 @@ object AssetManager {
     /**
      * modifies the parameter lists to contain the optimal selection of concrete vehicles to be assigned to an emergency
      * @param vehicles List of vehicles to check
-     * @param requirements List of requirements to check the list of vehicles against */
+     * @param requirements List of requirements to check the list of vehicles against
+     */
     private fun filterAssetsByOptimalSolution(
         mainBase: Base,
         vehicles: MutableList<Vehicle>,
@@ -409,19 +319,17 @@ object AssetManager {
     /**
      * modifies the list of Vehicles to contain vehicles that can be assigned to an emergency
      * @param vehiclesToCheck List of vehicles to check
-     * @param requirements List of requirements to check the list of vehicles against */
+     * @param requirements List of requirements to check the list of vehicles against
+     */
     private fun filterAssetsByRequirement(
-        model: Model,
-        vehiclesToCheck: MutableList<Vehicle>,
-        requirements: List<EmergencyRequirement>
+        model: Model, vehiclesToCheck: MutableList<Vehicle>, requirements: List<EmergencyRequirement>
     ) {
         val vehiclesToBeRemoved = mutableListOf<Vehicle>()
         for (vehicle in vehiclesToCheck) {
             // check if the vehicle type does not match the requirement type
             // or if the base does not have enough staff to send the vehicle.
             if (!requirements.any {
-                    vehicle.vehicleType != it.vehicleType
-                            && vehicle.staffCapacity > model.getBaseById(vehicle.baseID)!!.currStaff
+                    vehicle.vehicleType != it.vehicleType && vehicle.staffCapacity > model.getBaseById(vehicle.baseID)!!.currStaff
                 }) {
                 // collect vehicles that needed to be removed.
                 vehiclesToBeRemoved.add(vehicle)
@@ -437,16 +345,11 @@ object AssetManager {
      * @param model The model
      * */
     private fun removeVehiclesFromEmergency(
-        emergency: Emergency,
-        vehiclesToBeReallocated: List<Vehicle>,
-        model: Model
+        emergency: Emergency, vehiclesToBeReallocated: List<Vehicle>, model: Model
     ) {
-        val remainingVehicles =
-            model.getVehiclesByIds((emergency.assignedVehicleIDs)
-                .filter { it1 ->
-                    vehiclesToBeReallocated
-                        .map { it.vehicleID }.contains(it1)
-                })
+        val remainingVehicles = model.getVehiclesByIds((emergency.assignedVehicleIDs).filter { it1 ->
+            vehiclesToBeReallocated.map { it.vehicleID }.contains(it1)
+        })
         emergency.currentRequiredAssets.clear()
         fulfillRequirementsOfEmergency(emergency, remainingVehicles)
         // remove the vehicles from the emergency.
@@ -496,9 +399,7 @@ object AssetManager {
             // update the current requirements.
             currentRequirements.add(
                 EmergencyRequirement(
-                    requiredType,
-                    totalVehiclesNeeded,
-                    totalAssetsNeeded
+                    requiredType, totalVehiclesNeeded, totalAssetsNeeded
                 )
             )
         }
