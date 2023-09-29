@@ -23,7 +23,7 @@ class Model(
     var currentTick: Int = 0
     val assignedEmergencies: MutableList<Int> = mutableListOf()
     val currentEvents: MutableList<Int> = mutableListOf()
-    val roadToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
+    val roadToPostponedEvents: MutableMap<Int, MutableList<Int>> = mutableMapOf()
     val vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
     val requests: MutableList<Request> = mutableListOf()
 
@@ -89,7 +89,7 @@ class Model(
 
     /** @returns list of all current events */
     fun getCurrentEventsObjects(): List<Event> {
-        return currentEvents.mapNotNull { events[it] }
+        return currentEvents.distinct().mapNotNull { events[it] }
     }
 
     /** @returns all events */
@@ -114,8 +114,8 @@ class Model(
 
     /** add roadEvent to a map of road id to postponed events */
     fun addRoadEvent(roadId: Int, eventId: Event) {
-        val roadEventsPost: MutableList<Event> = roadToPostponedEvents[roadId] ?: mutableListOf()
-        roadEventsPost.add(eventId)
+        val roadEventsPost: MutableList<Int> = roadToPostponedEvents[roadId] ?: mutableListOf()
+        roadEventsPost.add(eventId.id)
         roadToPostponedEvents[roadId] = roadEventsPost
     }
 

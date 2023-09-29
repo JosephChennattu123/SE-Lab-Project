@@ -1,11 +1,12 @@
 package de.unisaarland.cs.se.selab.controller.events
 
 import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.map.Edge
 
 /**
  * Event superclass.
  * */
-abstract class Event(val id: Int, val eventType: EventType, val start: Int, var duration: Int) {
+abstract class Event(val id: Int, val eventType: EventType, val start: Int, open var duration: Int) {
 
     var status: EventStatus = EventStatus.NOT_SCHEDULED
 
@@ -23,6 +24,22 @@ abstract class Event(val id: Int, val eventType: EventType, val start: Int, var 
      * changes removes effect of event on the required object
      * */
     abstract fun removeEffect(model: Model)
+
+    /** puts the id of event into the road to postponed event list*/
+    fun putInPostponeLists(roadToPostponedEvents: MutableMap<Int, MutableList<Int>>, currentEdge: Edge) {
+        if (roadToPostponedEvents[currentEdge.edgeId] == null) {
+            val newEventMutableList: MutableList<Int> = mutableListOf()
+            newEventMutableList.add(id)
+            roadToPostponedEvents[currentEdge.edgeId] = newEventMutableList
+        }
+        // case in which new event is added to a pre-existing list of Events
+        else {
+            val roadEventMutableList: MutableList<Int> = roadToPostponedEvents[currentEdge.edgeId]
+                as MutableList<Int>
+            roadEventMutableList.add(id)
+            // apparently not necessary model.vehicleToPostponedEvents[vehicleId] = VehicleEventMutableList
+        }
+    }
 }
 
 /**
@@ -72,5 +89,9 @@ enum class EventStatus {
     /**
      * The event is finished and the effect of it is not applied anymore.
      * */
-    FINISHED
+    FINISHED,
+
+    /** RUSH HOUR BABY */
+
+    RUSH_HOUR
 }
