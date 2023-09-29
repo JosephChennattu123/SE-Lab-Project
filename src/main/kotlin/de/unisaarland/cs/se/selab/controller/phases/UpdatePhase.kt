@@ -63,7 +63,7 @@ class UpdatePhase {
      * */
 
     private fun processActiveEvents(
-        activeEvents: List<de.unisaarland.cs.se.selab.controller.events.Event>,
+        activeEvents: List<Event>,
         activeEventIds: MutableList<Int>
     ) {
         for (event in activeEvents) {
