@@ -41,6 +41,15 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
     }
 
     /**
+     * @param location the location to check
+     * @return true if an edge with that location exists
+     */
+    fun doesLocationExist(location: Location): Boolean {
+        val villageMap = villages[location.villageName] ?: return false
+        return villageMap[location.roadName] != null
+    }
+
+    /**
      * @return the set of village names
      */
     fun getVillageNames(): Set<String> {
