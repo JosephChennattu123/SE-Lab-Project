@@ -10,11 +10,11 @@ object Logger {
 
     var outputFile: String? = null
 
-    var numReroutedAssets: Int = 0
-    var numFailedEmergencies: Int = 0
-    var numResolvedEmergency: Int = 0
+    private var numReroutedAssets: Int = 0
+    private var numFailedEmergencies: Int = 0
+    private var numResolvedEmergency: Int = 0
 
-    var printWriter: PrintWriter? = null
+    private var printWriter: PrintWriter? = null
 
     init {
         printWriter = PrintWriter(System.out)
@@ -42,6 +42,13 @@ object Logger {
             "Initialization Info: $filename successfully parsed and validated"
         }
         printLog(output)
+    }
+
+    /**
+     * Logs that the simulation start
+     * */
+    fun logSimulationStart() {
+        printLog("Simulation starts")
     }
 
     /**
@@ -154,37 +161,15 @@ object Logger {
     }
 
     /**
-     * @param reroutedAssetsAmount the number of rerouted assets
-     */
-    fun logNumberOfReroutedAssets() {
-        printLog("Simulation Statistics: $numReroutedAssets assets rerouted")
-    }
-
-    /**
-     * @param recievedEmergenciesAmount the number of received emergencies (emergency calls)
-     */
-    fun logNumberOfRecievedEmergencies(recievedEmergenciesAmount: Int) {
-        printLog("Simulation Statistics: $recievedEmergenciesAmount received emergencies")
-    }
-
-    /**
+     * Logs the statistics at the end
+     * @param receivedEmergenciesAmount the number of received emergencies (emergency calls)
      * @param ongoingEmergenciesAmount the remaining ongoing emergencies
      */
-    fun logNumberOfOngoingEmergencies(ongoingEmergenciesAmount: Int) {
+    fun logStatistics(receivedEmergenciesAmount: Int, ongoingEmergenciesAmount: Int) {
+        printLog("Simulation Statistics: $numReroutedAssets assets rerouted")
+        printLog("Simulation Statistics: $receivedEmergenciesAmount received emergencies")
         printLog("Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies")
-    }
-
-    /**
-     * Logs the number of total failed emergencies
-     */
-    fun logNumberOfFailedEmergencies() {
         printLog("Simulation Statistics: $numFailedEmergencies failed emergencies")
-    }
-
-    /**
-     * Logs the number of total resolved emergencies
-     */
-    fun logNumberOfResolvedEmergencies() {
         printLog("Simulation Statistics: $numResolvedEmergency resolved emergencies.")
     }
 }

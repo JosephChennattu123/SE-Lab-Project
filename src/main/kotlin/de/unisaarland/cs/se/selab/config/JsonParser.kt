@@ -8,6 +8,7 @@ import de.unisaarland.cs.se.selab.model.VehicleType
 import de.unisaarland.cs.se.selab.model.map.PrimaryType
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 /**
  * Parses the json-files
@@ -16,16 +17,16 @@ import org.json.JSONObject
  * */
 class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: String) {
 
-    private val assetJson = JSONObject(assetsFilePath)
-    private val scenarioJson = JSONObject(emergenciesEventsFilePath)
+    private val assetJson = JSONObject(File(assetsFilePath))
+    private val scenarioJson = JSONObject(File(emergenciesEventsFilePath))
 
     private val assetSchema = getSchema(this::class.java, "assets.schema")
-    private val scenarioSchema = getSchema(this::class.java, "scenario.schema")
+    private val scenarioSchema = getSchema(this::class.java, "simulation.schema")
 
-    var bases: List<BaseInfo> = emptyList()
-    var vehicles: List<VehicleInfo> = emptyList()
-    var events: List<EventInfo> = emptyList()
-    var emergencies: List<EmergencyInfo> = emptyList()
+    private var bases: List<BaseInfo> = emptyList()
+    private var vehicles: List<VehicleInfo> = emptyList()
+    private var events: List<EventInfo> = emptyList()
+    private var emergencies: List<EmergencyInfo> = emptyList()
 
     /**
      * parses the bases
