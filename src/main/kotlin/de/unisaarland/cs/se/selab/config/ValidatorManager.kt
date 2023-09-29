@@ -8,6 +8,7 @@ import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Vehicle
 import de.unisaarland.cs.se.selab.model.map.Graph
 import de.unisaarland.cs.se.selab.util.Logger
+import org.everit.json.schema.ValidationException
 
 /**
  * Manages the parsing and validation of files and builds
@@ -48,13 +49,25 @@ class ValidatorManager {
         }
         Logger.logParsingValidationResult(dotParser.graphFilePath, true)
 
+        try {
+            jsonParser.validateAssetsSchema()
+        } catch (e: ValidationException) {
+            Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
+            throw e
+        }
         // jsonParser.parseAssets()
-        if (!validateBases(graph as Graph) || !validateVehicles()) {
+        if (!validateBases(graph as Graph) || !validateVehicles(bases as List<Base>)) {
             Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
             return null
         }
-        Logger.logParsingValidationResult(jsonParser.assetsFilePath, true)
 
+        Logger.logParsingValidationResult(jsonParser.assetsFilePath, true)
+        try {
+            jsonParser.validateScenarioSchema()
+        } catch (e: ValidationException) {
+            Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
+            throw e
+        }
         // jsonParser.parseEmergenciesEvents()
         if (!validateEmergencies() || !validateEvent()) {
             Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
@@ -110,9 +123,9 @@ class ValidatorManager {
      *
      * @return true if validation was successful
      * */
-    private fun validateVehicles(): Boolean {
+    private fun validateVehicles(bases: List<Base>): Boolean {
         val vehicleValidator = VehicleValidator(jsonParser as JsonParser)
-        this.vehicles = vehicleValidator.validate()
+        this.vehicles = vehicleValidator.validate(bases)
         return vehicles != null
     }
 
