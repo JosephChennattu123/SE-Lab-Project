@@ -17,7 +17,6 @@ class GraphValidator {
 
     private var vertexIds: Set<Int>? = null
 
-    // private var villageNames: List<String>? = null
     private var villageToRoads: Map<String, Set<Pair<String, String>>>? = null
     private var edges: Map<Int, List<Connection>>? = null
 
@@ -223,23 +222,23 @@ class GraphValidator {
         val attributes = dotParserObj.parseAttributes(edgeStrings)
         val edgeIdToRoadName = dotParserObj.parseRoadName(attributes)
         val primaryTypes = dotParserObj.parsePrimaryType(attributes)
+
         val edgeIdToVillageName = dotParserObj.parseVillageName(attributes)
         val villageNameToEdgeIds = reverseMap(edgeIdToVillageName)
-
         val villageNamesSet = edgeIdToVillageName.map { it.value }.toSet()
+
         val villageToRoadNames: MutableMap<String, Set<Pair<String, String>>> = mutableMapOf()
-        villageNamesSet.associateWithTo(
-            villageToRoadNames
-        ) {
+        villageNamesSet.associateWithTo(villageToRoadNames) {
             val edgeIds = villageNameToEdgeIds[it] ?: return false
-            val villageRoadNames: MutableSet<String> = mutableSetOf()
+            val roadNamesInVillage: MutableSet<String> = mutableSetOf()
             val villageRoadNamesWithPrimaryType: MutableSet<Pair<String, String>> = mutableSetOf()
+
             for (edgeId in edgeIds) {
-                val roadName: String = edgeIdToRoadName[edgeId] ?: return false
-                if (!villageRoadNames.contains(roadName)) {
-                    villageRoadNames.add(roadName)
+                val nextRoadName: String = edgeIdToRoadName[edgeId] ?: return false
+                if (!roadNamesInVillage.contains(nextRoadName)) {
+                    roadNamesInVillage.add(nextRoadName)
                     val primaryType = primaryTypes.getValue(edgeId)
-                    villageRoadNamesWithPrimaryType.add(Pair(roadName, primaryType))
+                    villageRoadNamesWithPrimaryType.add(Pair(nextRoadName, primaryType))
                 } else {
                     return false
                 }
@@ -303,6 +302,7 @@ class GraphValidator {
      * @param vertexVillage current name of village
      * @param newVillageName new name of village
      */
+
     private fun checkValidConnectedEdge(
         primaryTypes: Map<Int, String>,
         edge: Int,
@@ -322,9 +322,6 @@ class GraphValidator {
      * @return true if every village has a main street
      */
     private fun validateMainStreetExistInVillages(): Boolean {
-        val dotParserObj = dotParser as DotParser
-        val edgeStrings = dotParserObj.parseEdges()
-        val attributes = dotParserObj.parseAttributes(edgeStrings)
         val countyNames = getCountyNames()
 
         for ((key, value) in villageToRoads as Map<String, Set<Pair<String, String>>>) {
@@ -364,8 +361,8 @@ class GraphValidator {
         val attributes = dotParserObj.parseAttributes(edgeStrings)
         val weights = dotParserObj.parseWeight(attributes)
         val roadHeights = dotParserObj.parseHeight(attributes)
-        return weights.filter { (_, value) -> value <= 0 }.isEmpty() &&
-            roadHeights.filter { (_, value) -> value < 1 }.isEmpty()
+        return weights.filter { (_, value) -> value <= 0 }.isEmpty() && roadHeights.filter { (_, value) -> value < 1 }
+            .isEmpty()
     }
 
     /**
@@ -395,7 +392,6 @@ class GraphValidator {
      * Checks that no village name is equal to a county name
      */
     private fun validateVillageNameNotCountyName(): Boolean {
-        // TODO newly added (was missing
         if (dotParser == null) {
             return false
         }
