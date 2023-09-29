@@ -10,7 +10,7 @@ import de.unisaarland.cs.se.selab.model.map.PrimaryType
  * @param tick the tick when the event happens
  * @param eventType the type of the event
  * @param duration the duration of the event
- * @param roadType the type of the road where the event happens
+ * @param roadTypes the type of the road where the event happens
  * @param factor the factor that will be applied to the road
  * @param oneWayStreet whether the road should be set to one way
  * @param source the source vertex of the event
@@ -22,7 +22,7 @@ class EventInfo(
     val tick: Int,
     val eventType: EventType,
     val duration: Int,
-    val roadType: PrimaryType?,
+    val roadTypes: List<PrimaryType>?,
     val factor: Int?,
     val oneWayStreet: Boolean?,
     val source: Int?,
