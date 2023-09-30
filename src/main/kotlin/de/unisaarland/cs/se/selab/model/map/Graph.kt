@@ -50,6 +50,16 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
     }
 
     /**
+     * @param source source of edge
+     * @param target target of edge
+     * @return true if edge does exist
+     */
+    fun doesEdgeExist(source: Int, target: Int): Boolean {
+        val vertex = vertices[source] ?: return false
+        return vertex.getEdges(false).any { it.targetVertex.vertexId == target }
+    }
+
+    /**
      * @return the set of village names
      */
     fun getVillageNames(): Set<String> {
