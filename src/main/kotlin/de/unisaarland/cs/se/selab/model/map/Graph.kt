@@ -8,6 +8,8 @@ import de.unisaarland.cs.se.selab.model.Location
  */
 class Graph(val vertices: MutableMap<Int, Vertex>) {
 
+    private val countyNames: MutableSet<String> = mutableSetOf()
+    private val villageNames: MutableSet<String> = mutableSetOf()
     private val villages: MutableMap<String, MutableMap<String, Edge>> = mutableMapOf()
 
     /**
@@ -39,6 +41,39 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
     }
 
     /**
+     * @param location the location to check
+     * @return true if an edge with that location exists
+     */
+    fun doesLocationExist(location: Location): Boolean {
+        val villageMap = villages[location.villageName] ?: return false
+        return villageMap[location.roadName] != null
+    }
+
+    /**
+     * @param source source of edge
+     * @param target target of edge
+     * @return true if edge does exist
+     */
+    fun doesEdgeExist(source: Int, target: Int): Boolean {
+        val vertex = vertices[source] ?: return false
+        return vertex.getEdges(false).any { it.targetVertex.vertexId == target }
+    }
+
+    /**
+     * @return the set of village names
+     */
+    fun getVillageNames(): Set<String> {
+        return this.villageNames
+    }
+
+    /**
+     * @return the set of county names
+     */
+    fun getCountyNames(): Set<String> {
+        return this.countyNames
+    }
+
+    /**
      * creates and connects vertices via an edge.
      * @param source the source-vertex
      * @param target th target-vertex
@@ -53,5 +88,10 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
         source.addOutgoingEdge(edge)
         target.addIngoingEdge(edge)
         villages.getOrPut(properties.villageName) { mutableMapOf() }[properties.roadName] = edge
+        if (properties.roadType == PrimaryType.COUNTY) {
+            countyNames.add(properties.villageName)
+        } else {
+            villageNames.add(properties.villageName)
+        }
     }
 }

@@ -11,17 +11,16 @@ package de.unisaarland.cs.se.selab.model
  * @param location Precise location of the emergency
  * @property canRequest true if at least one allocation or reallocation was not fail*/
 class Emergency(
-    var id: Int,
-    var scheduledTick: Int,
-    var type: EmergencyType,
-    var severity: Int = 3,
-    var handleTime: Int,
-    var maxDuration: Int,
-    var location: Location,
-    private var timeElapsed: Int,
-    var status: EmergencyStatus = EmergencyStatus.ONGOING
-
+    val id: Int,
+    val scheduledTick: Int,
+    val type: EmergencyType,
+    val severity: Int = 3,
+    private var handleTime: Int,
+    private val maxDuration: Int,
+    val location: Location
 ) {
+    private var timeElapsed: Int = 0
+    var status: EmergencyStatus = EmergencyStatus.ONGOING
 
     var canRequest: Boolean = false
     var requiredAssets: List<EmergencyRequirement> = emptyList()
