@@ -3,6 +3,15 @@ package de.unisaarland.cs.se.selab.config
 import de.unisaarland.cs.se.selab.controller.events.EventType
 import de.unisaarland.cs.se.selab.model.map.PrimaryType
 
+const val EVENT_TYPE = "eventType"
+const val DURATION = "duration"
+const val ROAD_TYPES = "roadTypes"
+const val FACTOR = "factor"
+const val ONE_WAY_STREET = "oneWayStreet"
+const val SOURCE = "source"
+const val TARGET = "target"
+const val VEHICLE_ID = "vehicleId"
+
 /**
  * Collects the info to construct events
  *
@@ -18,7 +27,7 @@ import de.unisaarland.cs.se.selab.model.map.PrimaryType
  * @param vehicleId the id of the vehicle that is involved in the event
  */
 class EventInfo(
-    val id: Int,
+    id: Int,
     val tick: Int,
     val eventType: EventType,
     val duration: Int,
@@ -27,6 +36,19 @@ class EventInfo(
     val oneWayStreet: Boolean?,
     val source: Int?,
     val target: Int?,
-) {
+) : BasicInfo(id) {
     var vehicleId: Int? = null
+
+    override val infoMap: Map<String, Any?> =
+        mapOf(
+            ID to id,
+            TICK to tick,
+            EVENT_TYPE to eventType,
+            DURATION to duration,
+            ROAD_TYPES to roadTypes,
+            FACTOR to factor,
+            ONE_WAY_STREET to oneWayStreet,
+            SOURCE to source,
+            TARGET to target
+        )
 }
