@@ -18,5 +18,17 @@ enum class PrimaryType {
                 else -> null
             }
         }
+
+        /**
+         * @param value the value
+         * @return the value as a string
+         */
+        fun toString(value: PrimaryType): String {
+            return when (value) {
+                MAIN -> "mainRoad"
+                SIDE -> "sideRoad"
+                COUNTY -> "countyRoad"
+            }
+        }
     }
 }
