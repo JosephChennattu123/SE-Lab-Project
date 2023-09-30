@@ -67,7 +67,7 @@ class ValidatorManager {
             throw e
         }
         // jsonParser.parseEmergenciesEvents()
-        if (!validateEmergencies(graph as Graph) || !validateEvent()) {
+        if (!validateEmergencies(graph as Graph) || !validateEvent(graph as Graph, vehicles as List<Vehicle>)) {
             Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
             return null
         }
@@ -165,9 +165,9 @@ class ValidatorManager {
      *
      * @return true if validation was successful
      * */
-    private fun validateEvent(): Boolean {
+    private fun validateEvent(graph: Graph, vehicles: List<Vehicle>): Boolean {
         val eventValidator = EventValidator(jsonParser as JsonParser)
-        this.events = eventValidator.validate()
+        this.events = eventValidator.validate(graph, vehicles)
         return events != null
     }
 }

@@ -22,7 +22,8 @@ private const val VEHICLEMAXHEIGHT = 5
  */
 class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
 
-    override var requiredProperties: List<String> = listOf("id", "baseId", "vehicleType", "staffCapacity")
+    override val requiredProperties: List<String> = listOf(ID, BASE_ID, VEHICLE_TYPE, STAFF_CAPACITY)
+    override val optionalProperties: List<String> = listOf(WATER_CAPACITY, CRIMINAL_CAPACITY, LADDER_LENGTH)
 
     /**
      * Validates the information for vehicles and creates vehicles.
@@ -34,7 +35,17 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
         val vehicleInfos = jsonParserObj.parseVehicles()
 
         vehicleInfos.forEach { vehicleInfo ->
-            if (!validateOptionalProperties(vehicleInfo) || !validateAssetCapacity(vehicleInfo)) {
+            val mandatoryFields = when (vehicleInfo.vehicleType) {
+                VehicleType.AMBULANCE, VehicleType.EMERGENCY_DOCTOR_CAR -> emptyList()
+                VehicleType.FIRE_TRUCK_WATER -> listOf(WATER_CAPACITY)
+                VehicleType.FIRE_TRUCK_TECHNICAL, VehicleType.FIREFIGHTER_TRANSPORTER -> emptyList()
+                VehicleType.FIRE_TRUCK_LADDER -> listOf(LADDER_LENGTH)
+                VehicleType.POLICE_CAR -> listOf(CRIMINAL_CAPACITY)
+                VehicleType.POLICE_MOTOR_CYCLE, VehicleType.K9_POLICE_CAR -> emptyList()
+            }
+            if (!validateSpecificProperties(vehicleInfo, optionalProperties, mandatoryFields) ||
+                !validateAssetCapacity(vehicleInfo)
+            ) {
                 return null
             }
 
@@ -45,6 +56,10 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
                 validateBasesNessesaryStaff(vehicleInfo, bases)
             }
         }
+        return buildVehicles(vehicleInfos)
+    }
+
+    private fun buildVehicles(vehicleInfos: List<VehicleInfo>): List<Vehicle> {
         return vehicleInfos.map {
             when (it.vehicleType) {
                 VehicleType.POLICE_CAR, VehicleType.POLICE_MOTOR_CYCLE, VehicleType.K9_POLICE_CAR ->
@@ -79,19 +94,6 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
                     )
             }
         }.toList()
-    }
-
-    private fun validateOptionalProperties(vehicleInfo: VehicleInfo): Boolean {
-        if (vehicleInfo.vehicleType != VehicleType.FIRE_TRUCK_LADDER && vehicleInfo.ladderLength != null) {
-            return false
-        }
-        if (vehicleInfo.vehicleType != VehicleType.FIRE_TRUCK_WATER && vehicleInfo.waterCapacity != null) {
-            return false
-        }
-        if (vehicleInfo.vehicleType != VehicleType.POLICE_CAR && vehicleInfo.criminalCapacity != null) {
-            return false
-        }
-        return true
     }
 
     /**

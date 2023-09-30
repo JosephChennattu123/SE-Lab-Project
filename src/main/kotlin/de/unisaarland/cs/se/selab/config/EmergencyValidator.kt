@@ -12,7 +12,8 @@ private const val SEVERITY_MAX = 3
  */
 class EmergencyValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
     override var requiredProperties: List<String> =
-        listOf("id", "tick", "village", "roadName", "emergencyType", "severity", "handleTime", "maxDuration")
+        listOf(ID, TICK, VILLAGE, ROAD_NAME, EMERGENCY_TYPE, SEVERITY, HANDLE_TIME, MAX_DURATION)
+    override val optionalProperties: List<String> = emptyList()
 
     /**
      * Validates the information for emergencies and creates emergencies.

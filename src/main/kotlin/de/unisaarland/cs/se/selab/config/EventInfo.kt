@@ -24,7 +24,7 @@ const val VEHICLE_ID = "vehicleId"
  * @param oneWayStreet whether the road should be set to one way
  * @param source the source vertex of the event
  * @param target the target vertex of the event
- * @param vehicleId the id of the vehicle that is involved in the event
+ * @property vehicleId the id of the vehicle that is involved in the event
  */
 class EventInfo(
     id: Int,
