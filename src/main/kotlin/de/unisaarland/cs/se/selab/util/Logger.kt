@@ -17,7 +17,7 @@ object Logger {
     private var printWriter: PrintWriter? = null
 
     init {
-        printWriter = PrintWriter(System.out)
+        printWriter = PrintWriter(System.out, true)
     }
 
     private fun printLog(output: String) {

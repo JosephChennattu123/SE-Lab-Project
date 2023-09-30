@@ -54,7 +54,7 @@ class EmergencyDistribution {
             model.getBaseById(nearestBaseId as Int)?.addEmergency(e.id)
 
             // Add the emergency to the list of active emergencies in the model.
-            model.addToAssignedEmergencies(nearestBaseId)
+            model.addToAssignedEmergencies(e.id)
 
             // Log the assignment.
             Logger.logEmergencyAssigned(e.id, nearestBaseId)
