@@ -7,7 +7,7 @@ class NewDotParser(val graphFilePath: String) {
 
     private val fileString = FileReader(graphFilePath).readText().replace("""\s""".toRegex(), "")
 
-    //private val reader = BufferedReader(fileReader)
+    // private val reader = BufferedReader(fileReader)
     private var charCode: Int = 0
     private var currentIndex = 0
     private var maxIndex = fileString.length
@@ -16,8 +16,6 @@ class NewDotParser(val graphFilePath: String) {
     val vertices = mutableListOf<String>()
     val edgeIdToSourceTarget = mutableMapOf<Int, Pair<String, String>>()
     val edgeIdToAttributes = mutableMapOf<Int, MutableMap<String, String>>()
-
-
 
     private val labelList: List<String> = listOf(
         LABEL_VILLAGE,
@@ -48,12 +46,13 @@ class NewDotParser(val graphFilePath: String) {
                     currentIndex++
                     parseVertices()
                 }
-                '}' -> closingBracketRead = true
+                '}' -> {}
                 else -> {
                     println("Error in parse level: $character")
                     break
                 }
             }
+            currentIndex++
         }
         if (!closingBracketRead) {
             println("Error: closing bracket not read")
@@ -95,8 +94,9 @@ class NewDotParser(val graphFilePath: String) {
                         currentIndex -= 1
                         vertices.removeLast()
                         break
+                    } else {
+                        println("Error: $character")
                     }
-                    else println("Error: $character")
                 }
 
                 else -> println("Error: $character")
@@ -130,6 +130,7 @@ class NewDotParser(val graphFilePath: String) {
                 ';' -> {
                     edgeIdToSourceTarget[count] = Pair(source, target)
                 }
+                '}' -> return
                 else -> println("Error: $character")
             }
             currentIndex++
@@ -142,24 +143,25 @@ class NewDotParser(val graphFilePath: String) {
         var withId = true
         var currentLabel = ""
         val attributeValues: MutableMap<String, String> = mutableMapOf()
-        while (!endReached()) {
+        while (!endReached() && labelIndex < AMOUNT_OF_LABELS) {
             withId = labelsWithIds >= labelIndex - 1
             currentLabel = labelList[labelIndex]
             when (val character = fileString[currentIndex]) {
                 isLetter(character) -> {
                     attributeValues[currentLabel] = parseLabel(currentLabel, withId)
+                }
+
+                ';' -> {
                     labelIndex++
                 }
-
-                ']' -> {
-                    edgeIdToAttributes[edgeId] = attributeValues
-                    return
-                }
-
-                else -> println("error when parsing attributes: expected a letter but was $character")
             }
             currentIndex++
         }
+        if (fileString[currentIndex] == ']') {
+            edgeIdToAttributes[edgeId] = attributeValues
+            currentIndex++
+            return
+        } else { println("error when parsing attributes: expected a ] but was $fileString[currentIndex]") }
     }
 
     private fun parseLabel(label: String, isId: Boolean): String {
@@ -167,18 +169,13 @@ class NewDotParser(val graphFilePath: String) {
         var labelValue = ""
         while (!endReached() && count < label.length) {
             when (val character = fileString[currentIndex]) {
-                label[count] -> {
-                    count++
-                    if (count == label.length) {
-                        currentIndex++
-                        break
-                    }
-                }
+                label[count] -> count++
             }
-            if (fileString[currentIndex] == '=') {
-                if (isId) labelValue = parseId() else labelValue = parseWord()
-                return labelValue
-            }
+            currentIndex++
+        }
+        if (fileString[currentIndex] == '=') {
+            currentIndex++
+            if (isId) labelValue = parseId() else labelValue = parseWord()
             return labelValue
         }
         println("Error: label value not found")
@@ -282,7 +279,7 @@ class NewDotParser(val graphFilePath: String) {
         return currentIndex >= maxIndex
     }
 }
-
+private const val AMOUNT_OF_LABELS = 6
 private const val LABEL_ID_VALUES = 4
 private const val LABEL_DIGRAPH = "digraph"
 private const val LABEL_VILLAGE = "village"
