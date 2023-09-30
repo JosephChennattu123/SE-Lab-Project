@@ -6,6 +6,7 @@ internal class DotParserTest {
 
     @Test
     fun parseCountyName() {
-        assert(true)
+        val newParser = NewDotParser("src/systemtest/resources/mapFiles/example_map.dot")
+        newParser.parse()
     }
 }
