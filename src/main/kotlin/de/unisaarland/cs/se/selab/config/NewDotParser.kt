@@ -1,14 +1,18 @@
 package de.unisaarland.cs.se.selab.config
 
-import java.io.BufferedReader
 import java.io.FileReader
 
+private const val ERROR_COLON = "Error: "
+
+/**
+ * @param graphFilePath the path to the file containing the graph
+ */
 class NewDotParser(val graphFilePath: String) {
 
     private val fileString = FileReader(graphFilePath).readText().replace("""\s""".toRegex(), "")
 
     // private val reader = BufferedReader(fileReader)
-    private var charCode: Int = 0
+    // private var charCode: Int = 0
     private var currentIndex = 0
     private var maxIndex = fileString.length
 
@@ -32,6 +36,9 @@ class NewDotParser(val graphFilePath: String) {
         LABEL_NONE
     )
 
+    /**
+     * Parses the dot file for the graph and checks that it is correct syntactically
+     */
     fun parse() {
         var closingBracketRead = false
         while (!endReached()) {
@@ -46,6 +53,7 @@ class NewDotParser(val graphFilePath: String) {
                     currentIndex++
                     parseVertices()
                 }
+
                 '}' -> {}
                 else -> {
                     println("Error in parse level: $character")
@@ -86,20 +94,21 @@ class NewDotParser(val graphFilePath: String) {
                 isId(character) -> {
                     vertices.add(parseId())
                 }
+
                 ';' -> {
                 }
 
                 '-' -> {
                     if (fileString[currentIndex + 1] == '>') {
-                        currentIndex -= 1
-                        vertices.removeLast()
+                        val vertex = vertices.removeLast()
+                        currentIndex -= vertex.length
                         break
                     } else {
-                        println("Error: $character")
+                        println(ERROR_COLON + "$character")
                     }
                 }
 
-                else -> println("Error: $character")
+                else -> println(ERROR_COLON + "$character")
             }
             currentIndex++
         }
@@ -127,9 +136,11 @@ class NewDotParser(val graphFilePath: String) {
                     parseAttributes(count)
                     count++
                 }
+
                 ';' -> {
                     edgeIdToSourceTarget[count] = Pair(source, target)
                 }
+
                 '}' -> return
                 else -> println("Error: $character")
             }
@@ -161,7 +172,9 @@ class NewDotParser(val graphFilePath: String) {
             edgeIdToAttributes[edgeId] = attributeValues
             currentIndex++
             return
-        } else { println("error when parsing attributes: expected a ] but was $fileString[currentIndex]") }
+        } else {
+            println("error when parsing attributes: expected a ] but was $fileString[currentIndex]")
+        }
     }
 
     private fun parseLabel(label: String, isId: Boolean): String {
@@ -190,10 +203,12 @@ class NewDotParser(val graphFilePath: String) {
                     id = parseWord()
                     return id
                 }
+
                 isNumber(character) -> {
                     id = parseNumber()
                     return id
                 }
+
                 ';', '-' -> return id // TODO might cause a bug by parsing edges with id ->-> id.
                 else -> {
                     println("id Error: expected a char that matches [a-zA-Z0-9] but was $character")
@@ -213,6 +228,7 @@ class NewDotParser(val graphFilePath: String) {
                     currentIndex--
                     return word
                 }
+
                 isNumber(character) -> {
                     println("word Error: expected a char that matches [a-zA-Z] but was $character")
                     return ""
@@ -250,14 +266,14 @@ class NewDotParser(val graphFilePath: String) {
         return number
     }
 
-    private fun consumeSpaces(reader: BufferedReader) {
+    /*private fun consumeSpaces(reader: BufferedReader) {
         reader.reset()
         while (charCode != -1 && charCode.toChar().isWhitespace()) {
             reader.mark(1)
             charCode = reader.read()
             println("space consumed")
         }
-    }
+    }*/
 
     private fun isId(character: Char): Char? {
         return if (character.toString().matches(Regex("""[_a-zA-Z0-9]"""))) character else null
@@ -271,14 +287,15 @@ class NewDotParser(val graphFilePath: String) {
         return if (character.toString().matches(Regex("""[0-9]"""))) character else null
     }
 
-    private fun isSpace(character: Char): Char? {
+    /*private fun isSpace(character: Char): Char? {
         return if (character.toString().matches(Regex("""\s"""))) character else null
-    }
+    }*/
 
     private fun endReached(): Boolean {
         return currentIndex >= maxIndex
     }
 }
+
 private const val AMOUNT_OF_LABELS = 6
 private const val LABEL_ID_VALUES = 4
 private const val LABEL_DIGRAPH = "digraph"
