@@ -1,6 +1,8 @@
 package de.unisaarland.cs.se.selab.config
 
-import java.io.FileReader
+import java.io.BufferedReader
+import java.io.File
+import java.io.RandomAccessFile
 
 private const val ERROR_COLON = "Error: "
 
@@ -9,12 +11,16 @@ private const val ERROR_COLON = "Error: "
  */
 class NewDotParser(val graphFilePath: String) {
 
-    private val fileString = FileReader(graphFilePath).readText().replace("""\s""".toRegex(), "")
+    // private val fileString = FileReader(graphFilePath).readText().replace("""\s""".toRegex(), "")
 
-    // private val reader = BufferedReader(fileReader)
-    // private var charCode: Int = 0
+    private val reader = RandomAccessFile(File(graphFilePath.replace("/", File.separator)), "r")
+
+
+    private var charCode: Int = 0
     private var currentIndex = 0
-    private var maxIndex = fileString.length
+
+    // private var maxIndex = fileString.length
+    private var maxIndex = reader.length()
 
     var mapName = ""
     val vertices = mutableListOf<String>()
@@ -42,43 +48,90 @@ class NewDotParser(val graphFilePath: String) {
     fun parse() {
         var closingBracketRead = false
         while (!endReached()) {
-            val character = fileString[currentIndex]
+            // val character = fileString[currentIndex]
+            val character = readChar(currentIndex)
             when (character) {
                 'd' -> {
-                    print(character)
+                    // print(character)
                     parseDigraph()
                 }
 
                 '{' -> {
-                    currentIndex++
+                    // currentIndex++
+                    increaseIndex()
                     parseVertices()
                 }
 
-                '}' -> {}
+                '}' -> {
+                    closingBracketRead = true
+                }
+
                 else -> {
-                    println("Error in parse level: $character")
+                    // println("Error in parse level: $character")
                     break
                 }
             }
-            currentIndex++
+            // currentIndex++
+            increaseIndex()
         }
         if (!closingBracketRead) {
-            println("Error: closing bracket not read")
+            // println("Error: closing bracket not read")
+        }
+    }
+
+    private fun readChar(pos: Int): Char {
+        reader.seek(pos.toLong())
+
+        charCode = reader.read()
+        consumeWhiteSpace()
+        return charCode.toChar()
+    }
+
+    private fun increaseIndex() {
+        reader.seek(currentIndex.toLong())
+        charCode = reader.read()
+        currentIndex++
+
+        while (charCode != -1 && charCode.toChar().isWhitespace()) {
+            charCode = reader.read()
+            currentIndex++
+            // println("space consumed")
+        }
+    }
+
+    private fun decreaseIndex() {
+        reader.seek(currentIndex.toLong())
+        charCode = reader.read()
+        currentIndex -= 1
+
+        while (charCode != -1 && charCode.toChar().isWhitespace()) {
+            charCode = reader.read()
+            currentIndex -= 1
+            // println("space consumed")
+        }
+    }
+
+    private fun consumeWhiteSpace() {
+        while (charCode != -1 && charCode.toChar().isWhitespace()) {
+            charCode = reader.read()
+            // println("space consumed")
         }
     }
 
     private fun parseDigraph() {
         var count = 0
         while (!endReached() && count < LABEL_DIGRAPH.length) {
-            when (val character = fileString[currentIndex]) {
+            when (val character = readChar(currentIndex)) {
+                // when (val character = fileString[currentIndex]) {
                 LABEL_DIGRAPH[count] -> {
-                    print(character)
+                    // print(character)
                     count++
-                    currentIndex++
+                    // currentIndex++
+                    increaseIndex()
                 }
 
                 else -> {
-                    println("digraph Error: $character")
+                    // println("digraph Error: $character")
                     return
                 }
             }
@@ -89,7 +142,8 @@ class NewDotParser(val graphFilePath: String) {
     private fun parseVertices() {
         var id = ""
         while (!endReached()) {
-            val character = fileString[currentIndex]
+            val character = readChar(currentIndex)
+            // val character = fileString[currentIndex]
             when (character) {
                 isId(character) -> {
                     vertices.add(parseId())
@@ -99,18 +153,23 @@ class NewDotParser(val graphFilePath: String) {
                 }
 
                 '-' -> {
-                    if (fileString[currentIndex + 1] == '>') {
+                    if (readChar(currentIndex + 1) == '>') {
+                        //if (fileString[currentIndex + 1] == '>') {
                         val vertex = vertices.removeLast()
+                        reader.seek(reader.filePointer - vertex.length)
                         currentIndex -= vertex.length
                         break
                     } else {
-                        println(ERROR_COLON + "$character")
+                        // println(ERROR_COLON + "$character")
                     }
                 }
 
-                else -> println(ERROR_COLON + "$character")
+                else -> {
+                    // println(ERROR_COLON + "$character")
+                }
             }
-            currentIndex++
+            // currentIndex++
+            increaseIndex()
         }
         parseEdges()
     }
@@ -120,19 +179,22 @@ class NewDotParser(val graphFilePath: String) {
         var source = ""
         var target = ""
         while (!endReached()) {
-            when (val character = fileString[currentIndex]) {
+            when (val character = readChar(currentIndex)) {
+                // when (val character = fileString[currentIndex]) {
                 isId(character) -> source = parseId()
                 '-' -> {
-                    if (fileString[currentIndex + 1] == '>') {
+                    if (readChar(currentIndex + 1) == '>') {
+                        // if (fileString[currentIndex + 1] == '>') {
                         currentIndex += 2
                         target = parseId()
                     } else {
-                        println("Error: $character")
+                        // println("Error: $character")
                     }
                 }
 
                 '[' -> {
-                    currentIndex++
+                    // currentIndex++
+                    increaseIndex()
                     parseAttributes(count)
                     count++
                 }
@@ -142,9 +204,12 @@ class NewDotParser(val graphFilePath: String) {
                 }
 
                 '}' -> return
-                else -> println("Error: $character")
+                else -> {
+                    // println("Error: $character")
+                }
             }
-            currentIndex++
+            // currentIndex++
+            increaseIndex()
         }
     }
 
@@ -157,7 +222,8 @@ class NewDotParser(val graphFilePath: String) {
         while (!endReached() && labelIndex < AMOUNT_OF_LABELS) {
             withId = labelsWithIds >= labelIndex - 1
             currentLabel = labelList[labelIndex]
-            when (val character = fileString[currentIndex]) {
+            when (val character = readChar(currentIndex)) {
+                // when (val character = fileString[currentIndex]) {
                 isLetter(character) -> {
                     attributeValues[currentLabel] = parseLabel(currentLabel, withId)
                 }
@@ -166,14 +232,17 @@ class NewDotParser(val graphFilePath: String) {
                     labelIndex++
                 }
             }
-            currentIndex++
+            // currentIndex++
+            increaseIndex()
         }
-        if (fileString[currentIndex] == ']') {
+        if (readChar(currentIndex) == ']') {
+            // if (fileString[currentIndex] == ']') {
             edgeIdToAttributes[edgeId] = attributeValues
-            currentIndex++
+            // currentIndex++
+            increaseIndex()
             return
         } else {
-            println("error when parsing attributes: expected a ] but was $fileString[currentIndex]")
+            // println("error when parsing attributes: expected a ] but was $fileString[currentIndex]")
         }
     }
 
@@ -181,24 +250,29 @@ class NewDotParser(val graphFilePath: String) {
         var count = 0
         var labelValue = ""
         while (!endReached() && count < label.length) {
-            when (val character = fileString[currentIndex]) {
+            when (val character = readChar(currentIndex)) {
+                // when (val character = fileString[currentIndex]) {
                 label[count] -> count++
             }
-            currentIndex++
+            // currentIndex++
+            increaseIndex()
         }
-        if (fileString[currentIndex] == '=') {
-            currentIndex++
+        if (readChar(currentIndex) == '=') {
+            // if (fileString[currentIndex] == '=') {
+            // currentIndex++
+            increaseIndex()
             if (isId) labelValue = parseId() else labelValue = parseWord()
             return labelValue
         }
-        println("Error: label value not found")
+        // println("Error: label value not found")
         return labelValue
     }
 
     private fun parseId(): String {
         var id = ""
         while (!endReached()) {
-            when (val character = fileString[currentIndex]) {
+            when (val character = readChar(currentIndex)) {
+                // when (val character = fileString[currentIndex]) {
                 isLetter(character) -> {
                     id = parseWord()
                     return id
@@ -211,7 +285,7 @@ class NewDotParser(val graphFilePath: String) {
 
                 ';', '-' -> return id // TODO might cause a bug by parsing edges with id ->-> id.
                 else -> {
-                    println("id Error: expected a char that matches [a-zA-Z0-9] but was $character")
+                    // println("id Error: expected a char that matches [a-zA-Z0-9] but was $character")
                     return ""
                 }
             }
@@ -221,26 +295,31 @@ class NewDotParser(val graphFilePath: String) {
 
     private fun parseWord(): String {
         var word = ""
+        // currentIndex++
         while (!endReached()) {
-            when (val character = fileString[currentIndex]) {
+            when (val character = readChar(currentIndex)) {
+                // when (val character = fileString[currentIndex]) {
                 isLetter(character), '_' -> word += character
                 ';', '-' -> {
-                    currentIndex--
+                    // currentIndex--
+                    decreaseIndex()
                     return word
                 }
 
                 isNumber(character) -> {
-                    println("word Error: expected a char that matches [a-zA-Z] but was $character")
+                    // println("word Error: expected a char that matches [a-zA-Z] but was $character")
                     return ""
                 }
 
                 else -> {
-                    currentIndex--
-                    println("word Error: expected a char that matches [a-zA-Z] but was $character")
+                    // currentIndex--
+                    decreaseIndex()
+                    // println("word Error: expected a char that matches [a-zA-Z] but was $character")
                     return word
                 }
             }
-            currentIndex++
+            // currentIndex++
+            increaseIndex()
         }
         return word
     }
@@ -248,20 +327,24 @@ class NewDotParser(val graphFilePath: String) {
     private fun parseNumber(): String {
         var number = ""
         while (!endReached()) {
-            when (val character = fileString[currentIndex]) {
+            when (val character = readChar(currentIndex)) {
+                // when (val character = fileString[currentIndex]) {
                 isNumber(character) -> number += character
                 ';', '-' -> {
-                    currentIndex--
+                    // currentIndex--
+                    decreaseIndex()
                     return number
                 }
 
                 else -> {
-                    currentIndex--
-                    println("number Error: expected a char that matches [0-9] but was $character")
+                    // currentIndex--
+                    decreaseIndex()
+                    // println("number Error: expected a char that matches [0-9] but was $character")
                     break
                 }
             }
-            currentIndex++
+            // currentIndex++
+            increaseIndex()
         }
         return number
     }
