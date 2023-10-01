@@ -463,14 +463,15 @@ object AssetManager {
         vehicles: List<Vehicle>,
         requirements: List<EmergencyRequirement>
     ): Boolean {
+        var requirementFulfilled = true
         val requirementsCopy = requirements.map { it.copy() }.toMutableList()
         if (!isThereEnoughStaffAtBase(mainBase, vehicles)) {
-            return false
+            requirementFulfilled = false
         }
         // check if every vehicle satisfies a requirement.
         for (vehicle in vehicles) {
             if (!tryToFulfillRequirements(vehicle, requirementsCopy)) {
-                return false
+                requirementFulfilled = false
             }
         }
         // check if emergency blocked (vehicle amount satisfied but asset amount not satisfied).
@@ -478,11 +479,11 @@ object AssetManager {
             val numberOfAssets = requirement.amountOfAsset
             if (numberOfAssets != null) {
                 if (requirement.numberOfVehicles == 0 && numberOfAssets > 0) {
-                    return false
+                    requirementFulfilled = false
                 }
             }
         }
-        return true
+        return requirementFulfilled
     }
 
     /**
@@ -496,6 +497,8 @@ object AssetManager {
         vehicle: Vehicle,
         requirements: List<EmergencyRequirement>
     ): Boolean {
+
+        var requirementFulfilled = false
         // iterate over unfulfilled requirements of the given vehicle's type.
         for (requirement in requirements.filter {
             it.numberOfVehicles > 0 &&
@@ -505,16 +508,12 @@ object AssetManager {
             if (totalAssetsNeeded != null) {
                 if (requirement.vehicleType != VehicleType.FIRE_TRUCK_LADDER) {
                     totalAssetsNeeded -= vehicle.currentNumberOfAssets
-                    // if the vehicle is a firetruck with ladder.
+                // if the vehicle is a firetruck with ladder check if ladder length suffices.
                 } else if (vehicle.currentNumberOfAssets >= totalAssetsNeeded) {
                     requirement.amountOfAsset = 0
                     requirement.numberOfVehicles--
                     return true
-                }
-                // if ladder is too short.
-                else {
-                    return false
-                }
+                } else {continue}
                 totalAssetsNeeded -= vehicle.currentNumberOfAssets
             }
             requirement.amountOfAsset = totalAssetsNeeded
