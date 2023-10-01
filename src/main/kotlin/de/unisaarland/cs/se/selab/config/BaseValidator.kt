@@ -8,7 +8,8 @@ import de.unisaarland.cs.se.selab.model.map.Graph
  * Validates the bases
  */
 class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
-    override var requiredProperties: List<String> = listOf("id", "baseType", "staff", "location")
+    override val requiredProperties: List<String> = listOf(ID, BASE_TYPE, STAFF, LOCATION_VERTEX)
+    override val optionalProperties: List<String> = listOf(DOGS, DOCTORS)
 
     private var fail = false
 
@@ -22,9 +23,18 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
         val baseInfos = jsonParserObj.parseBases()
 
         baseInfos.forEach { baseInfo ->
-            if (!validateDogsOnlyInPoliceStations(baseInfo) || !validateDoctorsOnlyInHospitals(baseInfo)) {
+            val mandatoryFields = when (baseInfo.baseType) {
+                BaseType.FIRE_STATION -> emptyList()
+                BaseType.POLICE_STATION -> listOf(DOGS)
+                BaseType.HOSPITAL -> listOf(DOCTORS)
+            }
+            if (!validateSpecificProperties(baseInfo, optionalProperties, mandatoryFields)) {
                 return null
             }
+
+            /*if (!validateDogsOnlyInPoliceStations(baseInfo) || !validateDoctorsOnlyInHospitals(baseInfo)) {
+                return null
+            }*/ // TODO might not be needed anymore because of validateSpecificProperties
 
             if (baseInfo.baseType == BaseType.HOSPITAL) {
                 fail = !validateNumDoctors(baseInfo)
@@ -62,10 +72,10 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      *
      * @return true if the bases contain doctors only if they are hospitals
      */
-    private fun validateDoctorsOnlyInHospitals(baseInfo: BaseInfo): Boolean {
+    /*private fun validateDoctorsOnlyInHospitals(baseInfo: BaseInfo): Boolean {
         // TODO also check if this is needed (special property)
         return !(baseInfo.doctors != null && baseInfo.baseType != BaseType.HOSPITAL)
-    }
+    }*/
 
     /**
      * Check that the number of dogs is non-negative
@@ -82,10 +92,10 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      *
      * @return true if the bases contain dogs only if they are police stations
      */
-    private fun validateDogsOnlyInPoliceStations(baseInfo: BaseInfo): Boolean {
+    /*private fun validateDogsOnlyInPoliceStations(baseInfo: BaseInfo): Boolean {
         // TODO also check if this is needed (special property)
         return !(baseInfo.dogs != null && baseInfo.baseType != BaseType.POLICE_STATION)
-    }
+    }*/
 
     /**
      * Check that the corresponding vertices exist in the graph
