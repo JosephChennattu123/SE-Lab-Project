@@ -15,11 +15,11 @@ class Emergency(
     val scheduledTick: Int,
     val type: EmergencyType,
     val severity: Int = 3,
-    private var handleTime: Int,
-    private val maxDuration: Int,
+    var handleTime: Int,
+    val maxDuration: Int,
     val location: Location
 ) {
-    private var timeElapsed: Int = 0
+    var timeElapsed: Int = 0
     var status: EmergencyStatus = EmergencyStatus.ONGOING
 
     var canRequest: Boolean = false
