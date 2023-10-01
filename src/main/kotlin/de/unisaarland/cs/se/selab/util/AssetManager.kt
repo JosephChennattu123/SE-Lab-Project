@@ -489,7 +489,7 @@ object AssetManager {
     /**
      * Checks if a single vehicle satisfies any requirement of the emergency (partially or fully).
      * successful assignments of vehicles will modify the state of requirements.
-     * to be used in optimal solution for checking if a set of vehicles satisfies the requirements of an emergency.
+     * To be used in optimal solution for checking if a set of vehicles satisfies the requirements of an emergency.
      * @param vehicle The vehicle that will fulfill the requirement.
      * @return true if the vehicle satisfies a requirement, false otherwise.
      * */
@@ -499,29 +499,30 @@ object AssetManager {
     ): Boolean {
 
         var requirementFulfilled = false
+        var requirementsIndex = requirements.size
+        val fittingRequirements = requirements.filter { it.numberOfVehicles > 0 &&
+                it.vehicleType == vehicle.vehicleType}
         // iterate over unfulfilled requirements of the given vehicle's type.
-        for (requirement in requirements.filter {
-            it.numberOfVehicles > 0 &&
-                it.vehicleType == vehicle.vehicleType
-        }) {
-            var totalAssetsNeeded = requirement.amountOfAsset
-            if (totalAssetsNeeded != null) {
-                if (requirement.vehicleType != VehicleType.FIRE_TRUCK_LADDER) {
-                    totalAssetsNeeded -= vehicle.currentNumberOfAssets
-                // if the vehicle is a firetruck with ladder check if ladder length suffices.
-                } else if (vehicle.currentNumberOfAssets >= totalAssetsNeeded) {
-                    requirement.amountOfAsset = 0
-                    requirement.numberOfVehicles--
-                    return true
-                } else {continue}
-                totalAssetsNeeded -= vehicle.currentNumberOfAssets
+        while (!requirementFulfilled && requirementsIndex < requirements.size) {
+            val requiredType = fittingRequirements[requirementsIndex].vehicleType
+            val requiredAmount = fittingRequirements[requirementsIndex].amountOfAsset
+            if (requiredType == VehicleType.FIRE_TRUCK_LADDER) {
+                requirementFulfilled = vehicle.currentNumberOfAssets >= requiredAmount!!
+                fittingRequirements[requirementsIndex].amountOfAsset = 0
+                fittingRequirements[requirementsIndex].numberOfVehicles--
             }
-            requirement.amountOfAsset = totalAssetsNeeded
-            requirement.numberOfVehicles--
-            return true
+            else if (requiredAmount == null) {
+                requirementFulfilled = true
+                fittingRequirements[requirementsIndex].numberOfVehicles--
+            }
+            else {
+                requirementFulfilled = true
+                fittingRequirements[requirementsIndex].amountOfAsset = requiredAmount - vehicle.currentNumberOfAssets
+            }
         }
-        return false
+        return requirementFulfilled
     }
+
 
     /**
      * updates the current requirements of the emergency.
