@@ -1,26 +1,36 @@
 package de.unisaarland.cs.se.selab.config
 
-import java.io.BufferedReader
-import java.io.File
-import java.io.RandomAccessFile
+// import java.io.BufferedReader
+// import java.io.File
+// import java.io.RandomAccessFile
+import java.io.FileReader
+import java.lang.IndexOutOfBoundsException
 
-private const val ERROR_COLON = "Error: "
+// private const val ERROR_COLON = "Error: "
+
+private const val LETTER_LOWER_START = 65
+private const val LETTER_LOWER_END = 90
+
+private const val LETTER_UPPER_START = 97
+private const val LETTER_UPPER_END = 122
+
+private const val DIGIT_START = 48
+private const val DIGIT_END = 57
 
 /**
  * @param graphFilePath the path to the file containing the graph
  */
 class NewDotParser(val graphFilePath: String) {
 
-    // private val fileString = FileReader(graphFilePath).readText().replace("""\s""".toRegex(), "")
+    private val fileString = FileReader(graphFilePath).readText() // .replace("""\s""".toRegex(), "")
 
-    private val reader = RandomAccessFile(File(graphFilePath.replace("/", File.separator)), "r")
-
+    // private val reader = RandomAccessFile(File(graphFilePath.replace("/", File.separator)), "r")
 
     private var charCode: Int = 0
     private var currentIndex = 0
 
-    // private var maxIndex = fileString.length
-    private var maxIndex = reader.length()
+    private val maxIndex = fileString.length
+    // private val maxIndex = reader.length()
 
     var mapName = ""
     val vertices = mutableListOf<String>()
@@ -80,41 +90,62 @@ class NewDotParser(val graphFilePath: String) {
     }
 
     private fun readChar(pos: Int): Char {
-        reader.seek(pos.toLong())
-
-        charCode = reader.read()
+        // reader.seek(pos.toLong())
+        charCode = getRawChar(pos)
         consumeWhiteSpace()
         return charCode.toChar()
     }
 
     private fun increaseIndex() {
-        reader.seek(currentIndex.toLong())
-        charCode = reader.read()
+        // reader.seek(currentIndex.toLong())
+        charCode = getRawChar(currentIndex)
         currentIndex++
 
         while (charCode != -1 && charCode.toChar().isWhitespace()) {
-            charCode = reader.read()
+            charCode = getRawChar(currentIndex)
             currentIndex++
             // println("space consumed")
         }
     }
 
     private fun decreaseIndex() {
-        reader.seek(currentIndex.toLong())
-        charCode = reader.read()
         currentIndex -= 1
+        if (currentIndex < 0) {
+            currentIndex = 0
+            throw IndexOutOfBoundsException("currentIndex was negative")
+        }
+        // reader.seek(currentIndex.toLong())
+        charCode = getRawChar(currentIndex)
 
+
+        // var index = currentIndex
         while (charCode != -1 && charCode.toChar().isWhitespace()) {
-            charCode = reader.read()
+            charCode = getRawChar(currentIndex)
             currentIndex -= 1
+            // index++
             // println("space consumed")
+        }
+
+        if (currentIndex < 0) {
+            throw IndexOutOfBoundsException("currentIndex was negative")
         }
     }
 
     private fun consumeWhiteSpace() {
+        var index = currentIndex
         while (charCode != -1 && charCode.toChar().isWhitespace()) {
-            charCode = reader.read()
+            charCode = getRawChar(index)
+            index++
             // println("space consumed")
+        }
+    }
+
+    private fun getRawChar(index: Int): Int {
+        // charCode = reader.read()
+        return if (index >= fileString.length) {
+            -1
+        } else {
+            fileString[index].code
         }
     }
 
@@ -140,7 +171,7 @@ class NewDotParser(val graphFilePath: String) {
     }
 
     private fun parseVertices() {
-        var id = ""
+        // var id = ""
         while (!endReached()) {
             val character = readChar(currentIndex)
             // val character = fileString[currentIndex]
@@ -153,15 +184,17 @@ class NewDotParser(val graphFilePath: String) {
                 }
 
                 '-' -> {
-                    if (readChar(currentIndex + 1) == '>') {
-                        //if (fileString[currentIndex + 1] == '>') {
+                    // increaseIndex()
+                    if (getRawChar(currentIndex+1).toChar() == '>') {
+                        // if (fileString[currentIndex + 1] == '>') {
                         val vertex = vertices.removeLast()
-                        reader.seek(reader.filePointer - vertex.length)
-                        currentIndex -= vertex.length
+                        moveBackToLastVertex(vertex)
+                        // decreaseIndex()
                         break
                     } else {
                         // println(ERROR_COLON + "$character")
                     }
+                    // decreaseIndex()
                 }
 
                 else -> {
@@ -174,6 +207,18 @@ class NewDotParser(val graphFilePath: String) {
         parseEdges()
     }
 
+    private fun moveBackToLastVertex(vertex: String) {
+        var loopIndex = 0
+        while (loopIndex < vertex.length) {
+            loopIndex++
+            decreaseIndex()
+        }
+        /*for (i in 0..vertex.length) {
+            // currentIndex -= vertex.length
+            decreaseIndex()
+        }*/
+    }
+
     private fun parseEdges() {
         var count = 0
         var source = ""
@@ -183,11 +228,18 @@ class NewDotParser(val graphFilePath: String) {
                 // when (val character = fileString[currentIndex]) {
                 isId(character) -> source = parseId()
                 '-' -> {
-                    if (readChar(currentIndex + 1) == '>') {
+                    increaseIndex()
+                    if (readChar(currentIndex) == '>') {
                         // if (fileString[currentIndex + 1] == '>') {
-                        currentIndex += 2
+                        decreaseIndex()
+
+                        // currentIndex += 2
+                        increaseIndex()
+                        increaseIndex()
+
                         target = parseId()
                     } else {
+                        decreaseIndex()
                         // println("Error: $character")
                     }
                 }
@@ -203,7 +255,11 @@ class NewDotParser(val graphFilePath: String) {
                     edgeIdToSourceTarget[count] = Pair(source, target)
                 }
 
-                '}' -> return
+                '}' -> {
+                    decreaseIndex()
+                    return
+                }
+
                 else -> {
                     // println("Error: $character")
                 }
@@ -239,7 +295,7 @@ class NewDotParser(val graphFilePath: String) {
             // if (fileString[currentIndex] == ']') {
             edgeIdToAttributes[edgeId] = attributeValues
             // currentIndex++
-            increaseIndex()
+            // increaseIndex()
             return
         } else {
             // println("error when parsing attributes: expected a ] but was $fileString[currentIndex]")
@@ -359,15 +415,24 @@ class NewDotParser(val graphFilePath: String) {
     }*/
 
     private fun isId(character: Char): Char? {
-        return if (character.toString().matches(Regex("""[_a-zA-Z0-9]"""))) character else null
+        // return if (character.toString().matches(Regex("""[_a-zA-Z0-9]"""))) character else null
+        return if (isLetter(character) != null || isNumber(character) != null) character else null
     }
 
     private fun isLetter(character: Char): Char? {
-        return if (character.toString().matches(Regex("""[_a-zA-Z]"""))) character else null
+        // return if (character.toString().matches(Regex("""[_a-zA-Z]"""))) character else null
+        return if (character.code in LETTER_LOWER_START..LETTER_LOWER_END ||
+            character.code in LETTER_UPPER_START..LETTER_UPPER_END
+        ) {
+            character
+        } else {
+            null
+        }
     }
 
     private fun isNumber(character: Char): Char? {
-        return if (character.toString().matches(Regex("""[0-9]"""))) character else null
+        // return if (character.toString().matches(Regex("""[0-9]"""))) character else null
+        return if (character.code in DIGIT_START..DIGIT_END) character else null
     }
 
     /*private fun isSpace(character: Char): Char? {
