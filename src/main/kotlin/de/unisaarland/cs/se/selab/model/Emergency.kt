@@ -64,9 +64,9 @@ class Emergency(
             .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.FIRE_STATION }
         var criminalReq: Int = requiredAssets.first { it.assetType == AssetType.CRIMINAL }.amountOfAsset ?: 0
         // finds the assetAmount of the requirement that corresponds to police vehicles
-        var patientReq: Int = requiredAssets.first() { it.assetType == AssetType.PATIENT }.amountOfAsset ?: 0
+        var patientReq: Int = requiredAssets.first { it.assetType == AssetType.PATIENT }.amountOfAsset ?: 0
         // finds the assetAmount of the requirement that corresponds to ambulances
-        var waterReq: Int = requiredAssets.first() { it.assetType == AssetType.WATER }.amountOfAsset ?: 0
+        var waterReq: Int = requiredAssets.first { it.assetType == AssetType.WATER }.amountOfAsset ?: 0
         // finds the assetAmount of the requirement that corresponds to firetrucks
         policeVehicles.forEach {
             criminalReq = it.handleEmergency(criminalReq)
