@@ -23,9 +23,14 @@ object Dijkstra {
     fun getNearestBaseToEdge(graph: Graph, location: Location, baseType: BaseType): Int? {
         val edge = graph.getEdge(location)
         val nearestBasesToTarget = findNearestBases(graph, edge.targetVertex.vertexId, baseType)
+        println("----------------------------")
         val nearestBasesToSource = findNearestBases(graph, edge.sourceVertex.vertexId, baseType)
         val nearestBaseToTarget = nearestBasesToTarget?.minBy { it.value }
+        println(edge.targetVertex.vertexId)
+        println(nearestBaseToTarget)
         val nearestBaseToSource = nearestBasesToSource?.minBy { it.value }
+        println(edge.sourceVertex.vertexId)
+        println(nearestBasesToSource)
         if (nearestBaseToSource != null) {
             if (nearestBaseToTarget != null) {
                 return if (nearestBasesToSource.getValue(nearestBaseToSource.key)
@@ -246,6 +251,7 @@ object Dijkstra {
         val nearestBases = HashMap<Int, Int>()
         val distanceFromSourceVertex =
             dijkstraAlgorithm(graph, vertexId, true, parentMap = HashMap())
+//        println(distanceFromSourceVertex)
         val filterVertices = distanceFromSourceVertex.keys.filter {
             !excludedBases.contains(it) && graph.vertices[it]?.baseType == baseType
         }
@@ -284,6 +290,7 @@ object Dijkstra {
             distancesFromSource[vertex.vertexId] = Int.MAX_VALUE
         }
         distancesFromSource[source] = 0
+        println("start" + distancesFromSource)
 
         while (visited.containsValue(false)) {
             // find the vertex with the minimum distance from the source vertex.
@@ -293,6 +300,8 @@ object Dijkstra {
 
             // relax all edges of the vertex.
             updateParent(currentVertex, height, distancesFromSource, parentMap, reverse)
+            println(visited)
+            println(distancesFromSource)
         }
         return distancesFromSource
     }
@@ -331,13 +340,22 @@ object Dijkstra {
             if (height != null && edge.properties.height < height) {
                 continue
             }
-            val newDistance = distancesFromSource.getValue(vertex.vertexId) + edge.getWeight()
-            val oldDistance = distancesFromSource.getValue(edge.targetVertex.vertexId)
+            var newDistance = distancesFromSource.getValue(vertex.vertexId)
+            if (newDistance != Int.MAX_VALUE) {
+                newDistance += edge.getWeight()
+            }
+            val vertexId = if (reverse) {edge.sourceVertex.vertexId} else {edge.targetVertex.vertexId}
+            val oldDistance = distancesFromSource.getValue(vertexId)
+            val id0 = vertex.vertexId
+            val id1 = edge.edgeId
+            println("reverse: $reverse. vertexId $id0 edgeId $id1 : newDistance $newDistance, oldDistance $oldDistance")
             if (newDistance < oldDistance) {
-                distancesFromSource[edge.targetVertex.vertexId] = newDistance
-                parentMap[edge.targetVertex.vertexId] = vertex.vertexId
+                distancesFromSource[vertexId] = newDistance
+                parentMap[vertexId] = vertex.vertexId
+                println("here" + distancesFromSource)
             }
         }
+
     }
 
     private fun reconstructPath(
