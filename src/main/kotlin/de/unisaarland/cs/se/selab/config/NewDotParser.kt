@@ -57,6 +57,7 @@ class NewDotParser(val graphFilePath: String) {
      */
     fun parse() {
         var closingBracketRead = false
+        var digraphParsed = false
         while (!endReached()) {
             // val character = fileString[currentIndex]
             val character = readChar(currentIndex)
@@ -65,6 +66,7 @@ class NewDotParser(val graphFilePath: String) {
                     // print(character)
                     parseDigraph()
                 }
+
 
                 '{' -> {
                     // currentIndex++
@@ -89,23 +91,16 @@ class NewDotParser(val graphFilePath: String) {
         }
     }
 
-    private fun readChar(pos: Int): Char {
-        // reader.seek(pos.toLong())
-        charCode = getRawChar(pos)
-        consumeWhiteSpace()
-        return charCode.toChar()
-    }
-
     private fun increaseIndex() {
+        currentIndex++
         // reader.seek(currentIndex.toLong())
         charCode = getRawChar(currentIndex)
-        currentIndex++
 
-        while (charCode != -1 && charCode.toChar().isWhitespace()) {
-            charCode = getRawChar(currentIndex)
-            currentIndex++
-            // println("space consumed")
+        if (charCode.toChar().isWhitespace()) {consumeWhiteSpace(false)}
+        if (currentIndex > maxIndex) {
+            currentIndex = maxIndex
         }
+
     }
 
     private fun decreaseIndex() {
@@ -119,25 +114,23 @@ class NewDotParser(val graphFilePath: String) {
 
 
         // var index = currentIndex
-        while (charCode != -1 && charCode.toChar().isWhitespace()) {
-            charCode = getRawChar(currentIndex)
-            currentIndex -= 1
-            // index++
-            // println("space consumed")
-        }
+        if (charCode.toChar().isWhitespace()) {consumeWhiteSpace(true)}
 
         if (currentIndex < 0) {
-            throw IndexOutOfBoundsException("currentIndex was negative")
+            currentIndex = 0
         }
     }
 
-    private fun consumeWhiteSpace() {
+    private fun consumeWhiteSpace(reverse: Boolean) {
+        var step = 0
+        if (reverse) step = -1 else step = 1
         var index = currentIndex
         while (charCode != -1 && charCode.toChar().isWhitespace()) {
+            index +=step
             charCode = getRawChar(index)
-            index++
             // println("space consumed")
         }
+        currentIndex = index
     }
 
     private fun getRawChar(index: Int): Int {
@@ -157,15 +150,17 @@ class NewDotParser(val graphFilePath: String) {
                 LABEL_DIGRAPH[count] -> {
                     // print(character)
                     count++
-                    // currentIndex++
-                    increaseIndex()
+                    currentIndex++
+                    //increaseIndex()
                 }
 
                 else -> {
-                    // println("digraph Error: $character")
-                    return
+                    error("Error in digraph: unexpected character \' $character\'")
                 }
             }
+        }
+        if (readChar(currentIndex).isWhitespace()) {
+            increaseIndex()
         }
         mapName = parseId()
     }
@@ -184,12 +179,15 @@ class NewDotParser(val graphFilePath: String) {
                 }
 
                 '-' -> {
-                    // increaseIndex()
-                    if (getRawChar(currentIndex+1).toChar() == '>') {
-                        // if (fileString[currentIndex + 1] == '>') {
+                    // check if the next character is a >, if so, then we have reached the end of the vertices.
+                    increaseIndex()
+                    if (readChar(currentIndex) == '>') {
                         val vertex = vertices.removeLast()
+                        // move back to the end of last vertex before the arrow.
+                        decreaseIndex()
+                        decreaseIndex()
+                        // move back to the start of the last vertex.
                         moveBackToLastVertex(vertex)
-                        // decreaseIndex()
                         break
                     } else {
                         // println(ERROR_COLON + "$character")
@@ -207,9 +205,15 @@ class NewDotParser(val graphFilePath: String) {
         parseEdges()
     }
 
+    private fun readChar(pos: Int): Char {
+        // reader.seek(pos.toLong())
+        charCode = getRawChar(pos)
+        return charCode.toChar()
+    }
+
     private fun moveBackToLastVertex(vertex: String) {
         var loopIndex = 0
-        while (loopIndex < vertex.length) {
+        while (loopIndex < vertex.length - 1) {
             loopIndex++
             decreaseIndex()
         }
@@ -231,10 +235,10 @@ class NewDotParser(val graphFilePath: String) {
                     increaseIndex()
                     if (readChar(currentIndex) == '>') {
                         // if (fileString[currentIndex + 1] == '>') {
-                        decreaseIndex()
+                        //decreaseIndex()
 
                         // currentIndex += 2
-                        increaseIndex()
+                        //increaseIndex()
                         increaseIndex()
 
                         target = parseId()
@@ -369,13 +373,13 @@ class NewDotParser(val graphFilePath: String) {
 
                 else -> {
                     // currentIndex--
-                    decreaseIndex()
+                    //decreaseIndex()
                     // println("word Error: expected a char that matches [a-zA-Z] but was $character")
                     return word
                 }
             }
-            // currentIndex++
-            increaseIndex()
+            currentIndex++
+            // increaseIndex()
         }
         return word
     }
