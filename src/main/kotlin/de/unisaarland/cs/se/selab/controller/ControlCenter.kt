@@ -18,10 +18,11 @@ class ControlCenter(val model: Model) {
     var updatePhase = UpdatePhase()
     var reroute = Reroute()
     var gatherStatistics = GatherStatistics()
+
     /***
      * Runs the simulation for a fixed amount of ticks, then gathers statistics */
     fun simulate(): Boolean {
-        while(model.currentTick < model.maxTick ) {
+        while (model.currentTick < model.maxTick) {
             tick()
         }
         gatherStatistics.execute(model)
@@ -34,7 +35,8 @@ class ControlCenter(val model: Model) {
         assetAllocation.execute(model)
         requestProcessing.execute(model)
         updatePhase.execute(model)
-        if(updatePhase.eventOccured) reroute.execute(model)
+        if (updatePhase.eventOccured) reroute.execute(model)
         model.incrementTick()
         TODO()
+    }
 }
