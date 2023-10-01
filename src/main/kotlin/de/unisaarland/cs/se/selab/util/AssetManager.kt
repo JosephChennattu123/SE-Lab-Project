@@ -496,6 +496,7 @@ object AssetManager {
         vehicle: Vehicle,
         requirements: List<EmergencyRequirement>
     ): Boolean {
+        // iterate over unfulfilled requirements of the given vehicle's type.
         for (requirement in requirements.filter {
             it.numberOfVehicles > 0 &&
                 it.vehicleType == vehicle.vehicleType
@@ -532,20 +533,16 @@ object AssetManager {
         requirements: List<EmergencyRequirement>,
         vehicle: Vehicle
     ) {
+        TODO("check if return required after first requirement fulfilled.")
         for (requirement in requirements.filter { it.vehicleType == vehicle.vehicleType }) {
             if (requirement.amountOfAsset == null) {
                 requirement.numberOfVehicles--
-            } else {
-                if (requirement.vehicleType != VehicleType.FIRE_TRUCK_LADDER) {
-                    requirement.amountOfAsset = requirement.amountOfAsset!! - vehicle.currentNumberOfAssets
-                    requirement.numberOfVehicles--
-                } else {
-                    if (vehicle.currentNumberOfAssets >= requirement.amountOfAsset!!) {
-                        requirement.amountOfAsset = 0
-                        requirement.numberOfVehicles--
-                        return
-                    }
-                }
+            } else if (requirement.vehicleType != VehicleType.FIRE_TRUCK_LADDER) {
+                requirement.amountOfAsset = requirement.amountOfAsset!! - vehicle.currentNumberOfAssets
+                requirement.numberOfVehicles--
+            } else if (vehicle.currentNumberOfAssets >= requirement.amountOfAsset!!){
+                requirement.amountOfAsset = 0
+                requirement.numberOfVehicles--
             }
         }
     }
