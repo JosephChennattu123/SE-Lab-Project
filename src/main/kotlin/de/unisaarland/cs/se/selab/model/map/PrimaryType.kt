@@ -12,9 +12,9 @@ enum class PrimaryType {
          * */
         fun fromString(value: String): PrimaryType? {
             return when (value) {
-                "MAIN", "mainStreet" -> MAIN
-                "SIDE", "sideStreet" -> SIDE
-                "COUNTY", "countyRoad" -> COUNTY
+                "MAIN_STREET", "mainStreet" -> MAIN
+                "SIDE_STREET", "sideStreet" -> SIDE
+                "COUNTY_ROAD", "countyRoad" -> COUNTY
                 else -> null
             }
         }
