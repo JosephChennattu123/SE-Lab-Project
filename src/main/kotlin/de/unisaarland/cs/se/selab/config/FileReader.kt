@@ -3,6 +3,10 @@ package de.unisaarland.cs.se.selab.config
 import java.io.FileReader
 import java.lang.IndexOutOfBoundsException
 
+/**
+ * class used to read a file character by character.
+ * @param filePath the path to the file to be read.
+ * */
 class FileReader(filePath: String) {
 
     private val fileString: String = FileReader(filePath).readText()
@@ -87,7 +91,6 @@ class FileReader(filePath: String) {
      * returns the ascii code of the current char
      * */
     fun readCharCode(index: Int): Int {
-        // charCode = reader.read()
         return if (index >= fileString.length) {
             -1
         } else {
@@ -95,11 +98,19 @@ class FileReader(filePath: String) {
         }
     }
 
+    /**
+     * checks if the given character is a valid id character.
+     * @return the character if it is a valid id character, null otherwise.
+     * */
     fun isId(character: Char): Char? {
         // return if (character.toString().matches(Regex("""[_a-zA-Z0-9]"""))) character else null
         return if (isLetter(character) != null || isNumber(character) != null) character else null
     }
 
+    /**
+     * checks if the given character is a valid letter.
+     * @return the character if it is a valid letter, null otherwise.
+     * */
     fun isLetter(character: Char): Char? {
         // return if (character.toString().matches(Regex("""[_a-zA-Z]"""))) character else null
         return if (character.code in LETTER_LOWER_START..LETTER_LOWER_END ||
@@ -111,15 +122,25 @@ class FileReader(filePath: String) {
         }
     }
 
+    /**
+     * checks if the given character is a valid number.
+     * @return the character if it is a valid number, null otherwise.
+     * */
     fun isNumber(character: Char): Char? {
         return if (character.code in DIGIT_START..DIGIT_END) character else null
     }
 
+    /**
+     * reads the character on the current index and returns it.
+     * */
     fun readChar(): Char {
         charCode = readCharCode(currentIndex)
         return charCode.toChar()
     }
 
+    /**
+     * checks if the current index is at the end of the file.
+     * */
     fun endReached(): Boolean {
         return currentIndex >= maxIndex
     }

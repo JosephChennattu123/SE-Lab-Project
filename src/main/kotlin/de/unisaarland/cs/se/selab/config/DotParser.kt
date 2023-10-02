@@ -31,7 +31,7 @@ class DotParser(val graphFilePath: String) {
      * Parses the dot file for the graph and checks that it is correct syntactically
      */
     fun parse(): Boolean {
-        var closingBracketRead = false
+        var errorOccurred = false
         while (!reader.endReached()) {
             when (reader.readChar()) {
                 'd' -> {
@@ -40,27 +40,21 @@ class DotParser(val graphFilePath: String) {
 
                 '{' -> {
                     reader.increaseIndexToNextNonWhiteSpaceChar()
-                    val ret = parseVertices()
-                    if (!ret) {
-                        return false // problem in parseVertices/lower level
-                    }
+                    errorOccurred = parseVertices()
                 }
 
                 '}' -> {
-                    closingBracketRead = true
+                    errorOccurred = true
                 }
 
                 else -> {
-                    break
+                    errorOccurred = true
                 }
             }
             reader.increaseIndexToNextNonWhiteSpaceChar()
         }
-        if (!closingBracketRead) {
-            error("top level parse error: expected a closing bracket but reached end of file")
-        }
         // TODO check for character after end of graph
-        return true
+        return errorOccurred
     }
 
     private fun parseDigraph() {
@@ -119,7 +113,7 @@ class DotParser(val graphFilePath: String) {
                 }
             }
             // currentIndex++
-            reader.increaseIndex()
+            reader.increaseIndexToNextNonWhiteSpaceChar()
         }
         return parseEdges()
     }
@@ -168,12 +162,10 @@ class DotParser(val graphFilePath: String) {
     private fun parseAttributes(edgeId: Int) {
         var labelIndex = 0
         val labelsWithIds = LABEL_ID_VALUES
-        var withId = true
-        var currentLabel = ""
         val attributeValues: MutableMap<String, String> = mutableMapOf()
         while (!reader.endReached() && labelIndex < AMOUNT_OF_LABELS) {
-            withId = labelsWithIds >= labelIndex - 1
-            currentLabel = labelList[labelIndex]
+            val withId = labelsWithIds >= labelIndex - 1
+            val currentLabel = labelList[labelIndex]
             when (val character = reader.readChar()) {
                 reader.isLetter(character) -> {
                     attributeValues[currentLabel] = parseLabel(currentLabel, withId)
@@ -282,15 +274,3 @@ class DotParser(val graphFilePath: String) {
 private const val AMOUNT_OF_LABELS = 6
 private const val LABEL_ID_VALUES = 4
 private const val LABEL_DIGRAPH = "digraph"
-private const val LABEL_VILLAGE = "village"
-private const val LABEL_ROAD_NAME = "name"
-private const val LABEL_HEIGHT_LIMIT = "heightLimit"
-private const val LABEL_WEIGHT = "weight"
-private const val LABEL_PRIMARY_TYPE = "primaryType"
-private const val LABEL_SECONDARY_TYPE = "secondaryType"
-private const val LABEL_MAIN_STREET = "mainStreet"
-private const val LABEL_SIDE_STREET = "sideStreet"
-private const val LABEL_COUNTY_ROAD = "countyRoad"
-private const val LABEL_ONE_WAY_STREET = "oneWayStreet"
-private const val LABEL_TUNNEL = "tunnel"
-private const val LABEL_NONE = "none"

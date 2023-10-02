@@ -5,7 +5,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class DotParserTest {
-    val validMap = "src/systemtest/resources/mapFiles/validTest/example_map.dot"
+    val validMap = "src/systemtest/resources/mapFiles/example_map.dot"
     val brokenMap1 = "src/test/resources/mapFiles/brokenTest/broken_map1.dot"
     val brokenMap2 = "src/test/resources/mapFiles/brokenTest/broken_map2.dot"
     val brokenMap3 = "src/test/resources/mapFiles/brokenTest/broken_map3.dot"
