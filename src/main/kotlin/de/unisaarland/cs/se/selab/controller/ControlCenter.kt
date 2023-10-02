@@ -15,12 +15,12 @@ import de.unisaarland.cs.se.selab.util.Logger
  * @param model contains the data to simulate
  */
 class ControlCenter(val model: Model) {
-    var emergencyDistribution = EmergencyDistribution()
-    var assetAllocation = AssetAllocation()
-    var requestProcessing = RequestProcessing()
-    var updatePhase = UpdatePhase()
-    var reroute = Reroute()
-    var gatherStatistics = GatherStatistics()
+    private val emergencyDistribution = EmergencyDistribution()
+    private val assetAllocation = AssetAllocation()
+    private val requestProcessing = RequestProcessing()
+    private val updatePhase = UpdatePhase()
+    private val reroute = Reroute()
+    private val gatherStatistics = GatherStatistics()
 
     /***
      * Runs the simulation for a fixed amount of ticks, then gathers statistics */
@@ -30,6 +30,7 @@ class ControlCenter(val model: Model) {
             tick()
         }
         gatherStatistics.execute(model)
+        Logger.logSimulationEnded()
         TODO()
     }
 
