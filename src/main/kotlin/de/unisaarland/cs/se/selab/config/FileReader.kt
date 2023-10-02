@@ -12,16 +12,13 @@ class FileReader(filePath: String) {
     val fileString: String = FileReader(filePath).readText()
     private var currentIndex: Int = 0
     private val maxIndex: Int = fileString.length - 1
-    var charCode = readCharCode(currentIndex)
 
     /**
      * increases the index of the reader to the next non-whitespace character.
      * */
     fun increaseIndexToNextNonWhiteSpaceChar() {
-        currentIndex++
-        charCode = readCharCode(currentIndex)
-
-        if (charCode.toChar().isWhitespace()) {
+        increaseIndex()
+        if (readChar().isWhitespace()) {
             consumeWhiteSpace(false)
         }
         if (currentIndex > maxIndex) {
@@ -38,11 +35,8 @@ class FileReader(filePath: String) {
             currentIndex = 0
             throw IndexOutOfBoundsException("currentIndex was negative")
         }
-        // reader.seek(currentIndex.toLong())
-        charCode = readCharCode(currentIndex)
 
-        // var index = currentIndex
-        if (charCode.toChar().isWhitespace()) {
+        if (readChar().isWhitespace()) {
             consumeWhiteSpace(true)
         }
 
@@ -66,7 +60,9 @@ class FileReader(filePath: String) {
      * increments the current index of the reader by one.
      * */
     fun increaseIndex() {
-        currentIndex++
+        if (currentIndex < maxIndex) {
+            currentIndex++
+        }
     }
 
     /**
@@ -74,15 +70,9 @@ class FileReader(filePath: String) {
      * */
     private fun consumeWhiteSpace(reverse: Boolean) {
         val step = if (reverse) -1 else 1
-        var index = currentIndex
-        while (charCode != -1 && charCode.toChar().isWhitespace()) {
-            index += step
-            charCode = readCharCode(index)
+        while (!endReached() && currentIndex >= 0 && readChar().isWhitespace()) {
+            currentIndex += step
         }
-        if (charCode == -1) {
-            error("end of file reached but no yet done.")
-        }
-        currentIndex = index
     }
 
     /**
@@ -119,8 +109,7 @@ class FileReader(filePath: String) {
      * reads the character on the current index and returns it.
      * */
     fun readChar(): Char {
-        charCode = readCharCode(currentIndex)
-        return charCode.toChar()
+        return fileString[currentIndex]
     }
 
     /**
@@ -128,17 +117,6 @@ class FileReader(filePath: String) {
      * */
     fun endReached(): Boolean {
         return currentIndex >= maxIndex
-    }
-
-    /**
-     * returns the ascii code of the current char
-     * */
-    private fun readCharCode(index: Int): Int {
-        return if (index >= fileString.length) {
-            -1
-        } else {
-            fileString[index].code
-        }
     }
 }
 
