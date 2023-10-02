@@ -336,7 +336,6 @@ object AssetManager {
         val mainBase = emergency.mainBaseID?.let { model.getBaseById(it) }!!
         // remove vehicles that do not fulfill the requirements.
         filterAssetsByOptimalSolution(mainBase, vehicles, emergency.currentRequirements)
-        TODO("assign vehicles to emergency and update emergency requirements here.")
     }
 
     /**
@@ -365,9 +364,9 @@ object AssetManager {
             }
             // if there are valid combinations,
             // remove all vehicles that are not part of the valid combinations
-            TODO("get the one optimal set of vehicles from all valid sets.")
+
             if (validCombinations.isNotEmpty()) {
-                // val optimalSet = validCombinations.sortedWith().first()
+                val optimalSet = sortLexicallyAndReturnFirst(validCombinations)
                 // remove all vehicles that are not part of the valid combinations
                 vehicles.removeAll(
                     vehicles.filter {
@@ -395,7 +394,7 @@ object AssetManager {
             // or if the base does not have enough staff to send the vehicle.
             if (!requirements.any {
                     vehicle.vehicleType != it.vehicleType &&
-                        vehicle.staffCapacity > model.getBaseById(vehicle.baseID)!!.currStaff
+                            vehicle.staffCapacity > model.getBaseById(vehicle.baseID)!!.currentStaff
                 }
             ) {
                 // collect vehicles that needed to be removed.
@@ -500,8 +499,10 @@ object AssetManager {
 
         var requirementFulfilled = false
         var requirementsIndex = requirements.size
-        val fittingRequirements = requirements.filter { it.numberOfVehicles > 0 &&
-                it.vehicleType == vehicle.vehicleType}
+        val fittingRequirements = requirements.filter {
+            it.numberOfVehicles > 0 &&
+                    it.vehicleType == vehicle.vehicleType
+        }
         // iterate over unfulfilled requirements of the given vehicle's type.
         while (!requirementFulfilled && requirementsIndex < requirements.size) {
             val requiredType = fittingRequirements[requirementsIndex].vehicleType
@@ -510,14 +511,13 @@ object AssetManager {
                 requirementFulfilled = vehicle.currentNumberOfAssets >= requiredAmount!!
                 fittingRequirements[requirementsIndex].amountOfAsset = 0
                 fittingRequirements[requirementsIndex].numberOfVehicles--
-            }
-            else if (requiredAmount == null) {
+            } else if (requiredAmount == null) {
                 requirementFulfilled = true
                 fittingRequirements[requirementsIndex].numberOfVehicles--
-            }
-            else {
+            } else {
                 requirementFulfilled = true
-                fittingRequirements[requirementsIndex].amountOfAsset = requiredAmount - vehicle.currentNumberOfAssets
+                fittingRequirements[requirementsIndex].amountOfAsset =
+                    requiredAmount - vehicle.currentNumberOfAssets!!
             }
         }
         return requirementFulfilled
@@ -533,14 +533,14 @@ object AssetManager {
         requirements: List<EmergencyRequirement>,
         vehicle: Vehicle
     ) {
-        TODO("check if return required after first requirement fulfilled.")
         for (requirement in requirements.filter { it.vehicleType == vehicle.vehicleType }) {
             if (requirement.amountOfAsset == null) {
                 requirement.numberOfVehicles--
             } else if (requirement.vehicleType != VehicleType.FIRE_TRUCK_LADDER) {
-                requirement.amountOfAsset = requirement.amountOfAsset!! - vehicle.currentNumberOfAssets
+                requirement.amountOfAsset =
+                    requirement.amountOfAsset!! - vehicle.currentNumberOfAssets!!
                 requirement.numberOfVehicles--
-            } else if (vehicle.currentNumberOfAssets >= requirement.amountOfAsset!!){
+            } else if (vehicle.currentNumberOfAssets!! >= requirement.amountOfAsset!!) {
                 requirement.amountOfAsset = 0
                 requirement.numberOfVehicles--
             }
@@ -562,7 +562,51 @@ object AssetManager {
     }
 
     private fun isThereEnoughStaffAtBase(base: Base, vehicles: List<Vehicle>): Boolean {
-        return base.currStaff >= vehicles.sumOf { it.staffCapacity }
+        return base.currentStaff >= vehicles.sumOf { it.staffCapacity }
+    }
+
+    /**
+     * Calculates lexically the smallest list of a collection of lists.
+     *
+     * @param combinations a list of lists. Lists should be of same size.
+     * @return lexically the smallest list (sorted). Returns an empty list if [combinations] was an empty list
+     */
+    private fun sortLexicallyAndReturnFirst(combinations: List<List<Int>>): MutableList<Int> {
+        var sortedCombinations = combinations.map { it.toSortedSet() }
+        val sortedIds = sortedCombinations.flatten().toSortedSet()
+
+        var index = 0
+        while (index < sortedIds.size) {
+            val indexElements: MutableList<Int> = mutableListOf()
+
+            // get the elements of all lists at index "index"
+            for (list in sortedCombinations) {
+                indexElements.add(list.toList()[index])
+            }
+
+            // calculate the smallest value
+            var smallest = Int.MAX_VALUE
+            for (indexElement in 0 until indexElements.size) {
+                val valElement = indexElements[indexElement]
+                if (valElement < smallest) {
+                    smallest = valElement
+                }
+            }
+
+            // remove the lists that do not have the smallest element at index "index"
+            sortedCombinations = sortedCombinations.filter { it.toList()[index] == smallest }
+
+            index++
+            if (index > indexElements.size) {
+                break
+            }
+        }
+        if (sortedCombinations.isEmpty()) {
+            return mutableListOf()
+        }
+
+        // return the smallest
+        return sortedCombinations.first().toMutableList()
     }
 
     private fun computeCombinations(ids: List<Int>, size: Int): List<List<Int>> {
