@@ -108,26 +108,6 @@ class Model(
         return evIds.mapNotNull { events[it] }
     }
 
-    /** removes an event from list of current events */
-    fun removeFromCurrentEvents(evId: Int) {
-        currentEvents.remove(evId)
-    }
-
-    /** add roadEvent to a map of road id to postponed events */
-    fun addRoadEvent(roadId: Int, eventId: Event) {
-        val roadEventsPost: MutableList<Int> = roadToPostponedEvents[roadId] ?: mutableListOf()
-        roadEventsPost.add(eventId.id)
-        roadToPostponedEvents[roadId] = roadEventsPost
-    }
-
-    /** add vehicleEvent to a map of vehicle id to postponed events */
-    fun addVehicleEvent(vehicleId: Int, eventId: Event) {
-        val vehicleEventsPost: MutableList<Event> =
-            vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
-        vehicleEventsPost.add(eventId)
-        vehicleToPostponedEvents[vehicleId] = vehicleEventsPost
-    }
-
     /** add request to the list of Request */
     fun addRequest(request: Request) {
         requests.add(request)
