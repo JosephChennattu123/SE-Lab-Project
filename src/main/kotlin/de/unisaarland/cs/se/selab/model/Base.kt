@@ -23,7 +23,8 @@ class Base(
     var vehicles: MutableList<Int> = mutableListOf()
     var assignedEmergencies: MutableList<Int> = mutableListOf()
 
-    var currentStaff : Int = 0
+    var currentStaff: Int = 0
+
     init {
         currentStaff = numStaff
     }
