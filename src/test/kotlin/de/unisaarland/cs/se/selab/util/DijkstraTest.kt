@@ -96,7 +96,7 @@ internal class DijkstraTest {
 
     @Test
     fun getShortestPathFromEdgeToEdge() {
-        val r1 = Dijkstra.getShortestPathFromEdgeToEdge(simpleGraph, 3, 2, , Location("v0", "r0"), 10  )
+        val r1 = Dijkstra.getShortestPathFromEdgeToEdge(simpleGraph, 3, 2, 0, Location("v0", "r0"), 10  )
     }
 
     @Test
