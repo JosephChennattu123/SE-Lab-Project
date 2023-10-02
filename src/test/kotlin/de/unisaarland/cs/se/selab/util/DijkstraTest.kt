@@ -16,33 +16,7 @@ internal class DijkstraTest {
     private val vertices: MutableMap<Int, Vertex> = mutableMapOf()
     private val simpleGraph: Graph = creatSimpleGraph()
 
-    private fun creatSimpleGraph(): Graph {
 
-        // creat vertices
-        vertices[0] = Vertex(0, 0, BaseType.FIRE_STATION)
-        vertices[1] = Vertex(1, 1, BaseType.FIRE_STATION)
-        vertices[2] = Vertex(2, 2, BaseType.POLICE_STATION)
-        vertices[3] = Vertex(3, null, null)
-        val g = Graph(vertices)
-
-        // creat edges
-        g.addEdge(
-            vertices[0]!!,
-            vertices[2]!!,
-            RoadProperties(PrimaryType.COUNTY, SecondaryType.NONE, "v0", "r0", 60, 30)
-        )
-        g.addEdge(
-            vertices[1]!!,
-            vertices[3]!!,
-            RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r1", 10, 30)
-        )
-        g.addEdge(
-            vertices[3]!!,
-            vertices[2]!!,
-            RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r2", 10, 30)
-        )
-        return g
-    }
 
     @Test
     fun getNearestBaseToEdge() {
@@ -115,6 +89,27 @@ internal class DijkstraTest {
             r1.totalTicksToArrive
         )
 
+        val r2 =
+            Dijkstra.getShortestPathFromEdgeToEdge(simpleGraph, 2, 0, 50, Location("v0", "r2"), 10)
+        val vertexPath2 = listOf(0, 2)
+        assertEquals("Expected $vertexPath2, but got ${r2.vertexPath}", vertexPath2, r2.vertexPath)
+        val edgeWeights2 = listOf(50)
+        assertEquals(
+            "Expected $edgeWeights2, but got ${r2.edgeWeights}",
+            edgeWeights2,
+            r2.edgeWeights
+        )
+        val isOneWay2 = listOf(false)
+        assertEquals("Expected $isOneWay2, but got ${r2.isOneWay}", isOneWay2, r2.isOneWay)
+        val totalTicksToArrive2 = 5
+        assertEquals(
+            "Expected $totalTicksToArrive2, but got ${r2.totalTicksToArrive}",
+            totalTicksToArrive2,
+            r2.totalTicksToArrive
+        )
+
+
+
 
 
 //        println("${r1.edgeWeights}")
@@ -132,4 +127,31 @@ internal class DijkstraTest {
 //    @Test
 //    fun getShortestPathFromEdgeToVertex() {
 //    }
+    private fun creatSimpleGraph(): Graph {
+
+            // creat vertices
+            vertices[0] = Vertex(0, 0, BaseType.FIRE_STATION)
+            vertices[1] = Vertex(1, 1, BaseType.FIRE_STATION)
+            vertices[2] = Vertex(2, 2, BaseType.POLICE_STATION)
+            vertices[3] = Vertex(3, null, null)
+            val g = Graph(vertices)
+
+            // creat edges
+            g.addEdge(
+                vertices[0]!!,
+                vertices[2]!!,
+                RoadProperties(PrimaryType.COUNTY, SecondaryType.NONE, "v0", "r0", 60, 30)
+            )
+            g.addEdge(
+                vertices[1]!!,
+                vertices[3]!!,
+                RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r1", 10, 30)
+            )
+            g.addEdge(
+                vertices[3]!!,
+                vertices[2]!!,
+                RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r2", 10, 30)
+            )
+            return g
+        }
 }

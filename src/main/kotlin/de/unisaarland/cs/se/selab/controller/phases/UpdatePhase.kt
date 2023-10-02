@@ -117,7 +117,7 @@ class UpdatePhase {
             base.vertexID,
             vehicle.height
         )
-        vehicle.setNewPath(path)
+        vehicle.setNewPath(path?: throw IllegalArgumentException("cannot reach!"))
     }
 
     private fun processActiveEvents(
