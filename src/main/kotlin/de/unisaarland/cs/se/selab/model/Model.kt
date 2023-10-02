@@ -22,6 +22,7 @@ class Model(
 ) {
     var currentTick: Int = 0
     val assignedEmergencies: MutableList<Int> = mutableListOf()
+    val finishedEmergencies: MutableList<Int> = mutableListOf()
     val currentEvents: MutableList<Int> = mutableListOf()
     val roadToPostponedEvents: MutableMap<Int, MutableList<Int>> = mutableMapOf()
     val vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
