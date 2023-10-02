@@ -75,6 +75,4 @@ class Edge(
     override fun toString(): String {
         return "${sourceVertex.vertexId} -> ${targetVertex.vertexId}"
     }
-
-    fun get
 }
