@@ -9,23 +9,23 @@ import de.unisaarland.cs.se.selab.model.BaseType
  * @param baseType the type of the base
  */
 class Vertex(val vertexId: Int, val baseId: Int?, val baseType: BaseType?) {
-    private val outgoingEdges: List<Edge> = mutableListOf()
-    private val ingoingEdges: List<Edge> = mutableListOf()
+    private val outgoingEdges: MutableList<Edge> = mutableListOf()
+    private val ingoingEdges: MutableList<Edge> = mutableListOf()
 
     /**
      * adds an outgoing edge to the vertex.
      * @param edge the edge to add
      * */
-    fun addEdgeOutgoingEdge(edge: Edge) {
-        outgoingEdges + edge
+    fun addOutgoingEdge(edge: Edge) {
+        outgoingEdges.add(edge)
     }
 
     /**
      * adds an ingoing edge to the vertex.
      * @param edge the edge to add
      * */
-    fun addEdgeIngoingEdge(edge: Edge) {
-        ingoingEdges + edge
+    fun addIngoingEdge(edge: Edge) {
+        ingoingEdges.add(edge)
     }
 
     /**

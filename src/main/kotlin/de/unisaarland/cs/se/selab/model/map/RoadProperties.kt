@@ -10,7 +10,16 @@ package de.unisaarland.cs.se.selab.model.map
 class RoadProperties(
     val roadType: PrimaryType,
     val secondaryType: SecondaryType,
-    val weight: Int,
+    val villageName: String,
+    val roadName: String,
+    private val weight: Int,
     val height: Int,
     var factor: Int = 1
-)
+) {
+    /**
+     * @return the weight of the edge
+     */
+    fun getWeight(): Int {
+        return weight * factor
+    }
+}

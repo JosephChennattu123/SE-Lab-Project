@@ -20,4 +20,16 @@ class Path(
     fun getTotalDistance(): Int {
         return edgeWeights.sum()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other === null || other !is Path?) return false
+        return totalTicksToArrive == other.totalTicksToArrive &&
+            vertexPath == other.vertexPath &&
+            edgeWeights == other.edgeWeights &&
+            isOneWay == other.isOneWay
+    }
+
+    override fun hashCode(): Int {
+        return 1
+    }
 }

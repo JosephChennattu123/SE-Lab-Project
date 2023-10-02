@@ -83,7 +83,12 @@ class AssetAllocation {
         }
     }
 
-    private fun reallocateAssets(model: Model, emergency: Emergency, mainBase: Base, vehicles: List<Vehicle>) {
+    private fun reallocateAssets(
+        model: Model,
+        emergency: Emergency,
+        mainBase: Base,
+        vehicles: List<Vehicle>
+    ) {
         val vehiclesCanReroute =
             getVehiclesCanReroute(emergency, mainBase, vehicles, model)
         AssetManager.allocateAssetsToEmergency(model, emergency, vehiclesCanReroute)
@@ -95,28 +100,32 @@ class AssetAllocation {
     }
 
     private fun creatRequest(model: Model, emergency: Emergency, mainBase: Base) {
+        val baseNeedRequest: MutableList<Int> = mutableListOf()
         for (req in emergency.currentRequiredAssets) {
-            val nextNearestBase = Dijkstra.getNextNearestBase(
+            Dijkstra.getNextNearestBase(
                 model.graph,
                 mainBase.vertexID,
                 VehicleType.getBaseType(req.vehicleType),
                 emptySet()
-            )
-            if (nextNearestBase != null) {
+            )?.let { baseNeedRequest.add(it) }
+        }
+
+        if (baseNeedRequest.isNotEmpty()) {
+            baseNeedRequest.sort()
+            baseNeedRequest.forEach {
                 val requestNew = Request.createNewRequest(
                     mainBase.baseId,
                     emergency.id,
-                    nextNearestBase,
-                    setOf(mainBase.baseId, nextNearestBase)
+                    it,
+                    setOf(mainBase.baseId, it)
                 )
                 model.addRequest(requestNew)
                 Logger.logRequest(
                     requestNew.requestId,
-                    nextNearestBase,
+                    it,
                     emergency.id
                 )
             }
-            // no else?
         }
     }
 }

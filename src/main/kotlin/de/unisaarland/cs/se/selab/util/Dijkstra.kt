@@ -4,7 +4,6 @@ import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.Location
 import de.unisaarland.cs.se.selab.model.Path
 import de.unisaarland.cs.se.selab.model.map.Graph
-import de.unisaarland.cs.se.selab.model.map.SecondaryType
 import de.unisaarland.cs.se.selab.model.map.Vertex
 
 /**
@@ -29,8 +28,8 @@ object Dijkstra {
         val nearestBaseToSource = nearestBasesToSource?.minBy { it.value }
         if (nearestBaseToSource != null) {
             if (nearestBaseToTarget != null) {
-                return if (nearestBasesToSource[nearestBaseToSource.key]!!
-                    < nearestBasesToTarget[nearestBaseToTarget.key]!!
+                return if (nearestBasesToSource.getValue(nearestBaseToSource.key)
+                    < nearestBasesToTarget.getValue(nearestBaseToTarget.key)
                 ) {
                     nearestBaseToSource.key
                 } else {
@@ -111,7 +110,7 @@ object Dijkstra {
      * @param height the height of the vehicle.
      * @return Path object containing the shortest path.
      * */
-    private fun getShortestPathFromVertexToVertex(
+    fun getShortestPathFromVertexToVertex(
         graph: Graph,
         sourceVertex: Int,
         targetVertex: Int,
@@ -125,18 +124,17 @@ object Dijkstra {
         val isOneWay: List<Boolean> = mutableListOf()
         for (i in 0 until path.size - 2) {
             weights + graph.getEdge(path[i], path[i + 1]).getWeight()
-            isOneWay + (
+            isOneWay +
                 graph.getEdge(
                     path[i],
                     path[i + 1]
-                ).properties.secondaryType == SecondaryType.ONE_WAY
-                )
+                ).isOneWay()
         }
         return Path(
             path,
             weights,
             isOneWay,
-            roundToNextTen(distanceFromSourceVertex[targetVertex]!! / speed)
+            roundToNextTen(distanceFromSourceVertex.getValue(targetVertex) / speed)
         )
     }
 
@@ -243,7 +241,7 @@ object Dijkstra {
         graph: Graph,
         vertexId: Int,
         baseType: BaseType,
-        excludedBases: Set<Int> = setOf()
+        excludedBases: Set<Int> = emptySet()
     ): HashMap<Int, Int>? {
         val nearestBases = HashMap<Int, Int>()
         val distanceFromSourceVertex =
@@ -255,7 +253,7 @@ object Dijkstra {
             return null
         }
         for (vertex in filterVertices) {
-            nearestBases[vertex] = distanceFromSourceVertex[vertex]!!
+            nearestBases[vertex] = distanceFromSourceVertex.getValue(vertex)
         }
         return nearestBases
     }
@@ -311,7 +309,7 @@ object Dijkstra {
         distances: HashMap<Int, Int>,
         visited: HashMap<Int, Boolean>
     ): Vertex {
-        return vertices.filter { !visited[it.vertexId]!! }.minBy { distances[it.vertexId]!! }
+        return vertices.filter { !visited.getValue(it.vertexId) }.minBy { distances.getValue(it.vertexId) }
     }
 
     /**
@@ -333,8 +331,8 @@ object Dijkstra {
             if (height != null && edge.properties.height < height) {
                 continue
             }
-            val newDistance = distancesFromSource[vertex.vertexId]!! + edge.getWeight()
-            val oldDistance = distancesFromSource[edge.targetVertex.vertexId]!!
+            val newDistance = distancesFromSource.getValue(vertex.vertexId) + edge.getWeight()
+            val oldDistance = distancesFromSource.getValue(edge.targetVertex.vertexId)
             if (newDistance < oldDistance) {
                 distancesFromSource[edge.targetVertex.vertexId] = newDistance
                 parentMap[edge.targetVertex.vertexId] = vertex.vertexId
@@ -351,7 +349,7 @@ object Dijkstra {
         var currentVertex = target
         while (currentVertex != source) {
             path + currentVertex
-            currentVertex = parentMap[currentVertex]!!
+            currentVertex = parentMap.getValue(currentVertex)
         }
         path + source
         path = path.reversed()
