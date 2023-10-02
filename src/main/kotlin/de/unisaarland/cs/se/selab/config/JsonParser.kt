@@ -55,7 +55,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     }
 
     private fun parseBase(base: JSONObject) {
-        val id = base.getInt(cfgId)
+        val id = base.getInt(ID)
         val type = base.getString(cfgBaseType)
         val staff = base.getInt(cfgStaff)
         val doctors = base.opt(cfgDoctors) as Int?
@@ -77,7 +77,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     }
 
     private fun parseVehicle(vehicle: JSONObject) {
-        val id = vehicle.getInt(cfgId)
+        val id = vehicle.getInt(ID)
         val type = vehicle.getString(cfgVehicleType)
         val baseID = vehicle.getInt(cfgBaseId)
         val staffCapacity = vehicle.getInt(cfgStaffCapacity)
@@ -103,7 +103,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
      * parses the emergencies
      */
     fun parseEmergencies(): List<EmergencyInfo> {
-        val emergencies: JSONArray = scenarioJson.getJSONArray(cfgEmergencies)
+        val emergencies: JSONArray = scenarioJson.getJSONArray(LABEL_EMERGENCY)
         for (i in 0 until emergencies.length()) {
             val emergency: JSONObject = emergencies.getJSONObject(i)
             parseEmergency(emergency)
@@ -112,14 +112,14 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     }
 
     private fun parseEmergency(emergency: JSONObject) {
-        val id = emergency.getInt(cfgId)
-        val tick = emergency.getInt(cfgTick)
-        val village = emergency.getString(cfgVillage)
-        val roadName = emergency.getString(cfgRoadName)
-        val emergencyType = EmergencyType.fromString(emergency.getString(cfgEmergencyType))
-        val severity = emergency.getInt(cfgSeverity)
-        val handleTime = emergency.getInt(cfgHandleTime)
-        val maxDuration = emergency.getInt(cfgMaxDuration)
+        val id = emergency.getInt(ID)
+        val tick = emergency.getInt(TICK)
+        val village = emergency.getString(VILLAGE)
+        val roadName = emergency.getString(JSON_LABEL_ROAD_NAME)
+        val emergencyType = EmergencyType.fromString(emergency.getString(EMERGENCY_TYPE))
+        val severity = emergency.getInt(SEVERITY)
+        val handleTime = emergency.getInt(HANDLE_TIME)
+        val maxDuration = emergency.getInt(MAX_DURATION)
         emergencies.add(
             EmergencyInfo(
                 id,
@@ -147,8 +147,8 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     }
 
     private fun parseEvent(event: JSONObject) {
-        val id = event.getInt(cfgId)
-        val tick = event.getInt(cfgTick)
+        val id = event.getInt(ID)
+        val tick = event.getInt(ID)
         val eventType = EventType.fromString(event.getString(cfgEventType))
         val duration = event.getInt(cfgDuration)
 
@@ -184,7 +184,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
         events.add(eventInfo)
     }
 
-    private val cfgId: String = "id"
+    // private val cfgId: String = "id"
 
     // base related keys.
     private val cfgBases: String = "bases"
@@ -203,16 +203,6 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     private val cfgCriminalCapacity: String = "criminalCapacity"
     private val cfgLadderLength: String = "ladderLength"
     private val cfgWaterCapacity: String = "waterCapacity"
-
-    // emergency related keys.
-    private val cfgEmergencies: String = "emergencyCalls"
-    private val cfgTick: String = "tick"
-    private val cfgVillage: String = "village"
-    private val cfgRoadName: String = "roadName"
-    private val cfgEmergencyType: String = "emergencyType"
-    private val cfgSeverity: String = "severity"
-    private val cfgHandleTime: String = "handleTime"
-    private val cfgMaxDuration: String = "maxDuration"
 
     // event related keys.
     private val cfgEvents: String = "events"

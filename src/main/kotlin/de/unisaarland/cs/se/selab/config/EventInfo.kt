@@ -3,15 +3,6 @@ package de.unisaarland.cs.se.selab.config
 import de.unisaarland.cs.se.selab.controller.events.EventType
 import de.unisaarland.cs.se.selab.model.map.PrimaryType
 
-const val EVENT_TYPE = "eventType"
-const val DURATION = "duration"
-const val ROAD_TYPES = "roadTypes"
-const val FACTOR = "factor"
-const val ONE_WAY_STREET = "oneWayStreet"
-const val SOURCE = "source"
-const val TARGET = "target"
-const val VEHICLE_ID = "vehicleId"
-
 /**
  * Collects the info to construct events
  *

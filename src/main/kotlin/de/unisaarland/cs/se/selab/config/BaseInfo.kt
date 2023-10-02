@@ -2,12 +2,6 @@ package de.unisaarland.cs.se.selab.config
 
 import de.unisaarland.cs.se.selab.model.BaseType
 
-const val STAFF = "staff"
-const val BASE_TYPE = "baseType"
-const val LOCATION_VERTEX = "locationVertex"
-const val DOCTORS = "doctors"
-const val DOGS = "dogs"
-
 /**
  * Collects the info to construct bases
  *
