@@ -26,7 +26,9 @@ class ControlCenter(val model: Model) {
      * Runs the simulation for a fixed amount of ticks, then gathers statistics */
     fun simulate(): Boolean {
         Logger.logSimulationStart()
-        while (model.maxTick == null || model.currentTick < model.maxTick) {
+        while ((model.maxTick != null && model.currentTick < model.maxTick) ||
+            model.emergencies.size != model.finishedEmergencies.size
+        ) {
             tick()
         }
         gatherStatistics.execute(model)
