@@ -72,4 +72,9 @@ class Edge(
     fun isOneWay(): Boolean {
         return properties.secondaryType == SecondaryType.ONE_WAY
     }
+    override fun toString(): String {
+        return "${sourceVertex.vertexId} -> ${targetVertex.vertexId}"
+    }
+
+    fun get
 }

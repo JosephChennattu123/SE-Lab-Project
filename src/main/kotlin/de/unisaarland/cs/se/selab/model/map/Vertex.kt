@@ -25,6 +25,7 @@ class Vertex(val vertexId: Int, val baseId: Int?, val baseType: BaseType?) {
      * @param edge the edge to add
      * */
     fun addIngoingEdge(edge: Edge) {
+        var reversedEdge = edge.cl
         ingoingEdges.add(edge)
     }
 

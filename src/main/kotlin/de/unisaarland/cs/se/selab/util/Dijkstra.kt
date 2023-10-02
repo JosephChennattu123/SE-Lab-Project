@@ -345,10 +345,15 @@ object Dijkstra {
                 newDistance += edge.getWeight()
             }
             val oldDistance = distancesFromSource.getValue(edge.targetVertex.vertexId)
+
+            val id0 = vertex.vertexId
+            val id1 = edge.edgeId
+            println("reverse: $reverse. vertexId $id0 edgeId $id1 : newDistance $newDistance, oldDistance $oldDistance")
+
             if (newDistance < oldDistance) {
                 distancesFromSource[edge.targetVertex.vertexId] = newDistance
                 parentMap[edge.targetVertex.vertexId] = vertex.vertexId
-//            println("reverse: $reverse. vertexId $id0 edgeId $id1 : newDistance $newDistance, oldDistance $oldDistance")
+
             }
         }
 

@@ -46,7 +46,8 @@ internal class DijkstraTest {
             vertices[2]!!,
             RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r2", 10, 30)
         )
-
+        println("config source: " + g.getEdges().map { it})
+       // println("config target: " + g.getEdges().map { it.targetVertex.vertexId })
         return g
     }
 

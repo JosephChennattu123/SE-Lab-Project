@@ -85,6 +85,9 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
         properties: RoadProperties
     ) {
         val edge = Edge.createNewEdge(source, target, properties)
+        if (properties.secondaryType != SecondaryType.ONE_WAY) {
+
+        }
         source.addOutgoingEdge(edge)
         target.addIngoingEdge(edge)
         villages.getOrPut(properties.villageName) { mutableMapOf() }[properties.roadName] = edge
