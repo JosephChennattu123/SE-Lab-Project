@@ -32,7 +32,6 @@ abstract class Vehicle(
         if (positionTracker.destinationReached()) {
             val destinationVertexID = positionTracker.getDestination()
             Logger.logAssetArrived(vehicleID, destinationVertexID)
-            if (destinationVertexID == baseID) setBusy()
             status = if (destinationVertexID == baseID) {
                 if (setBusy()) {
                     VehicleStatus.BUSY
