@@ -21,7 +21,7 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
 
     override fun applyEffect(model: Model) {
         require(source != null && target != null && factor != null) { "Source,Target or Factor should not be null" }
-        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int) as Edge
+        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int)
         if (currentEdge.activeEventId == null) {
             currentEdge.properties.factor = this.factor as Int
             currentEdge.activeEventId = id
@@ -44,7 +44,7 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
     }
 
     override fun removeEffect(model: Model) {
-        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int) as Edge
+        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int)
         currentEdge.properties.factor = BASE_FACTOR
         currentEdge.activeEventId = null
         model.currentEvents.remove(id)

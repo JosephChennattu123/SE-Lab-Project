@@ -33,7 +33,7 @@ class FireTruck(
     override fun handleEmergency(amount: Int): Int {
         status = VehicleStatus.HANDLING
         if (waterCapacity != null) {
-            val returnAmount = amount - (waterCapacity as Int - waterLevel as Int)
+            val returnAmount = amount - (waterCapacity - waterLevel as Int)
             if (returnAmount < 0) {
                 waterLevel = waterCapacity + returnAmount
                 return 0
