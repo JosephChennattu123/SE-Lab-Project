@@ -46,6 +46,8 @@ internal class DijkstraTest {
 
     @Test
     fun getNearestBaseToEdge() {
+        // test for each BaseType
+
         val result1 =
             Dijkstra.getNearestBaseToEdge(
                 simpleGraph,
@@ -57,26 +59,51 @@ internal class DijkstraTest {
         val result2 =
             Dijkstra.getNearestBaseToEdge(
                 simpleGraph,
-                Location("v0", "r0"),
+                Location("v0", "r1"),
                 BaseType.POLICE_STATION
             )
-        assertEquals("Expected 1, but got $result2", 2, result2)
+        assertEquals("Expected 2, but got $result2", 2, result2)
+
+        val result3 =
+            Dijkstra.getNearestBaseToEdge(
+                simpleGraph,
+                Location("v0", "r0"),
+                BaseType.HOSPITAL
+            )
+        assertEquals("Expected null, but got $result3", null, result3)
+
+        val result4 =
+            Dijkstra.getNearestBaseToEdge(
+                simpleGraph,
+                Location("v0", "r0"),
+                BaseType.FIRE_STATION
+            )
+        assertEquals("Expected 0, but got $result4", 0, result4)
 
     }
 
-//    @Test
-//    fun getNextNearestBase() {
-//    }
-//
-//    @Test
-//    fun getShortestPathFromEdgeToEdge() {
-//    }
-//
-//    @Test
-//    fun getShortestPathFromVertexToEdge() {
-//    }
-//
-//    @Test
-//    fun getShortestPathFromEdgeToVertex() {
-//    }
+    @Test
+    fun getNextNearestBase() {
+        val r1 = Dijkstra.getNextNearestBase(simpleGraph, 0, BaseType.FIRE_STATION, setOf(0))
+        assertEquals("Expected 1, but got $r1", 1, r1)
+
+        val r2 = Dijkstra.getNextNearestBase(simpleGraph, 2, BaseType.POLICE_STATION, setOf(2))
+        assertEquals("Expected null, but got $r2", null, r2)
+
+        val r3 = Dijkstra.getNextNearestBase(simpleGraph, 0, BaseType.FIRE_STATION, setOf(0, 1))
+        assertEquals("Expected null, but got $r3", null, r3)
+    }
+
+    @Test
+    fun getShortestPathFromEdgeToEdge() {
+        val r1 = Dijkstra.getShortestPathFromEdgeToEdge(simpleGraph, 3, 2, , Location("v0", "r0"), 10  )
+    }
+
+    @Test
+    fun getShortestPathFromVertexToEdge() {
+    }
+
+    @Test
+    fun getShortestPathFromEdgeToVertex() {
+    }
 }

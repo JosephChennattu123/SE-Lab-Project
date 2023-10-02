@@ -23,14 +23,14 @@ object Dijkstra {
     fun getNearestBaseToEdge(graph: Graph, location: Location, baseType: BaseType): Int? {
         val edge = graph.getEdge(location)
         val nearestBasesToTarget = findNearestBases(graph, edge.targetVertex.vertexId, baseType)
-        println("----------------------------")
+//        println("----------------------------")
         val nearestBasesToSource = findNearestBases(graph, edge.sourceVertex.vertexId, baseType)
         val nearestBaseToTarget = nearestBasesToTarget?.minBy { it.value }
-        println(edge.targetVertex.vertexId)
-        println(nearestBaseToTarget)
+//        println(edge.targetVertex.vertexId)
+//        println(nearestBaseToTarget)
         val nearestBaseToSource = nearestBasesToSource?.minBy { it.value }
-        println(edge.sourceVertex.vertexId)
-        println(nearestBasesToSource)
+//        println(edge.sourceVertex.vertexId)
+//        println(nearestBasesToSource)
         if (nearestBaseToSource != null) {
             if (nearestBaseToTarget != null) {
                 return if (nearestBasesToSource.getValue(nearestBaseToSource.key)
@@ -57,6 +57,7 @@ object Dijkstra {
         baseType: BaseType,
         requestedBases: Set<Int>
     ): Int? {
+        assert(requestedBases.contains(sourceVertex)) { "requestedBases must contain the sourceVertex" }
         val nearestBases = findNearestBases(graph, sourceVertex, baseType, requestedBases)
         if (nearestBases != null) {
             return nearestBases.minBy { it.value }.key
@@ -290,7 +291,7 @@ object Dijkstra {
             distancesFromSource[vertex.vertexId] = Int.MAX_VALUE
         }
         distancesFromSource[source] = 0
-        println("start" + distancesFromSource)
+//        println("start" + distancesFromSource)
 
         while (visited.containsValue(false)) {
             // find the vertex with the minimum distance from the source vertex.
@@ -300,8 +301,8 @@ object Dijkstra {
 
             // relax all edges of the vertex.
             updateParent(currentVertex, height, distancesFromSource, parentMap, reverse)
-            println(visited)
-            println(distancesFromSource)
+//            println(visited)
+//            println(distancesFromSource)
         }
         return distancesFromSource
     }
