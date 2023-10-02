@@ -11,6 +11,7 @@ object SystemTestRegistration {
 
     /**
      * First Section: Test correctness checking
+     * Broken/unfinished tests go here
      *
      * Description:
      * For system tests for which you want to check the simulation behaviour of our reference implementation
@@ -20,12 +21,12 @@ object SystemTestRegistration {
      * If all tests of this section pass: -
      */
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
-
         manager
     }
 
     /**
      * Second Section: Validation system tests
+     * finished validation tests go here
      *
      * Description:
      * This second part is only concerned with the validation process of the configuration files, and will
@@ -41,6 +42,7 @@ object SystemTestRegistration {
 
     /**
      * Third Section: Simulation system Tests
+     * finished simulation tests go here
      *
      * Description:
      * The third part is only concerned with the simulation process itself, and thus will only result in the wrong
