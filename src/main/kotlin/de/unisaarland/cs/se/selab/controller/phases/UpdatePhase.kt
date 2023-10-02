@@ -104,6 +104,7 @@ class UpdatePhase {
             vehicle.status = VehicleStatus.RETURNING // change status for all vehicles of this emergency to RETURNING
             setReturnPath(vehicle, model)
         }
+        model.finishedEmergencies.add(emergency.id)
         model.assignedEmergencies.remove(emergency.id) // remove failed emergencies from model
     }
 
