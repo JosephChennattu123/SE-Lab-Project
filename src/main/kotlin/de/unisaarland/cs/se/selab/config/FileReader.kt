@@ -9,7 +9,7 @@ import java.lang.IndexOutOfBoundsException
  * */
 class FileReader(filePath: String) {
 
-    private val fileString: String = FileReader(filePath).readText()
+    val fileString: String = FileReader(filePath).readText()
     private var currentIndex: Int = 0
     private val maxIndex: Int = fileString.length - 1
     var charCode = readCharCode(currentIndex)
@@ -19,14 +19,13 @@ class FileReader(filePath: String) {
      * */
     fun increaseIndexToNextNonWhiteSpaceChar() {
         currentIndex++
-        // reader.seek(currentIndex.toLong())
         charCode = readCharCode(currentIndex)
 
         if (charCode.toChar().isWhitespace()) {
             consumeWhiteSpace(false)
         }
         if (currentIndex > maxIndex) {
-            currentIndex = maxIndex
+            currentIndex = maxIndex + 1
         }
     }
 
@@ -79,7 +78,6 @@ class FileReader(filePath: String) {
         while (charCode != -1 && charCode.toChar().isWhitespace()) {
             index += step
             charCode = readCharCode(index)
-            // println("space consumed")
         }
         if (charCode == -1) {
             error("end of file reached but no yet done.")
@@ -88,22 +86,10 @@ class FileReader(filePath: String) {
     }
 
     /**
-     * returns the ascii code of the current char
-     * */
-    fun readCharCode(index: Int): Int {
-        return if (index >= fileString.length) {
-            -1
-        } else {
-            fileString[index].code
-        }
-    }
-
-    /**
      * checks if the given character is a valid id character.
      * @return the character if it is a valid id character, null otherwise.
      * */
     fun isId(character: Char): Char? {
-        // return if (character.toString().matches(Regex("""[_a-zA-Z0-9]"""))) character else null
         return if (isLetter(character) != null || isNumber(character) != null) character else null
     }
 
@@ -112,7 +98,6 @@ class FileReader(filePath: String) {
      * @return the character if it is a valid letter, null otherwise.
      * */
     fun isLetter(character: Char): Char? {
-        // return if (character.toString().matches(Regex("""[_a-zA-Z]"""))) character else null
         return if (character.code in LETTER_LOWER_START..LETTER_LOWER_END ||
             character.code in LETTER_UPPER_START..LETTER_UPPER_END
         ) {
@@ -144,7 +129,19 @@ class FileReader(filePath: String) {
     fun endReached(): Boolean {
         return currentIndex >= maxIndex
     }
+
+    /**
+     * returns the ascii code of the current char
+     * */
+    private fun readCharCode(index: Int): Int {
+        return if (index >= fileString.length) {
+            -1
+        } else {
+            fileString[index].code
+        }
+    }
 }
+
 private const val LETTER_LOWER_START = 65
 private const val LETTER_LOWER_END = 90
 

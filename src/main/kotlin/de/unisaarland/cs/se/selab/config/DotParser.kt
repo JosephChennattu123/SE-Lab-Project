@@ -31,8 +31,8 @@ class DotParser(val graphFilePath: String) {
      * Parses the dot file for the graph and checks that it is correct syntactically
      */
     fun parse(): Boolean {
-        var errorOccurred = false
-        while (!reader.endReached()) {
+        var isValid = reader.fileString.isNotBlank()
+        while (!reader.endReached() && isValid) {
             when (reader.readChar()) {
                 'd' -> {
                     parseDigraph()
@@ -40,21 +40,21 @@ class DotParser(val graphFilePath: String) {
 
                 '{' -> {
                     reader.increaseIndexToNextNonWhiteSpaceChar()
-                    errorOccurred = parseVertices()
+                    isValid = parseVertices()
                 }
 
                 '}' -> {
-                    errorOccurred = true
+                    isValid = reader.endReached()
+                    break
                 }
 
                 else -> {
-                    errorOccurred = true
+                    isValid = false
                 }
             }
             reader.increaseIndexToNextNonWhiteSpaceChar()
         }
-        // TODO check for character after end of graph
-        return errorOccurred
+        return isValid
     }
 
     private fun parseDigraph() {
@@ -145,18 +145,13 @@ class DotParser(val graphFilePath: String) {
                     edgeIdToSourceTarget[count] = Pair(source, target)
                 }
 
-                '}' -> {
-                    reader.decreaseIndexToNextNonWhiteSpaceChar()
-                    return true // valid ending character
-                }
-
                 else -> {
                     return false // illegal character
                 }
             }
             reader.increaseIndexToNextNonWhiteSpaceChar()
         }
-        return false // reached end of file without completing the graph
+        return reader.readChar() == '}' // reached end of file without completing the graph
     }
 
     private fun parseAttributes(edgeId: Int) {
@@ -192,6 +187,9 @@ class DotParser(val graphFilePath: String) {
             when (reader.readChar()) {
                 label[count] -> {
                     count++
+                }
+                else -> {
+                    break
                 }
             }
             reader.increaseIndexToNextNonWhiteSpaceChar()
