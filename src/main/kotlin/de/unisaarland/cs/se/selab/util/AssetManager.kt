@@ -393,9 +393,9 @@ object AssetManager {
             // check if the vehicle type does not match the requirement type
             // or if the base does not have enough staff to send the vehicle.
             if (!requirements.any {
-                    vehicle.vehicleType != it.vehicleType &&
-                            vehicle.staffCapacity > model.getBaseById(vehicle.baseID)!!.currentStaff
-                }
+                vehicle.vehicleType != it.vehicleType &&
+                    vehicle.staffCapacity > model.getBaseById(vehicle.baseID)!!.currentStaff
+            }
             ) {
                 // collect vehicles that needed to be removed.
                 vehiclesToBeRemoved.add(vehicle)
@@ -496,19 +496,18 @@ object AssetManager {
         vehicle: Vehicle,
         requirements: List<EmergencyRequirement>
     ): Boolean {
-
         var requirementFulfilled = false
         var requirementsIndex = requirements.size
         val fittingRequirements = requirements.filter {
             it.numberOfVehicles > 0 &&
-                    it.vehicleType == vehicle.vehicleType
+                it.vehicleType == vehicle.vehicleType
         }
         // iterate over unfulfilled requirements of the given vehicle's type.
         while (!requirementFulfilled && requirementsIndex < requirements.size) {
             val requiredType = fittingRequirements[requirementsIndex].vehicleType
             val requiredAmount = fittingRequirements[requirementsIndex].amountOfAsset
             if (requiredType == VehicleType.FIRE_TRUCK_LADDER) {
-                requirementFulfilled = vehicle.currentNumberOfAssets >= requiredAmount!!
+                requirementFulfilled = vehicle.currentNumberOfAssets!! >= requiredAmount!!
                 fittingRequirements[requirementsIndex].amountOfAsset = 0
                 fittingRequirements[requirementsIndex].numberOfVehicles--
             } else if (requiredAmount == null) {
@@ -522,7 +521,6 @@ object AssetManager {
         }
         return requirementFulfilled
     }
-
 
     /**
      * updates the current requirements of the emergency.
