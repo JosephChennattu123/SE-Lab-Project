@@ -35,3 +35,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/libs/selab.jar
+/src/systemtest/resources/mapFiles/brokenTest/**

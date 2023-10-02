@@ -9,19 +9,21 @@ package de.unisaarland.cs.se.selab.model
  * @property numStaff The number of staff members available at the base.
  * @property doctors The number of doctors available at the base (relevant for medical bases).
  * @property dogs The number of search and rescue dogs available at the base (relevant for certain bases).
- * @property vehicles A list of unique identifiers for vehicles stationed at the base.
- * @property assignedEmergencies A list of unique identifiers for emergencies currently assigned to the base.
  */
 class Base(
     var baseId: Int,
     var baseType: BaseType,
     var vertexID: Int,
     var numStaff: Int,
-    var doctors: Int,
-    var dogs: Int,
-    var vehicles: MutableList<Int>,
-    var assignedEmergencies: MutableList<Int>
+    var doctors: Int?,
+    var dogs: Int?,
 ) {
+    /**@property vehicles A list of unique identifiers for vehicles stationed at the base.*/
+    val vehicles: MutableList<Int> = mutableListOf()
+
+    /** @property assignedEmergencies A list of unique identifiers for emergencies currently assigned to the base.*/
+    val assignedEmergencies: MutableList<Int> = mutableListOf()
+
     /**
      * Adds an emergency to the list of emergencies assigned to this base.
      *
@@ -45,5 +47,20 @@ class Base(
  * The `BaseType` enum represents the types of bases that can exist in the simulation.
  */
 enum class BaseType {
-    FIRE_STATION, POLICE_STATION, HOSPITAL
+    FIRE_STATION, POLICE_STATION, HOSPITAL;
+
+    companion object {
+        /**
+         * @param value possibly a value of this enum
+         * @return a BaseType if the string matched a value else null
+         */
+        fun fromString(value: String): BaseType? {
+            return when (value) {
+                "FIRE_STATION" -> FIRE_STATION
+                "POLICE_STATION" -> POLICE_STATION
+                "HOSPITAL" -> HOSPITAL
+                else -> null
+            }
+        }
+    }
 }

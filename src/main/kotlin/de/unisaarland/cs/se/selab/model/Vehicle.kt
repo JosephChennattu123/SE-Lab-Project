@@ -1,4 +1,7 @@
 package de.unisaarland.cs.se.selab.model
+
+import de.unisaarland.cs.se.selab.util.Logger
+
 /**@param vehicleID
  * @param baseID
  * @param vehicleType
@@ -11,7 +14,7 @@ abstract class Vehicle(
     val vehicleType: VehicleType,
     val height: Int,
     val staffCapacity: Int,
-    val maxAssetCapacity: Int
+    val maxAssetCapacity: Int?
 ) {
     var emergencyID: Int? = null
     var status: VehicleStatus = VehicleStatus.AT_BASE
@@ -25,7 +28,21 @@ abstract class Vehicle(
      */
     fun driveUpdate() {
         // implemented in the update branch
-        TODO()
+        positionTracker.updatePosition()
+        if (positionTracker.destinationReached()) {
+            val destinationVertexID = positionTracker.getDestination()
+            Logger.logAssetArrived(vehicleID, destinationVertexID)
+            if (destinationVertexID == baseID) setBusy()
+            status = if (destinationVertexID == baseID) {
+                if (setBusy()) {
+                    VehicleStatus.BUSY
+                } else {
+                    VehicleStatus.AT_BASE
+                }
+            } else {
+                VehicleStatus.WAITING
+            }
+        }
     }
 
     /**
@@ -79,8 +96,8 @@ abstract class Vehicle(
     }
 
     /** sets the status of vehicle to busy and sets busy timer */
-    open fun setBusy() {}
+    abstract fun setBusy(): Boolean
 
     /** resets vehicle properties after busyTimer is 0 */
-    open fun resetAfterBusy() {}
+    abstract fun resetAfterBusy()
 }

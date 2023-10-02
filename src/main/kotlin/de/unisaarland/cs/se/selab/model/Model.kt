@@ -9,7 +9,6 @@ import de.unisaarland.cs.se.selab.model.map.Graph
  * @param vehicleToBase
  * @param emergencies
  * */
-
 class Model(
     val graph: Graph,
     val maxTick: Int?, // optional command-line argument
@@ -22,14 +21,11 @@ class Model(
     var tickToEventId: Map<Int, List<Int>>
 ) {
     var currentTick: Int = 0
-    var assignedEmergencies: MutableList<Int> = mutableListOf()
-    var currentEvents: MutableList<Int> = mutableListOf()
-    var roadToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
-    var vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
-    var requests: MutableList<Request> = mutableListOf()
-    var numReroutedAssets: Int = 0
-    var numFailedEmergencies: Int = 0
-    var numResolvedEmergency: Int = 0
+    val assignedEmergencies: MutableList<Int> = mutableListOf()
+    val currentEvents: MutableList<Int> = mutableListOf()
+    val roadToPostponedEvents: MutableMap<Int, MutableList<Int>> = mutableMapOf()
+    val vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
+    val requests: MutableList<Request> = mutableListOf()
 
     /** returns emergency object with respect to its id */
     fun getAssignedEmergencyById(emId: Int): Emergency? {
@@ -55,7 +51,7 @@ class Model(
      *  please use this function to fetch the
      * emergency started in this tick*/
     fun getCurrentEmergencies(): List<Emergency> {
-        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick] ?: listOf()
+        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick].orEmpty()
         return listOfStartedEmergencies.mapNotNull { emergencies[it] }
     }
 
@@ -92,8 +88,8 @@ class Model(
     }
 
     /** @returns list of all current events */
-    fun getCurrentEvents(): List<Event> {
-        return currentEvents.mapNotNull { events[it] }
+    fun getCurrentEventsObjects(): List<Event> {
+        return currentEvents.distinct().mapNotNull { events[it] }
     }
 
     /** @returns all events */
@@ -118,8 +114,8 @@ class Model(
 
     /** add roadEvent to a map of road id to postponed events */
     fun addRoadEvent(roadId: Int, eventId: Event) {
-        val roadEventsPost: MutableList<Event> = roadToPostponedEvents[roadId] ?: mutableListOf()
-        roadEventsPost.add(eventId)
+        val roadEventsPost: MutableList<Int> = roadToPostponedEvents[roadId] ?: mutableListOf()
+        roadEventsPost.add(eventId.id)
         roadToPostponedEvents[roadId] = roadEventsPost
     }
 

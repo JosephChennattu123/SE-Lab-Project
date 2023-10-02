@@ -3,7 +3,7 @@ package de.unisaarland.cs.se.selab.controller.events
 import de.unisaarland.cs.se.selab.model.map.PrimaryType
 
 /** used to create Event  */
-class EventFactory {
+object EventFactory {
     /** returns a VehicleEvent */
     fun createRepairVehicle(eventId: Int, vehicleId: Int, start: Int, duration: Int): Event {
         return VehicleEvent(vehicleId, eventId, start, duration)
