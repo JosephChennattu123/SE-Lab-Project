@@ -10,7 +10,7 @@ import java.io.File
 class DotParser(var graphFilePath: String) {
 
     private var fileContent = ""
-    private val regexId = """([_a-zA-Z]+|\d*\.*\d*)""".toRegex()
+    private val regexId = """([_a-zA-Z]+|\d+)""".toRegex()
     private val whitespace = """\s""".toRegex()
 
     private var parsingErrorOccurred: Boolean = false
@@ -18,14 +18,14 @@ class DotParser(var graphFilePath: String) {
     init {
         val osPath = graphFilePath.replace("/", File.separator)
         val file = File(osPath)
-        fileContent = file.readText()
+        fileContent = file.readText().replace(whitespace, "")
     }
 
     /**
      * extracts the county name from the file.
      */
     fun parseCountyName(): String? {
-        val regex = """\s*([a-zA-Z][a-zA-Z0-9]*)\s*\{""".toRegex()
+        val regex = """digraph($regexId)\{""".toRegex()
         val matchResult = regex.find(fileContent)
         val matchedString = matchResult?.groupValues?.get(1)
         return matchedString ?: run {
@@ -38,8 +38,8 @@ class DotParser(var graphFilePath: String) {
      * extracts the village name from the file.
      */
     fun parseVertexIds(): List<Int> {
-        val regexFromCurlyToEdge = """\{(\s*([0-9]+)\s*;\s*)+[0-9]+\s*-""".toRegex()
-        val regexForVertexId = """\s*([0-9]+)\s*;""".toRegex()
+        val regexFromCurlyToEdge = """\{(.+?)$regexId-""".toRegex()
+        val regexForVertexId = """($regexId);""".toRegex()
         val unParsedVertices = regexFromCurlyToEdge.find(fileContent)
         val noCurlyNoEdge = unParsedVertices?.groupValues?.get(0)
         val matchResults = regexForVertexId.findAll(noCurlyNoEdge.orEmpty())
@@ -50,7 +50,7 @@ class DotParser(var graphFilePath: String) {
      * extracts edges from the file.
      * */
     fun parseEdges(): List<String> {
-        val regex = """\s*[0-9]+\s*->\s*[0-9]+\s*\[(\s*[a-zA-z]+\s*=\s*[a-zA-z0-9]+\s*;\s*)*\s*]\s*;""".toRegex()
+        val regex = """$regexId->$regexId\[([a-zA-Z]+=$regexId;)+];""".toRegex()
         val matchResult = regex.findAll(fileContent)
         return matchResult.map { it.groupValues[0].replace(whitespace, "") }
             .toList()
@@ -85,7 +85,7 @@ class DotParser(var graphFilePath: String) {
      * */
     fun parseAttributes(edges: List<String>): Map<Int, String> {
         val edgeIdToAttributes = mutableMapOf<Int, String>()
-        val regexAttributes = """\[\s*($regexId\s*=\s*$regexId\s*;\s*)*\s*]\s*;""".toRegex()
+        val regexAttributes = """\[($regexId=$regexId;)+];""".toRegex()
         for (edge in edges) {
             val matchResult = regexAttributes.findAll(edge)
             val matchedString =
@@ -104,7 +104,7 @@ class DotParser(var graphFilePath: String) {
      * */
     fun parseVillageName(attributes: Map<Int, String>): Map<Int, String> {
         val edgeIdToVillageName = mutableMapOf<Int, String>()
-        val regexVillageName = """village\s*=\s*$regexId\s*;""".toRegex()
+        val regexVillageName = """village=$regexId;""".toRegex()
         for ((index, attribute) in attributes) {
             edgeIdToVillageName[index] = matchRegex(regexVillageName, attribute)
         }
@@ -116,7 +116,7 @@ class DotParser(var graphFilePath: String) {
      * */
     fun parseRoadName(attributes: Map<Int, String>): Map<Int, String> {
         val edgeIdToRoadName = mutableMapOf<Int, String>()
-        val regexRoadName = """name\s*=\s*$regexId\s*;""".toRegex()
+        val regexRoadName = """name=$regexId;""".toRegex()
         for ((index, attribute) in attributes) {
             edgeIdToRoadName[index] = matchRegex(regexRoadName, attribute)
         }
@@ -128,7 +128,7 @@ class DotParser(var graphFilePath: String) {
      * */
     fun parseHeight(attributes: Map<Int, String>): Map<Int, Int> {
         val edgeIdToHeight = mutableMapOf<Int, Int>()
-        val regexHeight = """heightLimit\s*=\s*$regexId\s*;""".toRegex()
+        val regexHeight = """heightLimit=$regexId;""".toRegex()
         for ((index, attribute) in attributes) {
             edgeIdToHeight[index] = matchRegex(regexHeight, attribute).toInt()
         }
@@ -140,7 +140,7 @@ class DotParser(var graphFilePath: String) {
      * */
     fun parseWeight(attributes: Map<Int, String>): Map<Int, Int> {
         val edgeIdToWeight = mutableMapOf<Int, Int>()
-        val regexWeight = """weight\s*=\s*$regexId\s*;""".toRegex()
+        val regexWeight = """weight=$regexId;""".toRegex()
         for ((index, attribute) in attributes) {
             edgeIdToWeight[index] = matchRegex(regexWeight, attribute).toInt()
         }
@@ -152,7 +152,7 @@ class DotParser(var graphFilePath: String) {
      * */
     fun parsePrimaryType(attributes: Map<Int, String>): Map<Int, String> {
         val edgeIdToPrimaryType = mutableMapOf<Int, String>()
-        val regexPrimaryType = """primaryType\s*=\s*(mainStreet|sideStreet|countyRoad)\s*;""".toRegex()
+        val regexPrimaryType = """primaryType=(mainStreet|sideStreet|countyRoad);""".toRegex()
         for ((index, attribute) in attributes) {
             edgeIdToPrimaryType[index] = matchRegex(regexPrimaryType, attribute)
         }
@@ -164,7 +164,7 @@ class DotParser(var graphFilePath: String) {
      * */
     fun parseSecondaryType(attributes: Map<Int, String>): Map<Int, String> {
         val edgeIdToSecondaryType = mutableMapOf<Int, String>()
-        val regexSecondaryType = """secondaryType\s*=\s*(oneWayStreet|tunnel|none)\s*;""".toRegex()
+        val regexSecondaryType = """secondaryType=(oneWayStreet|tunnel|none);""".toRegex()
         for ((index, attribute) in attributes) {
             edgeIdToSecondaryType[index] = matchRegex(regexSecondaryType, attribute)
         }
@@ -190,10 +190,9 @@ class DotParser(var graphFilePath: String) {
             Logger.logParsingValidationResult(graphFilePath, false)
             error("Parsing error occurred.")
         }
-        val originalFileNoSpaces = fileContent.replace(whitespace, "")
-        if (reconstructedFile != originalFileNoSpaces) {
+        if (reconstructedFile.length != fileContent.length) {
             Logger.logParsingValidationResult(graphFilePath, false)
-            error("Parsing error occurred.")
+            error("Parsing error occurred: ${reconstructedFile.length} ${fileContent.length}")
         }
     }
 
@@ -201,17 +200,17 @@ class DotParser(var graphFilePath: String) {
      * parses the dot-file to be checked for syntax errors and reconstructs the valid portion of it.
      * */
     private fun reconstructValidFile(): String {
-        val countyName: String? = parseCountyName()
-        val vertexIds: List<Int> = parseVertexIds()
-        val edges: List<String> = parseEdges()
-        val edgeIdToSourceTargetPairs: Map<Int, Pair<Int, Int>> = parseSourceAndTarget(edges)
-        val edgeIdToAttributes: Map<Int, String> = parseAttributes(edges)
-        val edgeIdToVillageName: Map<Int, String> = parseVillageName(edgeIdToAttributes)
-        val edgeIdToRoadName: Map<Int, String> = parseRoadName(edgeIdToAttributes)
-        val edgeIdToHeight: Map<Int, Int> = parseHeight(edgeIdToAttributes)
-        val edgeIdToWeight: Map<Int, Int> = parseWeight(edgeIdToAttributes)
-        val edgeIdToPrimaryType: Map<Int, String> = parsePrimaryType(edgeIdToAttributes)
-        val edgeIdToSecondaryType: Map<Int, String> = parseSecondaryType(edgeIdToAttributes)
+        val countyName = parseCountyName()
+        val vertexIds = parseVertexIds()
+        val edges = parseEdges()
+        val edgeIdToSourceTargetPairs = parseSourceAndTarget(edges)
+        val edgeIdToAttributes = parseAttributes(edges)
+        val edgeIdToVillageName = parseVillageName(edgeIdToAttributes)
+        val edgeIdToRoadName = parseRoadName(edgeIdToAttributes)
+        val edgeIdToHeight = parseHeight(edgeIdToAttributes)
+        val edgeIdToWeight = parseWeight(edgeIdToAttributes)
+        val edgeIdToPrimaryType = parsePrimaryType(edgeIdToAttributes)
+        val edgeIdToSecondaryType = parseSecondaryType(edgeIdToAttributes)
 
         // reconstruct county name.
         var reconstructedFile = "digraph$countyName{"
