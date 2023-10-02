@@ -6,8 +6,8 @@ import de.unisaarland.cs.se.selab.config.ValidatorManager
 import de.unisaarland.cs.se.selab.util.Logger
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
-import kotlinx.cli.default
 import kotlinx.cli.required
+import java.io.PrintWriter
 
 /**
  * This is the entry point of the simulation.
@@ -15,33 +15,39 @@ import kotlinx.cli.required
 fun main(args: Array<String>) {
     // parse command line arguments.
     val parser = ArgParser("Saarvive and Thrive")
-    val mapPath by parser.option(
+    PrintWriter(System.out).println(args)
+    val map by parser.option(
         ArgType.String,
-        description = "Path to the DOT file. (always required)"
+        shortName = "m",
+        description = "Path to the DOT file."
     ).required()
-    val assetsPath by parser.option(
+    val assets by parser.option(
         ArgType.String,
-        description = "Path to the JSON file with assets. (always required)"
+        shortName = "a",
+        description = "Path to the JSON file with assets."
     ).required()
-    val scenarioPath by parser.option(
+    val scenario by parser.option(
         ArgType.String,
-        description = "Path to the scenario JSON file with emergencies and events. (always required)"
+        shortName = "s",
+        description = "Path to the scenario JSON file with emergencies and events."
     ).required()
     val ticks by parser.option(
         ArgType.Int,
+        shortName = "t",
         description = "Maximum allowed number of simulation ticks"
     )
-    val outPath by parser.option(
+    val outPath: String? by parser.option(
         ArgType.String,
+        shortName = "o",
         description = "Path to output file. Uses 'stdout' by default"
-    ).default("stdout")
+    )
     parser.parse(args)
 
     Logger.outputFile = outPath
 
     // validate the input files and create the control center.
-    val dotParser = DotParser(mapPath)
-    val jsonParse = JsonParser(assetsPath, scenarioPath)
+    val dotParser = DotParser(map)
+    val jsonParse = JsonParser(assets, scenario)
     val validator = ValidatorManager()
     val controlCenter = validator.validate(dotParser, jsonParse, ticks)
 
@@ -49,7 +55,8 @@ fun main(args: Array<String>) {
     if (controlCenter != null) {
         controlCenter.simulate()
     } else {
-        error("controlCenter is null")
+        // error("controlCenter is null")
+        return
     }
 
     // throw UnsupportedOperationException()

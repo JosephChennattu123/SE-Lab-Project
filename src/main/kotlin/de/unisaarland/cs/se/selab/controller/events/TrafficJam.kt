@@ -1,6 +1,8 @@
 package de.unisaarland.cs.se.selab.controller.events
 
 import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.map.Edge
+import de.unisaarland.cs.se.selab.util.Logger
 
 /**@param id
  * @param start
@@ -18,14 +20,37 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
     }
 
     override fun applyEffect(model: Model) {
-        TODO("Not implemented")
+        require(source != null && target != null && factor != null) { "Source,Target or Factor should not be null" }
+        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int)
+        if (currentEdge.activeEventId == null) {
+            currentEdge.properties.factor = this.factor as Int
+            currentEdge.activeEventId = id
+            model.currentEvents.add(id)
+            if (model.roadToPostponedEvents[currentEdge.edgeId] != null &&
+                (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList).contains(id)
+            ) {
+                (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList<Int>).remove(id)
+                model.currentEvents.add(id)
+            }
+            Logger.logEventStatus(id, true)
+        } else {
+            status = EventStatus.SCHEDULED
+            putInPostponeLists(model.roadToPostponedEvents, currentEdge)
+        }
     }
 
     override fun decrementTimer() {
-        TODO("Not yet implemented")
+        duration--
     }
 
     override fun removeEffect(model: Model) {
-        TODO("Not yet implemented")
+        val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int)
+        currentEdge.properties.factor = BASE_FACTOR
+        currentEdge.activeEventId = null
+        model.currentEvents.remove(id)
+        status = EventStatus.FINISHED
+        Logger.logEventStatus(id, false)
     }
 }
+
+const val BASE_FACTOR = 1

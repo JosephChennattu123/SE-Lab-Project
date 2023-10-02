@@ -21,11 +21,12 @@ class Model(
     var tickToEventId: Map<Int, List<Int>>
 ) {
     var currentTick: Int = 0
-    var assignedEmergencies: MutableList<Int> = mutableListOf()
-    var currentEvents: MutableList<Int> = mutableListOf()
-    var roadToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
-    var vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
-    var requests: MutableList<Request> = mutableListOf()
+    val assignedEmergencies: MutableList<Int> = mutableListOf()
+    val finishedEmergencies: MutableList<Int> = mutableListOf()
+    val currentEvents: MutableList<Int> = mutableListOf()
+    val roadToPostponedEvents: MutableMap<Int, MutableList<Int>> = mutableMapOf()
+    val vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
+    val requests: MutableList<Request> = mutableListOf()
 
     /** returns emergency object with respect to its id */
     fun getAssignedEmergencyById(emId: Int): Emergency? {
@@ -51,7 +52,7 @@ class Model(
      *  please use this function to fetch the
      * emergency started in this tick*/
     fun getCurrentEmergencies(): List<Emergency> {
-        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick] ?: listOf()
+        val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick].orEmpty()
         return listOfStartedEmergencies.mapNotNull { emergencies[it] }
     }
 
@@ -89,7 +90,7 @@ class Model(
 
     /** @returns list of all current events */
     fun getCurrentEventsObjects(): List<Event> {
-        return currentEvents.mapNotNull { events[it] }
+        return currentEvents.distinct().mapNotNull { events[it] }
     }
 
     /** @returns all events */
@@ -105,26 +106,6 @@ class Model(
     /** returns a list of events in return for a list of event ids */
     fun getEventsByIds(evIds: List<Int>): List<Event> {
         return evIds.mapNotNull { events[it] }
-    }
-
-    /** removes an event from list of current events */
-    fun removeFromCurrentEvents(evId: Int) {
-        currentEvents.remove(evId)
-    }
-
-    /** add roadEvent to a map of road id to postponed events */
-    fun addRoadEvent(roadId: Int, eventId: Event) {
-        val roadEventsPost: MutableList<Event> = roadToPostponedEvents[roadId] ?: mutableListOf()
-        roadEventsPost.add(eventId)
-        roadToPostponedEvents[roadId] = roadEventsPost
-    }
-
-    /** add vehicleEvent to a map of vehicle id to postponed events */
-    fun addVehicleEvent(vehicleId: Int, eventId: Event) {
-        val vehicleEventsPost: MutableList<Event> =
-            vehicleToPostponedEvents[vehicleId] ?: mutableListOf()
-        vehicleEventsPost.add(eventId)
-        vehicleToPostponedEvents[vehicleId] = vehicleEventsPost
     }
 
     /** add request to the list of Request */

@@ -14,8 +14,8 @@ import de.unisaarland.cs.se.selab.model.EmergencyType
  * @param handleTime the amount of ticks it takes to resolve the emergency
  * @param maxDuration the maximum duration in ticks before an emergency fails
  */
-data class EmergencyInfo(
-    val id: Int,
+class EmergencyInfo(
+    id: Int,
     val tick: Int,
     val village: String,
     val roadName: String,
@@ -23,4 +23,16 @@ data class EmergencyInfo(
     val severity: Int,
     val handleTime: Int,
     val maxDuration: Int
-)
+) : BasicInfo(id) {
+    override val infoMap =
+        mapOf(
+            ID to id,
+            TICK to tick,
+            VILLAGE to village,
+            ROAD_NAME to roadName,
+            EMERGENCY_TYPE to emergencyType,
+            SEVERITY to severity,
+            HANDLE_TIME to handleTime,
+            MAX_DURATION to maxDuration
+        )
+}

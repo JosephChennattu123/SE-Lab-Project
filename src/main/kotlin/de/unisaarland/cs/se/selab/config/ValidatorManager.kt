@@ -8,6 +8,7 @@ import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Vehicle
 import de.unisaarland.cs.se.selab.model.map.Graph
 import de.unisaarland.cs.se.selab.util.Logger
+import org.everit.json.schema.ValidationException
 
 /**
  * Manages the parsing and validation of files and builds
@@ -18,8 +19,6 @@ class ValidatorManager {
     private var vehicles: List<Vehicle>? = null
     private var bases: List<Base>? = null
 
-    // private var vertices: List<Vertex>? = null
-    // private var edges: List<Edge>? = null
     private var graph: Graph? = null
     private var events: List<Event>? = null
     private var emergencies: List<Emergency>? = null
@@ -41,22 +40,34 @@ class ValidatorManager {
         this.dotParser = dotParser
         this.jsonParser = jsonParser
 
-        // dotParser.parse()
+        dotParser.parse()
         if (!validateGraph()) {
             Logger.logParsingValidationResult(dotParser.graphFilePath, false)
             return null
         }
         Logger.logParsingValidationResult(dotParser.graphFilePath, true)
 
+        try {
+            jsonParser.validateAssetsSchema()
+        } catch (e: ValidationException) {
+            Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
+            throw e
+        }
         // jsonParser.parseAssets()
-        if (!validateBases() || !validateVehicles()) {
+        if (!validateBases(graph as Graph) || !validateVehicles(bases as List<Base>)) {
             Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
             return null
         }
-        Logger.logParsingValidationResult(jsonParser.assetsFilePath, true)
 
+        Logger.logParsingValidationResult(jsonParser.assetsFilePath, true)
+        try {
+            jsonParser.validateScenarioSchema()
+        } catch (e: ValidationException) {
+            Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
+            throw e
+        }
         // jsonParser.parseEmergenciesEvents()
-        if (!validateEmergencies() || !validateEvent()) {
+        if (!validateEmergencies(graph as Graph) || !validateEvent(graph as Graph, vehicles as List<Vehicle>)) {
             Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
             return null
         }
@@ -69,17 +80,19 @@ class ValidatorManager {
     }
 
     private fun buildModel(maxTick: Int?): Model {
-        val basesMap = bases!!.associateBy { it.baseId }
-        val vehiclesMap = vehicles!!.associateBy { it.vehicleID }
-        val emergenciesMap = emergencies!!.associateBy { it.id }
-        val eventsMap = events!!.associateBy { it.id }
+        val emergenciesList = emergencies as List<Emergency>
+        val eventsList = events as List<Event>
 
-        val vehiclesToBasesMap = vehicles!!.associate { Pair(it.vehicleID, it.baseID) }
+        val basesMap = (bases as List<Base>).associateBy { it.baseId }
+        val vehiclesMap = (vehicles as List<Vehicle>).associateBy { it.vehicleID }
+        val emergenciesMap = emergenciesList.associateBy { it.id }
+        val eventsMap = eventsList.associateBy { it.id }
+
+        val vehiclesToBasesMap = (vehicles as List<Vehicle>).associate { Pair(it.vehicleID, it.baseID) }
         val tickToEmergencyId: MutableMap<Int, List<Int>> = mutableMapOf()
-
-        emergencies!!.map { it.scheduledTick }.toSet().associateWithTo(tickToEmergencyId) {
+        emergenciesList.map { it.scheduledTick }.toSet().associateWithTo(tickToEmergencyId) {
             val elements: MutableList<Int> = mutableListOf()
-            for (em in emergencies!!) {
+            for (em in emergenciesList) {
                 if (em.scheduledTick == it) {
                     elements.add(em.id)
                 }
@@ -88,9 +101,9 @@ class ValidatorManager {
         }
 
         val tickToEventId: MutableMap<Int, List<Int>> = mutableMapOf()
-        events!!.map { it.start }.toSet().associateWithTo(tickToEmergencyId) {
+        eventsList.map { it.start }.toSet().associateWithTo(tickToEmergencyId) {
             val elements: MutableList<Int> = mutableListOf()
-            for (ev in events!!) {
+            for (ev in eventsList) {
                 if (ev.start == it) {
                     elements.add(ev.id)
                 }
@@ -98,7 +111,7 @@ class ValidatorManager {
             elements
         }
         return Model(
-            graph!!, maxTick, basesMap, vehiclesMap, vehiclesToBasesMap, emergenciesMap, tickToEmergencyId,
+            graph as Graph, maxTick, basesMap, vehiclesMap, vehiclesToBasesMap, emergenciesMap, tickToEmergencyId,
             eventsMap, tickToEventId
         )
     }
@@ -108,9 +121,9 @@ class ValidatorManager {
      *
      * @return true if validation was successful
      * */
-    private fun validateVehicles(): Boolean {
-        val vehicleValidator = VehicleValidator()
-        this.vehicles = vehicleValidator.validate()
+    private fun validateVehicles(bases: List<Base>): Boolean {
+        val vehicleValidator = VehicleValidator(jsonParser as JsonParser)
+        this.vehicles = vehicleValidator.validate(bases)
         return vehicles != null
     }
 
@@ -121,7 +134,7 @@ class ValidatorManager {
      * */
     private fun validateGraph(): Boolean {
         val graphValidator = GraphValidator()
-        this.graph = graphValidator.validate(dotParser!!)
+        this.graph = graphValidator.validate(dotParser as DotParser)
         return graph != null
     }
 
@@ -130,10 +143,10 @@ class ValidatorManager {
      *
      * @return true if validation was successful
      * */
-    private fun validateBases(): Boolean {
-        val baseValidator = BaseValidator()
-        this.bases = baseValidator.validate()
-        TODO()
+    private fun validateBases(graph: Graph): Boolean {
+        val baseValidator = BaseValidator(jsonParser as JsonParser)
+        this.bases = baseValidator.validate(graph)
+        return bases != null
     }
 
     /**
@@ -141,10 +154,10 @@ class ValidatorManager {
      *
      * @return true if validation was successful
      * */
-    private fun validateEmergencies(): Boolean {
-        val emergencyValidator = EmergencyValidator()
-        this.emergencies = emergencyValidator.validate()
-        TODO()
+    private fun validateEmergencies(graph: Graph): Boolean {
+        val emergencyValidator = EmergencyValidator(jsonParser as JsonParser)
+        this.emergencies = emergencyValidator.validate(graph)
+        return emergencies != null
     }
 
     /**
@@ -152,9 +165,9 @@ class ValidatorManager {
      *
      * @return true if validation was successful
      * */
-    private fun validateEvent(): Boolean {
-        val eventValidator = EventValidator()
-        this.events = eventValidator.validate()
-        TODO()
+    private fun validateEvent(graph: Graph, vehicles: List<Vehicle>): Boolean {
+        val eventValidator = EventValidator(jsonParser as JsonParser)
+        this.events = eventValidator.validate(graph, vehicles)
+        return events != null
     }
 }
