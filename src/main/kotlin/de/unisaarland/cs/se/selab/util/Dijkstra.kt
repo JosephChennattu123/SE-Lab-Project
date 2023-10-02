@@ -125,6 +125,7 @@ object Dijkstra {
         val parentMap = HashMap<Int, Int>()
         val distanceFromSourceVertex =
             dijkstraAlgorithm(graph, sourceVertex, false, height, parentMap)
+        println("parentMap"+parentMap)
         val path = reconstructPath(sourceVertex, targetVertex, parentMap)
         val weights: List<Int> = mutableListOf()
         val isOneWay: List<Boolean> = mutableListOf()
