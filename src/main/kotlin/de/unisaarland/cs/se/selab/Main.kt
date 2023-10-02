@@ -18,22 +18,27 @@ fun main(args: Array<String>) {
     PrintWriter(System.out).println(args)
     val map by parser.option(
         ArgType.String,
+        shortName = "m",
         description = "Path to the DOT file."
     ).required()
     val assets by parser.option(
         ArgType.String,
+        shortName = "a",
         description = "Path to the JSON file with assets."
     ).required()
     val scenario by parser.option(
         ArgType.String,
+        shortName = "s",
         description = "Path to the scenario JSON file with emergencies and events."
     ).required()
     val ticks by parser.option(
         ArgType.Int,
+        shortName = "t",
         description = "Maximum allowed number of simulation ticks"
     )
     val outPath: String? by parser.option(
         ArgType.String,
+        shortName = "o",
         description = "Path to output file. Uses 'stdout' by default"
     )
     parser.parse(args)
