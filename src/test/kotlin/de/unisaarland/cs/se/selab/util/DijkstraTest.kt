@@ -32,11 +32,6 @@ internal class DijkstraTest {
             RoadProperties(PrimaryType.COUNTY, SecondaryType.NONE, "v0", "r0", 60, 30)
         )
         g.addEdge(
-            vertices[2]!!,
-            vertices[0]!!,
-            RoadProperties(PrimaryType.COUNTY, SecondaryType.NONE, "v0", "r0", 60, 30)
-        )
-        g.addEdge(
             vertices[1]!!,
             vertices[3]!!,
             RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r1", 10, 30)
@@ -46,8 +41,6 @@ internal class DijkstraTest {
             vertices[2]!!,
             RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r2", 10, 30)
         )
-        println("config source: " + g.getEdges().map { it})
-       // println("config target: " + g.getEdges().map { it.targetVertex.vertexId })
         return g
     }
 

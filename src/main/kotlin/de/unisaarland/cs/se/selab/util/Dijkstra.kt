@@ -318,7 +318,8 @@ object Dijkstra {
         distances: HashMap<Int, Int>,
         visited: HashMap<Int, Boolean>
     ): Vertex {
-        return vertices.filter { !visited.getValue(it.vertexId) }.minBy { distances.getValue(it.vertexId) }
+        return vertices.filter { !visited.getValue(it.vertexId) }
+            .minBy { distances.getValue(it.vertexId) }
     }
 
     /**
@@ -337,23 +338,28 @@ object Dijkstra {
     ) {
         val edges = vertex.getEdges(reverse)
         for (edge in edges) {
+
             if (height != null && edge.properties.height < height) {
                 continue
             }
+
             var newDistance = distancesFromSource.getValue(vertex.vertexId)
             if (newDistance != Int.MAX_VALUE) {
                 newDistance += edge.getWeight()
             }
-            val oldDistance = distancesFromSource.getValue(edge.targetVertex.vertexId)
 
-            val id0 = vertex.vertexId
-            val id1 = edge.edgeId
-            println("reverse: $reverse. vertexId $id0 edgeId $id1 : newDistance $newDistance, oldDistance $oldDistance")
+            val newVertexId =
+                if (reverse) edge.sourceVertex.vertexId else edge.targetVertex.vertexId
+            val oldDistance = distancesFromSource.getValue(newVertexId)
+
+
+//            println("reverse: $reverse. " +
+//                "vertexId ${vertex.vertexId} edgeId ${edge.edgeId} " +
+//                ": newDistance $newDistance, oldDistance $oldDistance")
 
             if (newDistance < oldDistance) {
-                distancesFromSource[edge.targetVertex.vertexId] = newDistance
-                parentMap[edge.targetVertex.vertexId] = vertex.vertexId
-
+                distancesFromSource[newVertexId] = newDistance
+                parentMap[newVertexId] = vertex.vertexId
             }
         }
 
