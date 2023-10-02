@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.controller.phases
 
 import de.unisaarland.cs.se.selab.controller.events.Event
 import de.unisaarland.cs.se.selab.controller.events.EventStatus
+import de.unisaarland.cs.se.selab.model.Base
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.EmergencyStatus
 import de.unisaarland.cs.se.selab.model.Model
@@ -101,7 +102,8 @@ class UpdatePhase {
 
     private fun endEmergency(emergency: Emergency, model: Model) {
         for (vehicleID in emergency.assignedVehicleIDs) {
-            val vehicle = model.getVehicleById(vehicleID)!!
+            assert(model.getVehicleById(vehicleID) != null)
+            val vehicle = model.getVehicleById(vehicleID) as Vehicle
             vehicle.status = VehicleStatus.RETURNING // change status for all vehicles of this emergency to RETURNING
             setReturnPath(vehicle, model)
         }
@@ -109,10 +111,12 @@ class UpdatePhase {
     }
 
     private fun setReturnPath(vehicle: Vehicle, model: Model) {
+        assert(model.getBaseById(vehicle.baseID) != null)
+        val base = model.getBaseById(vehicle.baseID) as Base
         val path = Dijkstra.getShortestPathFromVertexToVertex( // calculate path back to base for vehicle
             model.graph,
             vehicle.positionTracker.path.vertexPath[vehicle.positionTracker.currentVertexIndex],
-            model.getBaseById(vehicle.baseID)!!.vertexID,
+            base.vertexID,
             vehicle.height
         )
         vehicle.setNewPath(path)
