@@ -24,14 +24,11 @@ class UpdatePhase {
      */
     fun execute(model: Model) {
         // TODO check all code, everything in this method might be wrong, it was used to fix detekt problems
-        collectArrivedV(model.getSortedVehicleList())
         processVehicles(model.getSortedVehicleList())
-        printLog(model.getSortedVehicleList())
         processEmergencies(model.getCurrentEmergencies(), model) // TODO needs checking might be wrong
         processActiveEvents(model.getCurrentEventsObjects(), model.currentEvents)
         processPostponedEvents(model)
         timeUpdate(model)
-        TODO()
     }
 
     /**
@@ -158,17 +155,6 @@ class UpdatePhase {
     }
 
     private fun timeUpdate(model: Model) {
-        model
-        TODO()
-    }
-
-    private fun printLog(vehicles: List<Vehicle>) {
-        vehicles
-        TODO()
-    }
-
-    private fun collectArrivedV(vehicles: List<Vehicle>): List<Vehicle> {
-        vehicles
-        TODO()
+        model.currentTick++
     }
 }
