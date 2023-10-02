@@ -1,5 +1,6 @@
 package de.unisaarland.cs.se.selab.controller.phases
 
+import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.VehicleStatus
 import de.unisaarland.cs.se.selab.util.Dijkstra
@@ -23,12 +24,16 @@ class Reroute {
             val vPosT = it.positionTracker
             val vPath = vPosT.path.vertexPath
             val oldPath = vPosT.path
+            assert(it.emergencyID != null)
+            val emergencyID = it.emergencyID as Int
+            assert(model.getAssignedEmergencyById(emergencyID) != null)
+            val emergency = model.getAssignedEmergencyById(emergencyID) as Emergency
             vPosT.path = Dijkstra.getShortestPathFromEdgeToEdge(
                 model.graph,
                 vPath[vPosT.currentVertexIndex],
                 vPath[vPosT.currentVertexIndex + 1],
                 vPosT.positionOnEdge,
-                model.getAssignedEmergencyById(it.emergencyID!!)!!.location,
+                emergency.location,
                 it.height
             )
             if (vPosT.path != oldPath) {
