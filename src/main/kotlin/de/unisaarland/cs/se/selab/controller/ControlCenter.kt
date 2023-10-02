@@ -7,10 +7,13 @@ import de.unisaarland.cs.se.selab.controller.phases.RequestProcessing
 import de.unisaarland.cs.se.selab.controller.phases.Reroute
 import de.unisaarland.cs.se.selab.controller.phases.UpdatePhase
 import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.util.Logger
 
 /**
- * ControlCenter handles the different phases of a tick */
-
+ * The ControlCenter runs the simulation.
+ *
+ * @param model contains the data to simulate
+ */
 class ControlCenter(val model: Model) {
     var emergencyDistribution = EmergencyDistribution()
     var assetAllocation = AssetAllocation()
@@ -18,13 +21,16 @@ class ControlCenter(val model: Model) {
     var updatePhase = UpdatePhase()
     var reroute = Reroute()
     var gatherStatistics = GatherStatistics()
+
     /***
      * Runs the simulation for a fixed amount of ticks, then gathers statistics */
     fun simulate(): Boolean {
-        while(model.currentTick < model.maxTick ) {
+        Logger.logSimulationStart()
+        while (model.maxTick == null || model.currentTick < model.maxTick) {
             tick()
         }
         gatherStatistics.execute(model)
+        TODO()
     }
 
     /***
@@ -34,7 +40,7 @@ class ControlCenter(val model: Model) {
         assetAllocation.execute(model)
         requestProcessing.execute(model)
         updatePhase.execute(model)
-        if(updatePhase.eventOccured) reroute.execute(model)
+        if (updatePhase.eventOccurred) reroute.execute(model)
         model.incrementTick()
-        TODO()
+    }
 }

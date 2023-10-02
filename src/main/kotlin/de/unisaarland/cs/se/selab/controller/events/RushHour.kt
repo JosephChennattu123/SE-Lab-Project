@@ -18,29 +18,7 @@ class RushHour(id: Int, start: Int, duration: Int, val roadTypes: List<PrimaryTy
         this.factor = factor
     }
 
-    /** override fun applyEffect(model: Model) {
-     for (currentEdge in model.graph.getEdges()) {
-     if (roadTypes.contains(currentEdge.properties.roadType)) {
-     if (currentEdge.activeEventId == null) {
-     requireNotNull(factor) { "Factor should not be null" }
-     currentEdge.properties.factor = factor as Int
-     currentEdge.activeEventId = id
-     if (!model.currentEvents.contains(id)) {
-     model.currentEvents.add(id)
-     }
-     if (model.roadToPostponedEvents[currentEdge.edgeId] != null &&
-     (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList).isNotEmpty()
-     ) {
-     (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList<Int>).remove(id)
-     }
-     } else {
-     status = EventStatus.RUSH_HOUR
-     putInPostponeLists(model.roadToPostponedEvents, currentEdge)
-     }
-     }
-     }
-     }
-     */
+    /**TODO(): add comment.*/
     override fun applyEffect(model: Model) {
         model.graph.getEdges().forEach { currentEdge ->
             if (roadTypes.contains(currentEdge.properties.roadType)) {

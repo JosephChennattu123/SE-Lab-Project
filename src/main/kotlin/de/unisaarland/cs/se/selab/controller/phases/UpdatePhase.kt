@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.controller.phases
 
+import de.unisaarland.cs.se.selab.controller.events.Event
+import de.unisaarland.cs.se.selab.controller.events.EventStatus
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Vehicle
@@ -10,7 +12,7 @@ import de.unisaarland.cs.se.selab.model.VehicleStatus
  * In this phase the elements of the simulation get updated.
  */
 class UpdatePhase {
-    var eventOccured: Boolean = false
+    var eventOccurred: Boolean = false
 
     /**
      * @param model the model
@@ -21,8 +23,8 @@ class UpdatePhase {
         processVehicles(model.getSortedVehicleList())
         printLog(model.getSortedVehicleList())
         processEmergencies(model.getCurrentEmergencies()) // TODO needs checking might be wrong
-        processActiveEvents()
-        processPostponedEvents()
+        processActiveEvents(model.getCurrentEventsObjects(), model.currentEvents)
+        processPostponedEvents(model)
         timeUpdate(model)
         TODO()
     }
@@ -36,9 +38,11 @@ class UpdatePhase {
                 VehicleStatus.BUSY -> {
                     if (vehicle.decreaseBusyTicks()) vehicle.status = VehicleStatus.AT_BASE
                 }
+
                 VehicleStatus.RETURNING, VehicleStatus.ASSIGNED, VehicleStatus.TO_EMERGENCY -> {
                     vehicle.driveUpdate()
                 }
+
                 else -> {}
             }
         }
@@ -51,27 +55,60 @@ class UpdatePhase {
                 else -> {}
             }
         }
+        TODO()
     }
 
-    private fun processActiveEvents() {
->>>>>>>>> Temporary merge branch 2
-        // todo
+    /** used to decrement timer of active events and if required remove them from list of
+     * current event ids
+     * */
+
+    private fun processActiveEvents(
+        activeEvents: List<Event>,
+        activeEventIds: MutableList<Int>
+    ) {
+        for (event in activeEvents) {
+            event.decrementTimer()
+            if (event.duration == 0) {
+                activeEventIds.remove(event.id)
+                event.status = EventStatus.FINISHED
+            }
+        }
     }
 
-    private fun processPostponedEvents() {
-        // todo
+    private fun processPostponedEvents(model: Model) {
+        val eventsToTrigger: List<Int>? = model.tickToEventId[model.currentTick]
+        if (eventsToTrigger != null) {
+            for (eventToBeCheckedAndAdded in model.getEventsByIds(eventsToTrigger.sorted())) {
+                eventToBeCheckedAndAdded.applyEffect(model)
+            }
+        }
+        // road event
+        for (listRoadEventsPostponed in model.roadToPostponedEvents.toSortedMap().values) {
+            for (roadEventPostponed in listRoadEventsPostponed.distinct().sorted()) { // sorts to pick lowest id first
+                (model.getEventById(roadEventPostponed) as Event).applyEffect(model)
+            }
+        }
+        // vehicle event
+        for (listVehicleEventsPostponed in model.vehicleToPostponedEvents.toSortedMap().values) {
+            for (vehicleEventsPostponed in listVehicleEventsPostponed.sortedBy { it.id }) { // sorts to pick lowest
+                // id first
+                vehicleEventsPostponed.applyEffect(model)
+            }
+        }
     }
 
     private fun timeUpdate(model: Model) {
-        // todo
+        model
+        TODO()
     }
 
     private fun printLog(vehicles: List<Vehicle>) {
-        // todo
+        vehicles
+        TODO()
     }
 
     private fun collectArrivedV(vehicles: List<Vehicle>): List<Vehicle> {
-        // todo
-        return TODO()
+        vehicles
+        TODO()
     }
 }
