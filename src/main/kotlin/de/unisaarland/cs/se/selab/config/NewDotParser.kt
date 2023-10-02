@@ -3,7 +3,6 @@ package de.unisaarland.cs.se.selab.config
 import java.io.FileReader
 import java.lang.IndexOutOfBoundsException
 
-
 private const val LETTER_LOWER_START = 65
 private const val LETTER_LOWER_END = 90
 
@@ -48,7 +47,7 @@ class NewDotParser(val graphFilePath: String) {
     /**
      * Parses the dot file for the graph and checks that it is correct syntactically
      */
-    fun parse() {
+    fun parse(): Boolean {
         var closingBracketRead = false
         while (!endReached()) {
             val character = readChar(currentIndex)
@@ -56,13 +55,19 @@ class NewDotParser(val graphFilePath: String) {
                 'd' -> {
                     parseDigraph()
                 }
+
                 '{' -> {
                     increaseIndex()
-                    parseVertices()
+                    val ret = parseVertices()
+                    if (!ret) {
+                        return false // problem in parseVertices/lower level
+                    }
                 }
+
                 '}' -> {
                     closingBracketRead = true
                 }
+
                 else -> {
                     break
                 }
@@ -72,6 +77,8 @@ class NewDotParser(val graphFilePath: String) {
         if (!closingBracketRead) {
             error("top level parse error: expected a closing bracket but reached end of file")
         }
+        // TODO check for character after end of graph
+        return true
     }
 
     private fun parseDigraph() {
@@ -82,6 +89,7 @@ class NewDotParser(val graphFilePath: String) {
                     count++
                     currentIndex++
                 }
+
                 else -> {
                     error("Error in digraph: unexpected character \' $character\'")
                 }
@@ -93,10 +101,12 @@ class NewDotParser(val graphFilePath: String) {
         mapName = parseId()
     }
 
-    private fun parseVertices() {
+    /**
+     * return true if parsing of vertices successful and no error
+     */
+    private fun parseVertices(): Boolean {
         while (!endReached()) {
-            val character = readChar(currentIndex)
-            when (character) {
+            when (val character = readChar(currentIndex)) {
                 isId(character) -> {
                     vertices.add(parseId())
                 }
@@ -116,20 +126,21 @@ class NewDotParser(val graphFilePath: String) {
                         moveBackToLastVertex(vertex)
                         break
                     } else {
+                        return false // illegal character
                     }
-
                 }
 
                 else -> {
+                    return false // illegal character
                 }
             }
             // currentIndex++
             increaseIndex()
         }
-        parseEdges()
+        return parseEdges()
     }
 
-    private fun parseEdges() {
+    private fun parseEdges(): Boolean {
         var count = 0
         var source = ""
         var target = ""
@@ -158,15 +169,16 @@ class NewDotParser(val graphFilePath: String) {
 
                 '}' -> {
                     decreaseIndex()
-                    return
+                    return true // valid ending character
                 }
 
                 else -> {
-
+                    return false // illegal character
                 }
             }
             increaseIndex()
         }
+        return false // reached end of file without completing the graph
     }
 
     private fun parseAttributes(edgeId: Int) {
@@ -202,13 +214,19 @@ class NewDotParser(val graphFilePath: String) {
         var labelValue = ""
         while (!endReached() && count < label.length) {
             when (readChar(currentIndex)) {
-                label[count] -> count++
+                label[count] -> {
+                    count++
+                }
             }
             increaseIndex()
         }
         if (readChar(currentIndex) == '=') {
             increaseIndex()
-            if (isId) labelValue = parseId() else labelValue = parseWord()
+            if (isId) {
+                labelValue = parseId()
+            } else {
+                labelValue = parseWord()
+            }
             return labelValue
         }
         return labelValue
@@ -243,7 +261,7 @@ class NewDotParser(val graphFilePath: String) {
             when (val character = readChar(currentIndex)) {
                 isLetter(character), '_' -> word += character
                 ';', '-' -> {
-                    //decreaseIndex()
+                    decreaseIndex()
                     return word
                 }
 
@@ -287,7 +305,6 @@ class NewDotParser(val graphFilePath: String) {
         if (currentIndex > maxIndex) {
             currentIndex = maxIndex
         }
-
     }
 
     private fun decreaseIndex() {
@@ -299,14 +316,13 @@ class NewDotParser(val graphFilePath: String) {
         // reader.seek(currentIndex.toLong())
         charCode = getRawChar(currentIndex)
 
-
         // var index = currentIndex
         if (charCode.toChar().isWhitespace()) {
             consumeWhiteSpace(true)
         }
 
         if (currentIndex < 0) {
-            currentIndex = 0
+            throw IndexOutOfBoundsException("currentIndex was negative")
         }
     }
 
@@ -326,6 +342,9 @@ class NewDotParser(val graphFilePath: String) {
             index += step
             charCode = getRawChar(index)
             // println("space consumed")
+        }
+        if (charCode == -1) {
+            error("end of file reached but no yet done.")
         }
         currentIndex = index
     }
