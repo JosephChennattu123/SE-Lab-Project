@@ -26,24 +26,25 @@ class PoliceCar(
     var criminalsPresent: Int? = 0
 
     /** sets vehicle status to busy if criminals present and sets busy timer */
-    override fun setBusy() {
+    override fun setBusy(): Boolean {
         if (criminalsPresent != null && criminalsPresent as Int > 0) {
-            status = VehicleStatus.BUSY
             busyTicks = 2
+            return true
         }
+        return false
     }
 
     /**returns whatever still needs to be fulfilled inside the emergency */
     override fun handleEmergency(amount: Int): Int {
         status = VehicleStatus.HANDLING
         if (criminalCapacity != null && criminalsPresent != null) {
-            val returnAmount = amount - (criminalCapacity as Int - criminalsPresent as Int)
-            if (returnAmount < 0) {
+            val returnAmount = amount - (criminalCapacity - criminalsPresent as Int)
+            return if (returnAmount < 0) {
                 criminalsPresent = criminalCapacity + returnAmount
-                return 0
+                0
             } else {
                 criminalsPresent = criminalCapacity
-                return returnAmount
+                returnAmount
             }
         }
         return amount

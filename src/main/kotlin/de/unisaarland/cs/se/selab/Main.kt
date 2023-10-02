@@ -50,7 +50,8 @@ fun main(args: Array<String>) {
     if (controlCenter != null) {
         controlCenter.simulate()
     } else {
-        return // controlCenter null
+        // error("controlCenter is null")
+        return
     }
 
     // throw UnsupportedOperationException()

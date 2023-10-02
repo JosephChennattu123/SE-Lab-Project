@@ -208,7 +208,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
     private val cfgEvents: String = "events"
     private val cfgEventType: String = "type"
     private val cfgDuration: String = "duration"
-    private val cfgRoadType: String = "type"
+    private val cfgRoadType: String = "roadTypes"
     private val cfgFactor: String = "factor"
     private val cfgOneWayStreet: String = "oneWayStreet"
     private val cfgSource: String = "source"

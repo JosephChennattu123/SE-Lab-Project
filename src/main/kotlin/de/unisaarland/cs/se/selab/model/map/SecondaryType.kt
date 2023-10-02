@@ -18,5 +18,17 @@ enum class SecondaryType {
                 else -> null
             }
         }
+
+        /**
+         * @param value the value
+         * @return the value as a string
+         */
+        fun toString(value: SecondaryType): String {
+            return when (value) {
+                ONE_WAY -> "oneWayStreet"
+                TUNNEL -> "tunnel"
+                NONE -> "none"
+            }
+        }
     }
 }

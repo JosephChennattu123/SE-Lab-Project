@@ -25,28 +25,21 @@ class FireTruck(
     val ladderLength: Int? = null
     val waterCapacity: Int? = null
 
-    override fun setBusy() {
-        require(waterCapacity != null && waterLevel != null) {
-            "Water capacity and " +
-                "Water level should not be null"
-        }
+    override fun setBusy(): Boolean {
         busyTicks = (waterCapacity as Int - waterLevel as Int) / THREE_HUNDRED
-        if (busyTicks != 0) {
-            status = VehicleStatus.BUSY
-        }
-        status = VehicleStatus.AT_BASE
+        return busyTicks != 0
     }
 
     override fun handleEmergency(amount: Int): Int {
         status = VehicleStatus.HANDLING
         if (waterCapacity != null) {
-            val returnAmount = amount - (waterCapacity as Int - waterLevel as Int)
-            if (returnAmount < 0) {
+            val returnAmount = amount - (waterCapacity - waterLevel as Int)
+            return if (returnAmount < 0) {
                 waterLevel = waterCapacity + returnAmount
-                return 0
+                0
             } else {
                 waterLevel = waterCapacity
-                return returnAmount
+                returnAmount
             }
         }
         return amount
