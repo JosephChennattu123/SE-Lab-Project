@@ -18,7 +18,7 @@ class PositionTracker {
             if (distance < 0) {
                 positionOnEdge = 0
                 currentVertexIndex++
-                distance = distance * -1
+                distance *= -1
             } else {
                 positionOnEdge = path.edgeWeights[currentVertexIndex] - distance
                 distance = 0

@@ -36,7 +36,7 @@ class Reroute {
                 emergency.location,
                 it.height
             )
-            if (vPosT.path != oldPath) {
+            if (vPosT.path == oldPath) {
                 Logger.logAssetRerouted(it.vehicleID)
             }
         }
