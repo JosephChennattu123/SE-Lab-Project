@@ -17,12 +17,16 @@ class Base(
     var baseType: BaseType,
     var vertexID: Int,
     var numStaff: Int,
-    var doctors: Int,
-    var dogs: Int,
-    var vehicles: MutableList<Int>,
-    var assignedEmergencies: MutableList<Int>
+    var doctors: Int?,
+    var dogs: Int?,
 ) {
-    val currStaff : Int
+    var vehicles: MutableList<Int> = mutableListOf()
+    var assignedEmergencies: MutableList<Int> = mutableListOf()
+
+    var currentStaff : Int = 0
+    init {
+        currentStaff = numStaff
+    }
 
     /**
      * Adds an emergency to the list of emergencies assigned to this base.
