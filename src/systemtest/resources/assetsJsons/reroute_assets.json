@@ -1,0 +1,51 @@
+{
+  "bases": [
+
+    {
+      "id": 0,
+      "baseType": "HOSPITAL",
+      "location": 4,
+      "staff": 12,
+      "dogs": 3
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 0,
+      "baseID": 0,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 2
+    },
+    {
+      "id": 1,
+      "baseID": 0,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 2
+    },
+    {
+      "id":2,
+      "baseID": 0,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 2
+    },
+    {
+      "id": 3,
+      "baseID": 0,
+      "vehicleType": "AMBULANCE",
+      "vehicleHeight": 2,
+      "staffCapacity": 2
+    },
+    {
+      "id": 4,
+      "baseID": 3,
+      "vehicleType": "EMERGENCY_DOCTOR_CAR",
+      "vehicleHeight": 2,
+      "staffCapacity": 5
+
+    }
+  ]
+
+}

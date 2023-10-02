@@ -30,7 +30,6 @@ class OneEmergency : SystemTest() {
     override val assets = "assetsJsons/example_assets.json"
     override val scenario = "scenarioJsons/oneEmergency_scenario.json"
     override val maxTicks = 5
-
     override suspend fun run() {
         // everything is parsed and validated
         assertNextLine(logParsingValidationResult("example_map.dot", true))

@@ -36,41 +36,49 @@ class FireEmergencyTest : SystemTest() {
         assertNextLine(logAssetAllocated(1, 0, 2))
         assertNextLine(logAssetAllocated(2, 0, 2))
         assertNextLine(logAssetAllocated(3, 0, 2))
-        assertNextLine(logAssetAllocated(4, 0, 2))
-
         // Requesting additional assets
-        assertNextLine(logRequest(0, 6, 0)) // requesting assets from base 6 for emergency 0
-        assertNextLine(logAssetAllocated(5, 0, 6)) // allocating asset 5 to emergency 0
-
+        assertNextLine(logRequest(0, 5, 0)) // requesting assets from base 5 for emergency 0
+        assertNextLine(logAssetAllocated(4, 0, 3))
+        assertNextLine(logAssetAllocated(5, 0, 3)) // allocating asset 5 to emergency 0
+        assertNextLine(logAssetAllocated(12, 0, 3))
         // Requesting more assets
-        assertNextLine(logRequest(1, 0, 0)) // requesting assets from base 0 for emergency 0
+        assertNextLine(logRequest(1, 6, 0)) // requesting assets from base 0 for emergency 0
         assertNextLine(logAssetAllocated(6, 0, 12))
         assertNextLine(logAssetAllocated(7, 0, 12))
+        assertNextLine(logRequest(2, 0, 0))
         assertNextLine(logAssetAllocated(8, 0, 12))
         assertNextLine(logAssetAllocated(9, 0, 12))
         assertNextLine(logAssetAllocated(10, 0, 12))
         assertNextLine(logAssetAllocated(11, 0, 12))
-        assertNextLine(logAssetAllocated(12, 0, 12))
 
         assertNextLine(logTick(4))
         assertNextLine(logTick(5))
 
         // Asset arrivals
-        assertNextLine(logAssetArrived(0, 3))
-        assertNextLine(logAssetArrived(1, 3))
-        assertNextLine(logAssetArrived(2, 3))
-        assertNextLine(logAssetArrived(3, 3))
-        assertNextLine(logAssetArrived(4, 3))
-        assertNextLine(logAssetArrived(5, 3))
+        assertNextLine(logAssetArrived(0, 5))
+        assertNextLine(logAssetArrived(1, 5))
+        assertNextLine(logAssetArrived(2, 5))
+        assertNextLine(logAssetArrived(3, 5))
+        assertNextLine(logAssetArrived(4, 5))
+
 
         assertNextLine(logTick(6))
+        assertNextLine(logAssetArrived(5, 5))
+        assertNextLine(logAssetArrived(6, 5))
+        assertNextLine(logAssetArrived(12, 5))
+
         assertNextLine(logTick(7))
         assertNextLine(logTick(8))
+        assertNextLine(logTick(9))
 
         // More asset arrivals
-        assertNextLine(logAssetArrived(5, 3))
+
 
         assertNextLine(logTick(10))
+
+        assertNextLine(logAssetArrived(7, 3))
+        assertNextLine(logAssetArrived(8, 3))
+
         assertNextLine(logTick(11))
         assertNextLine(logTick(12))
         assertNextLine(logTick(13))
@@ -78,13 +86,13 @@ class FireEmergencyTest : SystemTest() {
         assertNextLine(logTick(15))
 
         // Asset arrivals from base 0
-        assertNextLine(logAssetArrived(6, 3))
+
         assertNextLine(logAssetArrived(7, 3))
         assertNextLine(logAssetArrived(8, 3))
         assertNextLine(logAssetArrived(9, 3))
         assertNextLine(logAssetArrived(10, 3))
         assertNextLine(logAssetArrived(11, 3))
-        assertNextLine(logAssetArrived(12, 3))
+
 
         // All assets have arrived, emergency handling can start
         assertNextLine(logEmergencyHandlingStart(0))
