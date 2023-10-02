@@ -1,239 +1,397 @@
 package de.unisaarland.cs.se.selab.config
 
-import de.unisaarland.cs.se.selab.util.Logger
-import java.io.File
+import java.io.FileReader
+import java.lang.IndexOutOfBoundsException
+
+private const val LETTER_LOWER_START = 65
+private const val LETTER_LOWER_END = 90
+
+private const val LETTER_UPPER_START = 97
+private const val LETTER_UPPER_END = 122
+
+private const val DIGIT_START = 48
+private const val DIGIT_END = 57
 
 /**
- * parses the dot-file
- * @param graphFilePath the name of the file that contains the graph information
- * */
-class DotParser(var graphFilePath: String) {
+ * @param graphFilePath the path to the file containing the graph
+ */
+class DotParser(val graphFilePath: String) {
 
-    private var fileContent = ""
-    private val regexId = """([_a-zA-Z]+|\d+)""".toRegex()
-    private val whitespace = """\s""".toRegex()
+    private val fileString = FileReader(graphFilePath).readText() // .replace("""\s""".toRegex(), "")
 
-    private var parsingErrorOccurred: Boolean = false
+    private var charCode: Int = 0
+    private var currentIndex = 0
 
-    init {
-        val osPath = graphFilePath.replace("/", File.separator)
-        val file = File(osPath)
-        fileContent = file.readText().replace(whitespace, "")
-    }
+    private val maxIndex = fileString.length
+
+    var mapName = ""
+    val vertices = mutableListOf<String>()
+    val edgeIdToSourceTarget = mutableMapOf<Int, Pair<String, String>>()
+    val edgeIdToAttributes = mutableMapOf<Int, MutableMap<String, String>>()
+
+    private val labelList: List<String> = listOf(
+        LABEL_VILLAGE,
+        LABEL_ROAD_NAME,
+        LABEL_HEIGHT_LIMIT,
+        LABEL_WEIGHT,
+        LABEL_PRIMARY_TYPE,
+        LABEL_SECONDARY_TYPE,
+        LABEL_MAIN_STREET,
+        LABEL_SIDE_STREET,
+        LABEL_COUNTY_ROAD,
+        LABEL_ONE_WAY_STREET,
+        LABEL_TUNNEL,
+        LABEL_NONE
+    )
 
     /**
-     * extracts the county name from the file.
+     * Parses the dot file for the graph and checks that it is correct syntactically
      */
-    fun parseCountyName(): String? {
-        val regex = """digraph($regexId)\{""".toRegex()
-        val matchResult = regex.find(fileContent)
-        val matchedString = matchResult?.groupValues?.get(1)
-        return matchedString ?: run {
-            parsingErrorOccurred = true
-            null // default value
-        }
-    }
-
-    /**
-     * extracts the village name from the file.
-     */
-    fun parseVertexIds(): List<Int> {
-        val regexFromCurlyToEdge = """\{(.+?)$regexId-""".toRegex()
-        val regexForVertexId = """($regexId);""".toRegex()
-        val unParsedVertices = regexFromCurlyToEdge.find(fileContent)
-        val noCurlyNoEdge = unParsedVertices?.groupValues?.get(0)
-        val matchResults = regexForVertexId.findAll(noCurlyNoEdge.orEmpty())
-        return matchResults.map { it.groupValues[1].toInt() }.toList()
-    }
-
-    /**
-     * extracts edges from the file.
-     * */
-    fun parseEdges(): List<String> {
-        val regex = """$regexId->$regexId\[([a-zA-Z]+=$regexId;)+];""".toRegex()
-        val matchResult = regex.findAll(fileContent)
-        return matchResult.map { it.groupValues[0].replace(whitespace, "") }
-            .toList()
-    }
-
-    /**
-     * extracts the source and target from an edge.
-     * */
-    fun parseSourceAndTarget(edges: List<String>): Map<Int, Pair<Int, Int>> {
-        val edgeIdToSourceTargetPair = mutableMapOf<Int, Pair<Int, Int>>()
-        val regexIdArrowId = """([0-9]+)->([0-9]+)\[""".toRegex()
-        for ((index, edge) in edges.withIndex()) {
-            val matchResult = regexIdArrowId.find(edge)
-            val matchedString = matchResult?.groupValues?.get(1)
-            val matchedString2 = matchResult?.groupValues?.get(2)
-            val source = matchedString?.toInt() ?: run {
-                parsingErrorOccurred = true
-                -1 // default value
-            }
-            val target = matchedString2?.toInt() ?: run {
-                parsingErrorOccurred = true
-                -1 // default value
-            }
-
-            edgeIdToSourceTargetPair[index] = Pair(source, target)
-        }
-        return edgeIdToSourceTargetPair
-    }
-
-    /**
-     * extracts the attributes from an edge string.
-     * */
-    fun parseAttributes(edges: List<String>): Map<Int, String> {
-        val edgeIdToAttributes = mutableMapOf<Int, String>()
-        val regexAttributes = """\[($regexId=$regexId;)+];""".toRegex()
-        for (edge in edges) {
-            val matchResult = regexAttributes.findAll(edge)
-            val matchedString =
-                matchResult.map {
-                    it.groupValues[0]
-                        .replace(whitespace, "")
-                        .replace("[\\[\\]]".toRegex(), "")
+    fun parse(): Boolean {
+        var closingBracketRead = false
+        while (!endReached()) {
+            val character = readChar(currentIndex)
+            when (character) {
+                'd' -> {
+                    parseDigraph()
                 }
-            edgeIdToAttributes[edges.indexOf(edge)] = matchedString.first()
+
+                '{' -> {
+                    increaseIndex()
+                    val ret = parseVertices()
+                    if (!ret) {
+                        return false // problem in parseVertices/lower level
+                    }
+                }
+
+                '}' -> {
+                    closingBracketRead = true
+                }
+
+                else -> {
+                    break
+                }
+            }
+            increaseIndex()
         }
-        return edgeIdToAttributes
+        if (!closingBracketRead) {
+            return false // error("top level parse error: expected a closing bracket but reached end of file")
+        }
+        // TODO check for character after end of graph
+        return true
+    }
+
+    private fun parseDigraph() {
+        var count = 0
+        while (!endReached() && count < LABEL_DIGRAPH.length) {
+            when (val character = readChar(currentIndex)) {
+                LABEL_DIGRAPH[count] -> {
+                    count++
+                    currentIndex++
+                }
+
+                else -> {
+                    error("Error in digraph: unexpected character \' $character\'")
+                }
+            }
+        }
+        if (readChar(currentIndex).isWhitespace()) {
+            increaseIndex()
+        }
+        mapName = parseId()
     }
 
     /**
-     * extracts village name from attributes.
-     * */
-    fun parseVillageName(attributes: Map<Int, String>): Map<Int, String> {
-        val edgeIdToVillageName = mutableMapOf<Int, String>()
-        val regexVillageName = """village=$regexId;""".toRegex()
-        for ((index, attribute) in attributes) {
-            edgeIdToVillageName[index] = matchRegex(regexVillageName, attribute)
+     * return true if parsing of vertices successful and no error
+     */
+    private fun parseVertices(): Boolean {
+        while (!endReached()) {
+            when (val character = readChar(currentIndex)) {
+                isId(character) -> {
+                    vertices.add(parseId())
+                }
+
+                ';' -> {
+                }
+
+                '-' -> {
+                    // check if the next character is a >, if so, then we have reached the end of the vertices.
+                    increaseIndex()
+                    if (readChar(currentIndex) == '>') {
+                        val vertex = vertices.removeLast()
+                        // move back to the end of last vertex before the arrow.
+                        decreaseIndex()
+                        decreaseIndex()
+                        // move back to the start of the last vertex.
+                        moveBackToLastVertex(vertex)
+                        break
+                    } else {
+                        return false // illegal character
+                    }
+                }
+
+                else -> {
+                    return false // illegal character
+                }
+            }
+            // currentIndex++
+            increaseIndex()
         }
-        return edgeIdToVillageName
+        return parseEdges()
     }
 
-    /**
-     * extracts road name from attributes.
-     * */
-    fun parseRoadName(attributes: Map<Int, String>): Map<Int, String> {
-        val edgeIdToRoadName = mutableMapOf<Int, String>()
-        val regexRoadName = """name=$regexId;""".toRegex()
-        for ((index, attribute) in attributes) {
-            edgeIdToRoadName[index] = matchRegex(regexRoadName, attribute)
+    private fun parseEdges(): Boolean {
+        var count = 0
+        var source = ""
+        var target = ""
+        while (!endReached()) {
+            when (val character = readChar(currentIndex)) {
+                isId(character) -> source = parseId()
+                '-' -> {
+                    increaseIndex()
+                    if (readChar(currentIndex) == '>') {
+                        increaseIndex()
+                        target = parseId()
+                    } else {
+                        decreaseIndex()
+                    }
+                }
+
+                '[' -> {
+                    increaseIndex()
+                    if (!parseAttributes(count)) {
+                        return false
+                    }
+                    count++
+                }
+
+                ';' -> {
+                    edgeIdToSourceTarget[count] = Pair(source, target)
+                }
+
+                '}' -> {
+                    decreaseIndex()
+                    return true // valid ending character
+                }
+
+                else -> {
+                    return false // illegal character
+                }
+            }
+            increaseIndex()
         }
-        return edgeIdToRoadName
+        return false // reached end of file without completing the graph
     }
 
-    /**
-     * extracts road height from attributes.
-     * */
-    fun parseHeight(attributes: Map<Int, String>): Map<Int, Int> {
-        val edgeIdToHeight = mutableMapOf<Int, Int>()
-        val regexHeight = """heightLimit=$regexId;""".toRegex()
-        for ((index, attribute) in attributes) {
-            edgeIdToHeight[index] = matchRegex(regexHeight, attribute).toInt()
-        }
-        return edgeIdToHeight
-    }
+    private fun parseAttributes(edgeId: Int): Boolean {
+        var labelIndex = 0
+        val labelsWithIds = LABEL_ID_VALUES
+        var withId = true
+        var currentLabel = ""
+        val attributeValues: MutableMap<String, String> = mutableMapOf()
+        while (!endReached() && labelIndex < AMOUNT_OF_LABELS) {
+            withId = labelsWithIds >= labelIndex - 1
+            currentLabel = labelList[labelIndex]
+            when (val character = readChar(currentIndex)) {
+                isLetter(character) -> {
+                    attributeValues[currentLabel] = parseLabel(currentLabel, withId)
+                }
 
-    /**
-     * extracts road weight from attributes.
-     * */
-    fun parseWeight(attributes: Map<Int, String>): Map<Int, Int> {
-        val edgeIdToWeight = mutableMapOf<Int, Int>()
-        val regexWeight = """weight=$regexId;""".toRegex()
-        for ((index, attribute) in attributes) {
-            edgeIdToWeight[index] = matchRegex(regexWeight, attribute).toInt()
+                ';' -> {
+                    labelIndex++
+                }
+            }
+            increaseIndex()
         }
-        return edgeIdToWeight
-    }
-
-    /**
-     * extracts primary road type from attributes.
-     * */
-    fun parsePrimaryType(attributes: Map<Int, String>): Map<Int, String> {
-        val edgeIdToPrimaryType = mutableMapOf<Int, String>()
-        val regexPrimaryType = """primaryType=(mainStreet|sideStreet|countyRoad);""".toRegex()
-        for ((index, attribute) in attributes) {
-            edgeIdToPrimaryType[index] = matchRegex(regexPrimaryType, attribute)
-        }
-        return edgeIdToPrimaryType
-    }
-
-    /**
-     * extracts secondary road type from attributes.
-     * */
-    fun parseSecondaryType(attributes: Map<Int, String>): Map<Int, String> {
-        val edgeIdToSecondaryType = mutableMapOf<Int, String>()
-        val regexSecondaryType = """secondaryType=(oneWayStreet|tunnel|none);""".toRegex()
-        for ((index, attribute) in attributes) {
-            edgeIdToSecondaryType[index] = matchRegex(regexSecondaryType, attribute)
-        }
-        return edgeIdToSecondaryType
-    }
-
-    private fun matchRegex(regex: Regex, string: String): String {
-        val matchResult = regex.find(string)
-        val matchedString = matchResult?.groupValues?.get(1) ?: run {
-            Logger.logParsingValidationResult(graphFilePath, false)
-            parsingErrorOccurred = true
-            "" // default value
-        }
-        return matchedString
-    }
-
-    /**
-     * validates the syntax of the dot-file.
-     * */
-    fun validateSyntax() {
-        val reconstructedFile = reconstructValidFile()
-        if (parsingErrorOccurred) {
-            Logger.logParsingValidationResult(graphFilePath, false)
-            error("Parsing error occurred.")
-        }
-        if (reconstructedFile.length != fileContent.length) {
-            Logger.logParsingValidationResult(graphFilePath, false)
-            error("Parsing error occurred: ${reconstructedFile.length} ${fileContent.length}")
+        return if (readChar(currentIndex) == ']') {
+            edgeIdToAttributes[edgeId] = attributeValues
+            true
+        } else {
+            false // error("Error: expected a closing bracket but was ${readChar(currentIndex)}")
         }
     }
 
-    /**
-     * parses the dot-file to be checked for syntax errors and reconstructs the valid portion of it.
-     * */
-    private fun reconstructValidFile(): String {
-        val countyName = parseCountyName()
-        val vertexIds = parseVertexIds()
-        val edges = parseEdges()
-        val edgeIdToSourceTargetPairs = parseSourceAndTarget(edges)
-        val edgeIdToAttributes = parseAttributes(edges)
-        val edgeIdToVillageName = parseVillageName(edgeIdToAttributes)
-        val edgeIdToRoadName = parseRoadName(edgeIdToAttributes)
-        val edgeIdToHeight = parseHeight(edgeIdToAttributes)
-        val edgeIdToWeight = parseWeight(edgeIdToAttributes)
-        val edgeIdToPrimaryType = parsePrimaryType(edgeIdToAttributes)
-        val edgeIdToSecondaryType = parseSecondaryType(edgeIdToAttributes)
+    private fun parseLabel(label: String, isId: Boolean): String {
+        var count = 0
+        var labelValue = ""
+        while (!endReached() && count < label.length) {
+            when (readChar(currentIndex)) {
+                label[count] -> {
+                    count++
+                }
+            }
+            increaseIndex()
+        }
+        if (readChar(currentIndex) == '=') {
+            increaseIndex()
+            if (isId) {
+                labelValue = parseId()
+            } else {
+                labelValue = parseWord()
+            }
+            return labelValue
+        }
+        return labelValue
+    }
 
-        // reconstruct county name.
-        var reconstructedFile = "digraph$countyName{"
+    private fun parseId(): String {
+        var id = ""
+        while (!endReached()) {
+            when (val character = readChar(currentIndex)) {
+                isLetter(character) -> {
+                    id = parseWord()
+                    return id
+                }
 
-        // reconstruct vertices.
-        for (vertexId in vertexIds) {
-            reconstructedFile += "$vertexId;"
+                isNumber(character) -> {
+                    id = parseNumber()
+                    return id
+                }
+
+                ';', '-' -> return id // TODO might cause a bug by parsing edges with id ->-> id.
+                else -> {
+                    return id
+                }
+            }
+        }
+        return id
+    }
+
+    private fun parseWord(): String {
+        var word = ""
+        while (!endReached()) {
+            when (val character = readChar(currentIndex)) {
+                isLetter(character), '_' -> word += character
+                ';', '-' -> {
+                    decreaseIndex()
+                    return word
+                }
+
+                else -> {
+                    return word
+                }
+            }
+            currentIndex++
+        }
+        return word
+    }
+
+    private fun parseNumber(): String {
+        var number = ""
+        while (!endReached()) {
+            when (val character = readChar(currentIndex)) {
+                isNumber(character) -> number += character
+                ';', '-' -> {
+                    decreaseIndex()
+                    return number
+                }
+
+                else -> {
+                    decreaseIndex()
+                    break
+                }
+            }
+            increaseIndex()
+        }
+        return number
+    }
+
+    private fun increaseIndex() {
+        currentIndex++
+        // reader.seek(currentIndex.toLong())
+        charCode = getRawChar(currentIndex)
+
+        if (charCode.toChar().isWhitespace()) {
+            consumeWhiteSpace(false)
+        }
+        if (currentIndex > maxIndex) {
+            currentIndex = maxIndex
+        }
+    }
+
+    private fun decreaseIndex() {
+        currentIndex -= 1
+        if (currentIndex < 0) {
+            currentIndex = 0
+            throw IndexOutOfBoundsException("currentIndex was negative")
+        }
+        // reader.seek(currentIndex.toLong())
+        charCode = getRawChar(currentIndex)
+
+        // var index = currentIndex
+        if (charCode.toChar().isWhitespace()) {
+            consumeWhiteSpace(true)
         }
 
-        // reconstruct edges.
-        for (i in edges.indices) {
-            reconstructedFile += "${edgeIdToSourceTargetPairs[i]?.first}->${edgeIdToSourceTargetPairs[i]?.second}[" +
-                "village=${edgeIdToVillageName[i]};" +
-                "name=${edgeIdToRoadName[i]};" +
-                "heightLimit=${edgeIdToHeight[i]};" +
-                "weight=${edgeIdToWeight[i]};" +
-                "primaryType=${edgeIdToPrimaryType[i]};" +
-                "secondaryType=${edgeIdToSecondaryType[i]};" +
-                "];"
+        if (currentIndex < 0) {
+            throw IndexOutOfBoundsException("currentIndex was negative")
         }
+    }
 
-        // reconstruct closing curly bracket.
-        reconstructedFile += "}"
-        return reconstructedFile
+    private fun moveBackToLastVertex(vertex: String) {
+        var loopIndex = 0
+        while (loopIndex < vertex.length - 1) {
+            loopIndex++
+            decreaseIndex()
+        }
+    }
+
+    private fun consumeWhiteSpace(reverse: Boolean) {
+        var step = 0
+        if (reverse) step = -1 else step = 1
+        var index = currentIndex
+        while (charCode != -1 && charCode.toChar().isWhitespace()) {
+            index += step
+            charCode = getRawChar(index)
+            // println("space consumed")
+        }
+        if (charCode == -1) {
+            error("end of file reached but no yet done.")
+        }
+        currentIndex = index
+    }
+
+    private fun getRawChar(index: Int): Int {
+        // charCode = reader.read()
+        return if (index >= fileString.length) {
+            -1
+        } else {
+            fileString[index].code
+        }
+    }
+
+    private fun isId(character: Char): Char? {
+        // return if (character.toString().matches(Regex("""[_a-zA-Z0-9]"""))) character else null
+        return if (isLetter(character) != null || isNumber(character) != null) character else null
+    }
+
+    private fun isLetter(character: Char): Char? {
+        // return if (character.toString().matches(Regex("""[_a-zA-Z]"""))) character else null
+        return if (character.code in LETTER_LOWER_START..LETTER_LOWER_END ||
+            character.code in LETTER_UPPER_START..LETTER_UPPER_END
+        ) {
+            character
+        } else {
+            null
+        }
+    }
+
+    private fun isNumber(character: Char): Char? {
+        // return if (character.toString().matches(Regex("""[0-9]"""))) character else null
+        return if (character.code in DIGIT_START..DIGIT_END) character else null
+    }
+
+    private fun readChar(pos: Int): Char {
+        // reader.seek(pos.toLong())
+        charCode = getRawChar(pos)
+        return charCode.toChar()
+    }
+
+    private fun endReached(): Boolean {
+        return currentIndex >= maxIndex
     }
 }
+
+private const val AMOUNT_OF_LABELS = 6
+private const val LABEL_ID_VALUES = 4
+private const val LABEL_DIGRAPH = "digraph"
