@@ -34,12 +34,12 @@ class FireTruck(
         status = VehicleStatus.HANDLING
         if (waterCapacity != null) {
             val returnAmount = amount - (waterCapacity - waterLevel as Int)
-            if (returnAmount < 0) {
+            return if (returnAmount < 0) {
                 waterLevel = waterCapacity + returnAmount
-                return 0
+                0
             } else {
                 waterLevel = waterCapacity
-                return returnAmount
+                returnAmount
             }
         }
         return amount
