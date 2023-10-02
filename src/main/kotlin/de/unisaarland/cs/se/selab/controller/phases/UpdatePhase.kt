@@ -54,6 +54,7 @@ class UpdatePhase {
     }
 
     private fun processActiveEvents() {
+>>>>>>>>> Temporary merge branch 2
         // todo
     }
 
