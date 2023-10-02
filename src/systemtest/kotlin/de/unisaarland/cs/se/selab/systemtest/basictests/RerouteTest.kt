@@ -2,9 +2,8 @@ package de.unisaarland.cs.se.selab.systemtest.basictests
 
 import de.unisaarland.cs.se.selab.systemtest.LOG_SIMULATION_START
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
-import de.unisaarland.cs.se.selab.systemtest.logParsingValidationResult
 
-class rerouteTest : SystemTest() {
+class RerouteTest : SystemTest() {
     override val name = "ExampleTest"
 
     override val map = "mapFiles/example_map_modified.dot"
