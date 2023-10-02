@@ -36,7 +36,7 @@ class EmergencyDistribution {
             var nearestBaseId: Int? = 0
             val loc = e.location
             val edge = model.graph.getEdge(loc)
-            val activeEvent = edge.activeEventId?.let { model.getEventById(it) as? Event }
+            val activeEvent = edge.activeEventId?.let { model.getEventById(it) }
             if (activeEvent != null) {
                 handleActiveRoadClosureEvent(activeEvent, edge, model)
             }

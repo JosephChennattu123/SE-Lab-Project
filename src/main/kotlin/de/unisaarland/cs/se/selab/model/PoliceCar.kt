@@ -38,13 +38,13 @@ class PoliceCar(
     override fun handleEmergency(amount: Int): Int {
         status = VehicleStatus.HANDLING
         if (criminalCapacity != null && criminalsPresent != null) {
-            val returnAmount = amount - (criminalCapacity as Int - criminalsPresent as Int)
-            if (returnAmount < 0) {
+            val returnAmount = amount - (criminalCapacity - criminalsPresent as Int)
+            return if (returnAmount < 0) {
                 criminalsPresent = criminalCapacity + returnAmount
-                return 0
+                0
             } else {
                 criminalsPresent = criminalCapacity
-                return returnAmount
+                returnAmount
             }
         }
         return amount
