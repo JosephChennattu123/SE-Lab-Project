@@ -28,6 +28,9 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
         vertices[source]?.getEdges(false)
             ?.find { it.targetVertex.vertexId == target }
             ?.let { return it }
+        vertices[target]?.getEdges(false)
+            ?.find { it.targetVertex.vertexId == source }
+            ?.let { return it }
         error("Edge not found: $source -> $target")
     }
 
@@ -55,7 +58,7 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
      * @return true if edge does exist
      */
     fun doesEdgeExist(source: Int, target: Int): Boolean {
-        val vertex = vertices[source] ?: return false
+        val vertex = vertices[source] ?: vertices[target] ?: return false
         return vertex.getEdges(false).any { it.targetVertex.vertexId == target }
     }
 

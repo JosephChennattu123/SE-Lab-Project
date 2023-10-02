@@ -96,9 +96,27 @@ internal class DijkstraTest {
 
     @Test
     fun getShortestPathFromEdgeToEdge() {
-        val r1 = Dijkstra.getShortestPathFromEdgeToEdge(simpleGraph, 1, 3, 0, Location("v0", "r0"), 10  )
+        val r1 =
+            Dijkstra.getShortestPathFromEdgeToEdge(simpleGraph, 1, 3, 5, Location("v0", "r0"), 10)
         val vertexPath = listOf(1, 3, 2)
-        assertEquals("Expected $vertexPath, but got $r1", vertexPath, r1.vertexPath)
+        assertEquals("Expected $vertexPath, but got ${r1.vertexPath}", vertexPath, r1.vertexPath)
+        val edgeWeights = listOf(5, 10)
+        assertEquals(
+            "Expected $edgeWeights, but got ${r1.edgeWeights}",
+            edgeWeights,
+            r1.edgeWeights
+        )
+        val isOneWay = listOf(true, true)
+        assertEquals("Expected $isOneWay, but got ${r1.isOneWay}", isOneWay, r1.isOneWay)
+        val totalTicksToArrive = 2
+        assertEquals(
+            "Expected $totalTicksToArrive, but got ${r1.totalTicksToArrive}",
+            totalTicksToArrive,
+            r1.totalTicksToArrive
+        )
+
+
+
 //        println("${r1.edgeWeights}")
 //        println(r1.isOneWay)
 //        println(r1.totalTicksToArrive)
