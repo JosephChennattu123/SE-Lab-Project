@@ -96,7 +96,12 @@ internal class DijkstraTest {
 
     @Test
     fun getShortestPathFromEdgeToEdge() {
-        val r1 = Dijkstra.getShortestPathFromEdgeToEdge(simpleGraph, 3, 2, 0, Location("v0", "r0"), 10  )
+        val r1 = Dijkstra.getShortestPathFromEdgeToEdge(simpleGraph, 1, 3, 0, Location("v0", "r0"), 10  )
+        val vertexPath = listOf(1, 3, 2)
+        assertEquals("Expected $vertexPath, but got $r1", vertexPath, r1.vertexPath)
+        val edgeWeights = listOf()
+        assertEquals()
+        assert(r1.vertexPath == )
     }
 
     @Test
