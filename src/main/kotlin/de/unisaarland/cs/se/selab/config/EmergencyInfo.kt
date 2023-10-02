@@ -2,13 +2,6 @@ package de.unisaarland.cs.se.selab.config
 
 import de.unisaarland.cs.se.selab.model.EmergencyType
 
-const val VILLAGE = "village"
-const val ROAD_NAME = "roadName"
-const val EMERGENCY_TYPE = "emergencyType"
-const val SEVERITY = "severity"
-const val HANDLE_TIME = "handleTime"
-const val MAX_DURATION = "maxDuration"
-
 /**
  * Collects the info to construct emergencies
  *

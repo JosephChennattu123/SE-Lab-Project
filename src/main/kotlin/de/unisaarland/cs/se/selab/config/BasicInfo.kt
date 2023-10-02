@@ -1,8 +1,5 @@
 package de.unisaarland.cs.se.selab.config
 
-const val ID = "id"
-const val TICK = "tick"
-
 /**
  * Basic Info container.
  * @param id the id of the object corresponding to this info-object
