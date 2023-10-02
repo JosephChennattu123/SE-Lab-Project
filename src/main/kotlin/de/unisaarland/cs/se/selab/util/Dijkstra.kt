@@ -115,7 +115,7 @@ object Dijkstra {
      * @param height the height of the vehicle.
      * @return Path object containing the shortest path.
      * */
-    private fun getShortestPathFromVertexToVertex(
+    fun getShortestPathFromVertexToVertex(
         graph: Graph,
         sourceVertex: Int,
         targetVertex: Int,

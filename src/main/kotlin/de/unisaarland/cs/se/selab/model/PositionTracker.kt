@@ -71,4 +71,5 @@ class PositionTracker {
         return path.vertexPath.last()
     }
 }
+
 const val SPEED = 10
