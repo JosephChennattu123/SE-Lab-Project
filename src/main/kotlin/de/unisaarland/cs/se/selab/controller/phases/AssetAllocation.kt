@@ -95,7 +95,7 @@ class AssetAllocation {
     }
 
     private fun creatRequest(model: Model, emergency: Emergency, mainBase: Base) {
-        for (req in emergency.currentRequiredAssets) {
+        for (req in emergency.currentRequirements) {
             val nextNearestBase = Dijkstra.getNextNearestBase(
                 model.graph,
                 mainBase.vertexID,

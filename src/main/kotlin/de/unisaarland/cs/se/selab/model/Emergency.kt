@@ -24,8 +24,8 @@ class Emergency(
 ) {
 
     var canRequest: Boolean = false
-    var requiredAssets: List<EmergencyRequirement> = emptyList()
-    val currentRequiredAssets: MutableList<EmergencyRequirement> = mutableListOf()
+    var baseRequirements: List<EmergencyRequirement> = emptyList()
+    val currentRequirements: MutableList<EmergencyRequirement> = mutableListOf()
     val assignedVehicleIDs: MutableList<Int> = mutableListOf()
     val availableVehicleIDs: MutableList<Int> = mutableListOf()
     var mainBaseID: Int? = null
@@ -75,7 +75,7 @@ class Emergency(
     /**
      * @return if the emergency has been assigned all of its necessary assets */
     fun isFulfilled(): Boolean {
-        return currentRequiredAssets.isEmpty()
+        return currentRequirements.isEmpty()
     }
 
     /**
