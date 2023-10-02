@@ -22,7 +22,7 @@ class Reroute {
         drivingVehicles.forEach {
             val vPosT = it.positionTracker
             val vPath = vPosT.path.vertexPath
-            val oldpath = vPosT.path
+            val oldPath = vPosT.path
             vPosT.path = Dijkstra.getShortestPathFromEdgeToEdge(
                 model.graph,
                 vPath[vPosT.currentVertexIndex],
@@ -31,7 +31,7 @@ class Reroute {
                 model.getAssignedEmergencyById(it.emergencyID!!)!!.location,
                 it.height
             )
-            if (vPosT.path == oldpath) {
+            if (vPosT.path != oldPath) {
                 Logger.logAssetRerouted(it.vehicleID)
             }
         }
