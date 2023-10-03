@@ -1,18 +1,15 @@
 package de.unisaarland.cs.se.selab.util
 
-import de.unisaarland.cs.se.selab.creatSimpleGraph
+import de.unisaarland.cs.se.selab.SimpleGraphHelper
 import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.Location
 import de.unisaarland.cs.se.selab.model.map.Graph
-import de.unisaarland.cs.se.selab.model.map.PrimaryType
-import de.unisaarland.cs.se.selab.model.map.RoadProperties
-import de.unisaarland.cs.se.selab.model.map.SecondaryType
-import de.unisaarland.cs.se.selab.model.map.Vertex
 import org.junit.jupiter.api.Test
 import kotlin.test.DefaultAsserter.assertEquals
 
 internal class DijkstraTest {
-    private val simpleGraph: Graph = creatSimpleGraph()
+    private val helper: SimpleGraphHelper = SimpleGraphHelper()
+    private val simpleGraph: Graph = helper.simpleGraph
 
     @Test
     fun getNearestBaseToEdge() {

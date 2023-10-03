@@ -7,38 +7,46 @@ import de.unisaarland.cs.se.selab.model.map.RoadProperties
 import de.unisaarland.cs.se.selab.model.map.SecondaryType
 import de.unisaarland.cs.se.selab.model.map.Vertex
 
+class SimpleGraphHelper {
+    val simpleVertices: MutableMap<Int, Vertex> = creatSimpleVertices()
+    val simpleGraph: Graph = creatSimpleGraph()
 
- fun creatSimpleGraph(): Graph {
+    private fun creatSimpleVertices(): MutableMap<Int, Vertex> {
         val vertices: MutableMap<Int, Vertex> = mutableMapOf()
-        // creat vertices
         vertices[0] = Vertex(0, 0, BaseType.FIRE_STATION)
         vertices[1] = Vertex(1, 1, BaseType.FIRE_STATION)
         vertices[2] = Vertex(2, 2, BaseType.POLICE_STATION)
         vertices[3] = Vertex(3, null, null)
-        val g = Graph(vertices)
+        return vertices
+    }
+    private fun creatSimpleGraph(): Graph {
+        // creat vertices
+        val g = Graph(simpleVertices)
 
         // creat edges
         g.addEdge(
-            vertices[0]!!,
-            vertices[2]!!,
+            simpleVertices[0]!!,
+            simpleVertices[2]!!,
             RoadProperties(PrimaryType.COUNTY, SecondaryType.NONE, "v0", "r0", 60, 30)
         )
         g.addEdge(
-            vertices[1]!!,
-            vertices[3]!!,
+            simpleVertices[1]!!,
+            simpleVertices[3]!!,
             RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r1", 10, 30)
         )
         g.addEdge(
-            vertices[3]!!,
-            vertices[2]!!,
+            simpleVertices[3]!!,
+            simpleVertices[2]!!,
             RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r2", 10, 30)
         )
         g.addEdge(
-            vertices[0]!!,
-            vertices[1]!!,
+            simpleVertices[0]!!,
+            simpleVertices[1]!!,
             RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r3", 100, 30)
         )
         return g
     }
+}
+
 
 //fun creat
