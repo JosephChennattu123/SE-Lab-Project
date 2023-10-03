@@ -10,6 +10,7 @@ import kotlin.test.DefaultAsserter.assertEquals
 internal class DijkstraTest {
     private val helper: SimpleGraphHelper = SimpleGraphHelper()
     private val simpleGraph: Graph = helper.simpleGraph
+    private val heightGraph: Graph = helper.simpleGraphWithHeight
 
     @Test
     fun getNearestBaseToEdge() {
@@ -46,6 +47,14 @@ internal class DijkstraTest {
                 BaseType.FIRE_STATION
             )
         assertEquals("Expected 0, but got $result4", 0, result4)
+
+        val result5 =
+            Dijkstra.getNearestBaseToEdge(
+                heightGraph,
+                Location("v0", "r4"),
+                BaseType.HOSPITAL
+            )
+        assertEquals("Expected 0, but got $result5", 4, result5)
     }
 
     @Test
@@ -58,6 +67,9 @@ internal class DijkstraTest {
 
         val r3 = Dijkstra.getNextNearestBase(simpleGraph, 0, BaseType.FIRE_STATION, setOf(0, 1))
         assertEquals("Expected null, but got $r3", null, r3)
+
+        val r4 = Dijkstra.getNextNearestBase(heightGraph, 4, BaseType.HOSPITAL, setOf(4))
+        assertEquals("Expected null, but got $r4", null, r4)
     }
 
     @Test
@@ -99,6 +111,25 @@ internal class DijkstraTest {
             totalTicksToArrive2,
             r2.totalTicksToArrive
         )
+
+//        val r3 =
+//            Dijkstra.getShortestPathFromEdgeToEdge(heightGraph, 1, 3, 5, Location("v0", "r3"), 25)
+//        val vertexPath3 = listOf(1, 3, 2, 0)
+//        assertEquals("Expected $vertexPath3, but got ${r3.vertexPath}", vertexPath3, r3.vertexPath)
+//        val edgeWeights3 = listOf(5, 10, 60)
+//        assertEquals(
+//            "Expected $edgeWeights3, but got ${r3.edgeWeights}",
+//            edgeWeights3,
+//            r3.edgeWeights
+//        )
+//        val isOneWay3 = listOf(true, true, false)
+//        assertEquals("Expected $isOneWay3, but got ${r3.isOneWay}", isOneWay3, r3.isOneWay)
+//        val totalTicksToArrive3 = 8
+//        assertEquals(
+//            "Expected $totalTicksToArrive3, but got ${r3.totalTicksToArrive}",
+//            totalTicksToArrive3,
+//            r3.totalTicksToArrive
+//        )
     }
 
     @Test
