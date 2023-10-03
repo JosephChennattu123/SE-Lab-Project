@@ -33,7 +33,7 @@ class EmergencyDistribution {
 
         for (e in currentEmergencies) {
             // Iterate over emergencies and get the nearest base using one of the Dijkstra methods.
-            var nearestBaseId: Int? = 0
+            var nearestBaseId: Int? = null
             val loc = e.location
             val edge = model.graph.getEdge(loc)
             val activeEvent = edge.activeEventId?.let { model.getEventById(it) }
