@@ -17,7 +17,7 @@ internal class DijkstraTest {
         // test for each BaseType
 
         val result1 =
-            Dijkstra.getNearestBaseToEdge(
+            Dijkstra.getNearestBaseVertexIdToEdge(
                 simpleGraph,
                 Location("v0", "r2"),
                 BaseType.FIRE_STATION
@@ -25,7 +25,7 @@ internal class DijkstraTest {
         assertEquals("Expected 1, but got $result1", 1, result1)
 
         val result2 =
-            Dijkstra.getNearestBaseToEdge(
+            Dijkstra.getNearestBaseVertexIdToEdge(
                 simpleGraph,
                 Location("v0", "r1"),
                 BaseType.POLICE_STATION
@@ -33,7 +33,7 @@ internal class DijkstraTest {
         assertEquals("Expected 2, but got $result2", 2, result2)
 
         val result3 =
-            Dijkstra.getNearestBaseToEdge(
+            Dijkstra.getNearestBaseVertexIdToEdge(
                 simpleGraph,
                 Location("v0", "r0"),
                 BaseType.HOSPITAL
@@ -41,7 +41,7 @@ internal class DijkstraTest {
         assertEquals("Expected null, but got $result3", null, result3)
 
         val result4 =
-            Dijkstra.getNearestBaseToEdge(
+            Dijkstra.getNearestBaseVertexIdToEdge(
                 simpleGraph,
                 Location("v0", "r0"),
                 BaseType.FIRE_STATION
@@ -49,7 +49,7 @@ internal class DijkstraTest {
         assertEquals("Expected 0, but got $result4", 0, result4)
 
         val result5 =
-            Dijkstra.getNearestBaseToEdge(
+            Dijkstra.getNearestBaseVertexIdToEdge(
                 heightGraph,
                 Location("v0", "r4"),
                 BaseType.HOSPITAL

@@ -20,7 +20,7 @@ object Dijkstra {
      * @param baseType the type of the required base.
      * @return the vertex id of the nearest base.
      * */
-    fun getNearestBaseToEdge(graph: Graph, location: Location, baseType: BaseType): Int? {
+    fun getNearestBaseVertexIdToEdge(graph: Graph, location: Location, baseType: BaseType): Int? {
         val edge = graph.getEdge(location)
         val nearestBasesToTarget = findNearestBases(graph, edge.targetVertex.vertexId, baseType)
 //        println("----------------------------")
