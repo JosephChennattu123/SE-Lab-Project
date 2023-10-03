@@ -58,15 +58,11 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
      * @return true if edge does exist
      */
     fun doesEdgeExist(source: Int, target: Int): Boolean {
-        if (vertices[source] == null || vertices[target] == null) {
-            return false
+        val vertices = vertices[source] ?: return false
+        return vertices.getEdges(false).any {
+            it.targetVertex.vertexId == target ||
+                (it.sourceVertex.vertexId == target && !it.isOneWay())
         }
-
-        return vertices[source]!!.getEdges(false)
-            .any {
-                it.targetVertex.vertexId == target ||
-                    (it.sourceVertex.vertexId == target && !it.isOneWay())
-            }
     }
 
     /**
