@@ -113,13 +113,21 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
     }
 
     /**
-     * Check that there is at most one base on a vertex
+     * Check that there is at most one base on the vertex
      *
-     * @return true if the base placement is valid
+     * @return true if the placement of the next base is valid
      */
     private fun validateAtMostOneBaseOnEachVertex(baseInfo: BaseInfo, graph: Graph): Boolean {
-        return graph.vertices.filter { (_, vertex) ->
-            vertex.vertexId == baseInfo.locationVertex && vertex.baseId != null
-        }.isEmpty()
+        for ((_, vertex) in graph.vertices) {
+            if (vertex.vertexId == baseInfo.locationVertex) {
+                return if (vertex.baseId == null) {
+                    vertex.baseId = baseInfo.id
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+        return true
     }
 }
