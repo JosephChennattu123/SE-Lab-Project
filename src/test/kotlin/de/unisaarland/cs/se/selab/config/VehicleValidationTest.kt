@@ -9,7 +9,6 @@ class VehicleValidationTest {
     val simpleMap = "src/test/resources/validationResources/maps/simpleValidMap.dot"
 
     // assets.
-    val simpleAssets = "src/test/resources/validationResources/assets/ThreeBasesThreeVehicles.json"
     val vehiclesWithIllegalValues = "src/test/resources/validationResources/assets/vehiclesWithIllegalValues.json"
     val emergencyDoctorWithLadder = "src/test/resources/validationResources/assets/emergencyDoctorWithLadder.json"
     val fireTruckWithCriminals = "src/test/resources/validationResources/assets/fireTruckWithCriminals.json"
