@@ -148,7 +148,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
 
     private fun parseEvent(event: JSONObject) {
         val id = event.getInt(ID)
-        val tick = event.getInt(ID)
+        val tick = event.getInt(TICK)
         val eventType = EventType.fromString(event.getString(cfgEventType))
         val duration = event.getInt(cfgDuration)
 
