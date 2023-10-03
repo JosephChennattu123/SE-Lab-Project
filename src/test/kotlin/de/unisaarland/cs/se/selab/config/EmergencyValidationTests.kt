@@ -12,14 +12,17 @@ class EmergencyValidationTests {
     private val simpleAssets = "src/test/resources/validationResources/assets/ThreeBasesThreeVehicles.json"
 
     // scenarios.
-    private val simpleScenario = "src/test/resources/validationResources/scenarios/OneEventOneEmergency.json"
+    // private val simpleScenario = "src/test/resources/validationResources/scenarios/OneEventOneEmergency.json"
     private val emergencyOnNonExistentRoad =
         "src/test/resources/validationResources/scenarios/EmergencyOnNonExistentRoad.json"
+    private val emergenciesInvalidValues =
+        "src/test/resources/validationResources/scenarios/emergencyWithIllegalValues.json"
 
     @Test
     fun emergencyWithIllegalValues() {
         val dotParser = DotParser(simpleMap)
-        val jsonParserTest = JsonParser(simpleAssets, simpleScenario)
+        val jsonParserTest = JsonParser(simpleAssets, emergenciesInvalidValues)
+
         val validator = ValidatorManager()
         assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
