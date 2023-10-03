@@ -9,6 +9,8 @@ package de.unisaarland.cs.se.selab.model
  * @property numStaff The number of staff members available at the base.
  * @property doctors The number of doctors available at the base (relevant for medical bases).
  * @property dogs The number of search and rescue dogs available at the base (relevant for certain bases).
+ * @property vehicles A list of unique identifiers for vehicles stationed at the base.
+ * @property assignedEmergencies A list of unique identifiers for emergencies currently assigned to the base.
  */
 class Base(
     var baseId: Int,
@@ -18,11 +20,14 @@ class Base(
     var doctors: Int?,
     var dogs: Int?,
 ) {
-    /**@property vehicles A list of unique identifiers for vehicles stationed at the base.*/
     val vehicles: MutableList<Int> = mutableListOf()
-
-    /** @property assignedEmergencies A list of unique identifiers for emergencies currently assigned to the base.*/
     val assignedEmergencies: MutableList<Int> = mutableListOf()
+
+    var currentStaff: Int = 0
+
+    init {
+        currentStaff = numStaff
+    }
 
     /**
      * Adds an emergency to the list of emergencies assigned to this base.
