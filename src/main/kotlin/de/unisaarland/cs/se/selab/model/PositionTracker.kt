@@ -6,9 +6,9 @@ package de.unisaarland.cs.se.selab.model
  *
  * */
 class PositionTracker {
-    lateinit var path: Path
-    var currentVertexIndex: Int = 0
-    var positionOnEdge: Int = 0
+    var path: Path? = null
+    var currentVertexIndex: Int? = null
+    var positionOnEdge: Int? = null
 
     /** updates Position: updates the value of current Vertex index and position on Edge*/
     fun updatePosition() {
