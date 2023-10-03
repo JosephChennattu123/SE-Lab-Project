@@ -8,7 +8,7 @@ class MapValidationTests {
     val smallMap = "src/test/resources/validationResources/maps/mapWith2Nodes.dot"
     val mapWithLoop = "src/test/resources/validationResources/maps/mapWithLoop.dot"
     val mapWithTwoEdgesSameSourceAndTarget =
-        "src/test/resources/validationResources/maps/mapWithTwoEdgesSameSourceAndTarget.dot"
+        "src/test/resources/validationResources/maps/twoEdgesBetweenTwoVertices.dot"
     val vertexInManyVillages = "src/test/resources/validationResources/maps/ingoingEdgesDifferentVillages.dot"
     val noMainStreets = "src/test/resources/validationResources/maps/noMainStreets.dot"
     val illegalRoads = "src/test/resources/validationResources/maps/roadsWithIllegalValues.dot"
