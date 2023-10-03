@@ -17,16 +17,16 @@ internal class GraphTest {
 
     @Test
     fun getEdge() {
-        assert(simpleGraph.getEdge(0, 1).edgeId == 3)
-        assert(simpleGraph.getEdge(0, 2).edgeId == 0)
-        assert(simpleGraph.getEdge(2, 0).edgeId == 0)
+        assert(simpleGraph.getEdge(0, 1).getWeight() == 100)
+        assert(simpleGraph.getEdge(0, 2).getWeight() == 60)
+        assert(simpleGraph.getEdge(2, 0).getWeight() == 60)
 
     }
 
     @Test
     fun testGetEdge() {
-        assert(simpleGraph.getEdge(Location("v0", "r0")).edgeId == 0)
-        assert(simpleGraph.getEdge(Location("v0", "r3")).edgeId == 3)
+        assert(simpleGraph.getEdge(Location("v0", "r0")).getWeight() == 60)
+        assert(simpleGraph.getEdge(Location("v0", "r3")).getWeight() == 100)
     }
 
     @Test
@@ -52,12 +52,12 @@ internal class GraphTest {
         simpleGraph.addEdge(
             simpleVertices[0]!!,
             simpleVertices[3]!!,
-            RoadProperties(PrimaryType.COUNTY, SecondaryType.NONE, "v0", "r4", 10, 20)
+            RoadProperties(PrimaryType.COUNTY, SecondaryType.NONE, "v0", "r4", 30, 20)
         )
         assert(simpleGraph.getEdges().size == 5)
         assert(simpleGraph.doesEdgeExist(3, 0))
         assert(simpleGraph.doesLocationExist(Location("v0", "r4")))
-        assert(simpleGraph.getEdge(Location("v0", "r4")).edgeId == 4)
+        assert(simpleGraph.getEdge(Location("v0", "r4")).getWeight() == 30)
 
     }
 
