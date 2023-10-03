@@ -44,10 +44,10 @@ class EmergencyDistribution {
             if (e.type == EmergencyType.CRIME) {
                 nearestBaseId = Dijkstra.getNearestBaseToEdge(graph, loc, BaseType.POLICE_STATION)
             }
-            if (e.type == EmergencyType.FIRE) {
+            if (e.type == EmergencyType.ACCIDENT || e.type == EmergencyType.FIRE) {
                 nearestBaseId = Dijkstra.getNearestBaseToEdge(graph, loc, BaseType.FIRE_STATION)
             }
-            if (e.type == EmergencyType.ACCIDENT || e.type == EmergencyType.MEDICAL) {
+            if (e.type == EmergencyType.MEDICAL) {
                 nearestBaseId = Dijkstra.getNearestBaseToEdge(graph, loc, BaseType.HOSPITAL)
             }
 
