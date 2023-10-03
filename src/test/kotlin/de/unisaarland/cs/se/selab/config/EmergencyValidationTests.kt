@@ -14,7 +14,7 @@ class EmergencyValidationTests {
     // scenarios.
     // private val simpleScenario = "src/test/resources/validationResources/scenarios/OneEventOneEmergency.json"
     private val emergencyOnNonExistentRoad =
-        "src/test/resources/validationResources/scenarios/EmergencyOnNonExistentRoad.json"
+        "src/test/resources/validationResources/scenarios/emergencyOnNonExistentRoad.json"
     private val emergenciesInvalidValues =
         "src/test/resources/validationResources/scenarios/emergencyWithIllegalValues.json"
 

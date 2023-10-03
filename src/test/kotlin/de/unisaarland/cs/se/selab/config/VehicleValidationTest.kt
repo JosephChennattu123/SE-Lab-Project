@@ -11,7 +11,7 @@ class VehicleValidationTest {
     // assets.
     val vehiclesWithIllegalValues = "src/test/resources/validationResources/assets/vehiclesWithIllegalValues.json"
     val emergencyDoctorWithLadder = "src/test/resources/validationResources/assets/emergencyDoctorWithLadder.json"
-    val fireTruckWithCriminals = "src/test/resources/validationResources/assets/fireTruckWithCriminals.json"
+    val fireTruckWithCriminals = "src/test/resources/validationResources/assets/firetruckWithCriminals.json"
     val policeCarWithWater = "src/test/resources/validationResources/assets/policeCarWithWater.json"
 
     // scenarios.

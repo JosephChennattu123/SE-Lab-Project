@@ -13,7 +13,6 @@ class BaseValidationTests {
     val twoBasesOneVertex = "src/test/resources/validationResources/assets/twoBasesOneVertex.json"
     val noPolice = "src/test/resources/validationResources/assets/noPolice.json"
     val baseWithNoVehicles = "src/test/resources/validationResources/assets/noPoliceVehicle.json"
-    val policeWithAmbulance = "src/test/resources/validationResources/assets/policeStationWithAmbulance.json"
     val fireStationWithAmbulance = "src/test/resources/validationResources/assets/fireStationWithAmbulance.json"
     val hospitalWithFireTruck = "src/test/resources/validationResources/assets/hospitalWithFireTruck.json"
     val policeStationWithAmbulance = "src/test/resources/validationResources/assets/policeStationWithAmbulance.json"
@@ -56,7 +55,7 @@ class BaseValidationTests {
     @Test
     fun illegalPoliceAssets() {
         val dotParser = DotParser(simpleMap)
-        val jsonParserTest = JsonParser(policeWithAmbulance, simpleScenario)
+        val jsonParserTest = JsonParser(policeStationWithAmbulance, simpleScenario)
         val validator = ValidatorManager()
         assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
