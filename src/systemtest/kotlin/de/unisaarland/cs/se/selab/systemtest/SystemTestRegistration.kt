@@ -2,7 +2,6 @@ package de.unisaarland.cs.se.selab.systemtest
 
 // import de.unisaarland.cs.se.selab.systemtest.basictests.FireEmergencyTest
 // import de.unisaarland.cs.se.selab.systemtest.basictests.OneEmergency
-import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 
 object SystemTestRegistration {
@@ -23,7 +22,8 @@ object SystemTestRegistration {
      * If all tests of this section pass: -
      */
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
-        manager.registerTest(ExampleTest())
+        manager
+        // manager.registerTest(ExampleTest())
         // manager.registerTest(OneEmergency())
         // manager.registerTest(FireEmergencyTest())
     }
