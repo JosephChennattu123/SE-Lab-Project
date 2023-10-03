@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.model.Base
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.EmergencyRequirement
 import de.unisaarland.cs.se.selab.model.Model
+import de.unisaarland.cs.se.selab.model.Path
 import de.unisaarland.cs.se.selab.model.Vehicle
 import de.unisaarland.cs.se.selab.model.VehicleStatus
 import de.unisaarland.cs.se.selab.model.VehicleType
@@ -87,7 +88,7 @@ object AssetManager {
             }
 
             else -> {
-                listOf()
+                emptyList()
             }
         }
     }
@@ -154,7 +155,7 @@ object AssetManager {
             }
 
             else -> {
-                listOf()
+                emptyList()
             }
         }
     }
@@ -220,7 +221,7 @@ object AssetManager {
             }
 
             else -> {
-                listOf()
+                emptyList()
             }
         }
     }
@@ -277,7 +278,7 @@ object AssetManager {
             }
 
             else -> {
-                listOf()
+                emptyList()
             }
         }
     }
@@ -290,26 +291,30 @@ object AssetManager {
     fun allocateAssetsToEmergency(
         model: Model,
         emergency: Emergency,
-        vehicles: MutableList<Vehicle>
+        vehicles: MutableList<Vehicle>,
+        reallocate: Boolean
     ) {
         // remove vehicles that do not fit the requirement type or do not fulfill staff requirements.
         filterAssetsByRequirement(model, vehicles, emergency.currentRequirements)
 
         // find vehicles that cannot reach the emergency in time.
         val vehiclesThatCannotReachInTime = mutableListOf<Vehicle>()
+        val vehicleIdToPath: MutableMap<Int, Path> = mutableMapOf()
         for (vehicle in vehicles) {
             when (vehicle.status) {
                 // If vehicle is currently at base, calculate drive from vertex to edge.
                 VehicleStatus.AT_BASE -> {
                     val newPath = Dijkstra.getShortestPathFromVertexToEdge(
                         model.graph,
-                        model.getBaseById(vehicle.baseID)!!.vertexID,
+                        model.bases.getValue(vehicle.baseID).vertexID,
                         emergency.location,
                         vehicle.height
                     )
 
                     if (!emergency.canReachInTime(newPath.totalTicksToArrive)) {
                         vehiclesThatCannotReachInTime.add(vehicle)
+                    } else {
+                        vehicleIdToPath[vehicle.vehicleID] = newPath
                     }
                 }
 
@@ -325,6 +330,8 @@ object AssetManager {
                     )
                     if (!emergency.canReachInTime(newPath.totalTicksToArrive)) {
                         vehiclesThatCannotReachInTime.add(vehicle)
+                    } else {
+                        vehicleIdToPath[vehicle.vehicleID] = newPath
                     }
                 }
 
@@ -333,9 +340,45 @@ object AssetManager {
         }
         // remove vehicles that cannot reach the emergency in time.
         vehicles.removeAll(vehiclesThatCannotReachInTime)
-        val mainBase = emergency.mainBaseID?.let { model.getBaseById(it) }!!
-        // remove vehicles that do not fulfill the requirements.
-        filterAssetsByOptimalSolution(mainBase, vehicles, emergency.currentRequirements)
+
+        // remove vehicles that are not part of the optimal set.
+        val mainBase = emergency.mainBaseID?.let { model.bases.getValue(it) }
+        if (mainBase != null) {
+            filterAssetsByOptimalSolution(mainBase, vehicles, emergency.currentRequirements)
+        } else {
+            error("Emergency has no main base.")
+        }
+
+        // assign.
+        assignVehiclesAndLog(model, emergency, vehicles, vehicleIdToPath, reallocate)
+    }
+
+    private fun assignVehiclesAndLog(
+        model: Model,
+        emergency: Emergency,
+        vehicles: List<Vehicle>,
+        paths: Map<Int, Path>,
+        reallocate: Boolean
+    ) {
+        for (vehicle in vehicles) {
+            fulfillAndUpdateEmergencyRequirements(emergency.currentRequirements, vehicle)
+            vehicle.setNewPath(paths.getValue(vehicle.vehicleID))
+            if (reallocate) {
+                // remove vehicles that are already assigned to an emergency.
+                val emergencyOfReallocatedVehicle = model
+                    .getAssignedEmergencyById(vehicle.emergencyID as Int) as Emergency
+                removeVehicleFromEmergency(emergencyOfReallocatedVehicle, vehicle, model)
+                Logger.logAssetReallocated(vehicle.vehicleID, emergency.id)
+            } else {
+                Logger.logAssetAllocated(
+                    vehicle.vehicleID,
+                    emergency.id,
+                    paths.getValue(vehicle.vehicleID).totalTicksToArrive
+                )
+            }
+        }
+        // remove fulfilled requirements from the emergency.
+        removedFulfilledRequirements(emergency)
     }
 
     /**
@@ -367,12 +410,8 @@ object AssetManager {
 
             if (validCombinations.isNotEmpty()) {
                 val optimalSet = sortLexicallyAndReturnFirst(validCombinations)
-                // remove all vehicles that are not part of the valid combinations
-                vehicles.removeAll(
-                    vehicles.filter {
-                        !validCombinations.flatten().contains(it.vehicleID)
-                    }
-                )
+                // remove all vehicles that are not part of the optimal set.
+                vehicles.removeAll(vehicles.filter { !optimalSet.contains(it.vehicleID) })
                 break
             }
         }
@@ -392,10 +431,12 @@ object AssetManager {
         for (vehicle in vehiclesToCheck) {
             // check if the vehicle type does not match the requirement type
             // or if the base does not have enough staff to send the vehicle.
-            if (!vehicle.isUnavailable || !requirements.any {
-                    vehicle.vehicleType != it.vehicleType &&
-                        vehicle.staffCapacity > model.getBaseById(vehicle.baseID)!!.currentStaff
-                }
+            if (!vehicle.isUnavailable ||
+                !requirements
+                    .any {
+                        vehicle.vehicleType != it.vehicleType &&
+                            vehicle.staffCapacity > model.bases.getValue(vehicle.baseID).currentStaff
+                    }
             ) {
                 // collect vehicles that needed to be removed.
                 vehiclesToBeRemoved.add(vehicle)
@@ -410,13 +451,13 @@ object AssetManager {
      * @param vehiclesToBeReallocated The list of vehicles to be removed
      * @param model The model
      * */
-    private fun removeVehiclesFromEmergency(
+    private fun removeVehicleFromEmergency(
         emergency: Emergency,
-        vehiclesToBeReallocated: List<Vehicle>,
+        vehicleToBeReallocated: Vehicle,
         model: Model
     ) {
         // remove the vehicles that are reallocated from the emergency.
-        emergency.assignedVehicleIDs.removeAll(vehiclesToBeReallocated.map { it.vehicleID })
+        emergency.assignedVehicleIDs.remove(vehicleToBeReallocated.vehicleID)
         val remainingVehicles = model
             .getVehiclesByIds(emergency.assignedVehicleIDs)
 
@@ -426,11 +467,8 @@ object AssetManager {
         // update the current requirements of the emergency.
         refreshEmergencyRequirements(emergency, remainingVehicles)
 
-        // remove the vehicles from the emergency.
-        for (vehicle in vehiclesToBeReallocated) {
-            emergency.removedAssignedVehicle(vehicle)
-            vehicle.emergencyID = null
-        }
+        // remove emergency from vehicle.
+        vehicleToBeReallocated.emergencyID = null
     }
 
     /**
@@ -497,7 +535,7 @@ object AssetManager {
         requirements: List<EmergencyRequirement>
     ): Boolean {
         var requirementFulfilled = false
-        var requirementsIndex = requirements.size
+        var requirementsIndex = 0
         val fittingRequirements = requirements.filter {
             it.numberOfVehicles > 0 &&
                 it.vehicleType == vehicle.vehicleType
@@ -507,7 +545,7 @@ object AssetManager {
             val requiredType = fittingRequirements[requirementsIndex].vehicleType
             val requiredAmount = fittingRequirements[requirementsIndex].amountOfAsset
             if (requiredType == VehicleType.FIRE_TRUCK_LADDER) {
-                requirementFulfilled = vehicle.currentNumberOfAssets!! >= requiredAmount!!
+                requirementFulfilled = checkIfLadderIsLongEnough(vehicle, requiredAmount)
                 fittingRequirements[requirementsIndex].amountOfAsset = 0
                 fittingRequirements[requirementsIndex].numberOfVehicles--
             } else if (requiredAmount == null) {
@@ -516,10 +554,22 @@ object AssetManager {
             } else {
                 requirementFulfilled = true
                 fittingRequirements[requirementsIndex].amountOfAsset =
-                    requiredAmount - vehicle.currentNumberOfAssets!!
+                    requiredAmount - vehicle.currentNumberOfAssets as Int
             }
+            requirementsIndex++
         }
         return requirementFulfilled
+    }
+
+    private fun checkIfLadderIsLongEnough(
+        vehicle: Vehicle,
+        requiredAmount: Int?
+    ): Boolean {
+        if (vehicle.currentNumberOfAssets != null && requiredAmount != null) {
+            return vehicle.currentNumberOfAssets >= requiredAmount
+        } else {
+            error("Ladder is null")
+        }
     }
 
     /**
@@ -536,9 +586,9 @@ object AssetManager {
                 requirement.numberOfVehicles--
             } else if (requirement.vehicleType != VehicleType.FIRE_TRUCK_LADDER) {
                 requirement.amountOfAsset =
-                    requirement.amountOfAsset!! - vehicle.currentNumberOfAssets!!
+                    requirement.amountOfAsset as Int - vehicle.currentNumberOfAssets as Int
                 requirement.numberOfVehicles--
-            } else if (vehicle.currentNumberOfAssets!! >= requirement.amountOfAsset!!) {
+            } else if (vehicle.currentNumberOfAssets as Int >= requirement.amountOfAsset as Int) {
                 requirement.amountOfAsset = 0
                 requirement.numberOfVehicles--
             }
@@ -609,10 +659,10 @@ object AssetManager {
 
     private fun computeCombinations(ids: List<Int>, size: Int): List<List<Int>> {
         if (size == 0) {
-            return listOf(listOf())
+            return listOf(emptyList())
         }
         if (ids.isEmpty()) {
-            return listOf()
+            return emptyList()
         }
         val head = ids.first()
         val tail = ids.drop(1)

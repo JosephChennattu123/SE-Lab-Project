@@ -22,8 +22,8 @@ class PoliceCar(
     maxAssetCapacity
 ) {
     var k9Present: Boolean? = null
-    val criminalCapacity: Int? = maxAssetCapacity
-    var criminalsPresent: Int? = 0
+    val criminalCapacity: Int? = null
+    var criminalsPresent: Int? = null
 
     /** sets vehicle status to busy if criminals present and sets busy timer */
     override fun setBusy(): Boolean {

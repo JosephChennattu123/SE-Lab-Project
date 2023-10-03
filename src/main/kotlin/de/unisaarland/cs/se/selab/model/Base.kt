@@ -20,8 +20,8 @@ class Base(
     var doctors: Int?,
     var dogs: Int?,
 ) {
-    var vehicles: MutableList<Int> = mutableListOf()
-    var assignedEmergencies: MutableList<Int> = mutableListOf()
+    val vehicles: MutableList<Int> = mutableListOf()
+    val assignedEmergencies: MutableList<Int> = mutableListOf()
 
     var currentStaff: Int = 0
 

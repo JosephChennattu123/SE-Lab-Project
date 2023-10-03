@@ -14,19 +14,17 @@ import de.unisaarland.cs.se.selab.model.map.PrimaryType
 import de.unisaarland.cs.se.selab.model.map.RoadProperties
 import de.unisaarland.cs.se.selab.model.map.SecondaryType
 import de.unisaarland.cs.se.selab.model.map.Vertex
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 
 class AssetManagerTest {
     val graph: Graph = createSimpleGraph()
-    val maxTick: Int? = 1
+    val maxTick: Int = 1
     val bases: Map<Int, Base> = mapOf(0 to createPoliceBase(), 1 to createFireBase(), 2 to createMedicalBase())
     val vehicles: Map<Int, Vehicle> = createVehicles()
     val vehicleToBase: MutableMap<Int, Int> = mutableMapOf()
-    val emergencies: Map<Int, Emergency> = mapOf()
-    val tickToEmergencyId: Map<Int, List<Int>> = mapOf()
-    val events: Map<Int, Event> = mapOf()
-    var tickToEventId: Map<Int, List<Int>> = mapOf()
+    val emergencies: Map<Int, Emergency> = emptyMap()
+    val tickToEmergencyId: Map<Int, List<Int>> = emptyMap()
+    val events: Map<Int, Event> = emptyMap()
+    var tickToEventId: Map<Int, List<Int>> = emptyMap()
     var model =
         Model(graph, maxTick, bases, vehicles, vehicleToBase, emergencies, tickToEmergencyId, events, tickToEventId)
 
@@ -79,7 +77,7 @@ class AssetManagerTest {
             base.vehicles[iter] = iter
             iter++
         }
-        base.assignedEmergencies = mutableListOf()
+        // base.assignedEmergencies = mutableListOf()
         base.currentStaff = 100
         return base
     }
@@ -91,7 +89,7 @@ class AssetManagerTest {
             base.vehicles[iter + 16] = iter + 16 // id math
             iter++
         }
-        base.assignedEmergencies = mutableListOf()
+        // base.assignedEmergencies = mutableListOf()
         base.currentStaff = 100
         return base
     }
@@ -103,7 +101,7 @@ class AssetManagerTest {
             base.vehicles[iter + 33] = iter + 33
             iter++
         }
-        base.assignedEmergencies = mutableListOf()
+        // base.assignedEmergencies = mutableListOf()
         base.currentStaff = 100
         return base
     }
@@ -155,10 +153,5 @@ class AssetManagerTest {
             in 12..15 -> Ambulance(id, 0, VehicleType.AMBULANCE, 1, 1, 1)
             else -> throw IllegalArgumentException("Invalid id for medical vehicle: $id")
         }
-    }
-
-    @Test
-    fun allocateAssetsToEmergency() {
-
     }
 }
