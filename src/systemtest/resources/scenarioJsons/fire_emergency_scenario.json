@@ -1,0 +1,51 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "ROAD_CLOSURE",
+      "tick": 0,
+      "duration": 19,
+      "source": 2,
+      "target": 3
+    },
+
+    {
+      "id": 1,
+      "type": "ROAD_CLOSURE",
+      "tick": 0,
+      "duration": 19,
+      "source": 1,
+      "target": 4
+    },
+    {
+      "id": 2,
+      "type": "ROAD_CLOSURE",
+      "tick": 0,
+      "duration": 19,
+      "source": 2,
+      "target": 4
+    },
+    {
+      "id": 3,
+      "type": "TRAFFIC_JAM",
+      "tick": 1,
+      "duration": 19,
+      "source": 1,
+      "target": 3,
+      "factor": 200
+    }
+
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 3,
+      "village": "Saarbruecken",
+      "roadName": "Beethovenstrasse",
+      "emergencyType": "FIRE",
+      "severity": 3,
+      "handleTime": 3,
+      "maxDuration": 30
+    }
+  ]
+}

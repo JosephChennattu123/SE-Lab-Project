@@ -13,13 +13,17 @@ import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
  * @property maxTicks
  */
 abstract class SystemTestBase(
-    override val name: String, mapFolder: String, val mapFileName: String,
-    assestsFolder: String, val assetsFileName: String,
-    scenarioFolder: String, val scenarioFile: String, tick: Int = 1
+    override val name: String,
+    mapFolder: String,
+    val mapFileName: String,
+    assestsFolder: String,
+    val assetsFileName: String,
+    scenarioFolder: String,
+    val scenarioFile: String,
+    tick: Int = 1
 ) : SystemTest() {
     override val map: String = mapFolder + mapFileName
     override val assets: String = assestsFolder + assetsFileName
     override val scenario: String = scenarioFolder + scenarioFile
     override val maxTicks: Int = tick
-
 }
