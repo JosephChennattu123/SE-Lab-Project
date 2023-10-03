@@ -40,7 +40,7 @@ class ValidatorManager {
         this.dotParser = dotParser
         this.jsonParser = jsonParser
 
-        dotParser.parse()
+        // dotParser.parse()
         if (!validateGraph()) {
             Logger.logParsingValidationResult(dotParser.graphFilePath, false)
             return null
@@ -101,7 +101,7 @@ class ValidatorManager {
         }
 
         val tickToEventId: MutableMap<Int, List<Int>> = mutableMapOf()
-        eventsList.map { it.start }.toSet().associateWithTo(tickToEmergencyId) {
+        eventsList.map { it.start }.toSet().associateWithTo(tickToEventId) {
             val elements: MutableList<Int> = mutableListOf()
             for (ev in eventsList) {
                 if (ev.start == it) {
