@@ -34,7 +34,7 @@ class OneEmergency : SystemTest() {
         // everything is parsed and validated
         assertNextLine(logParsingValidationResult("example_map.dot", true))
         assertNextLine(logParsingValidationResult("example_assets.json", true))
-        assertNextLine(logParsingValidationResult("example_scenario.json", true))
+        assertNextLine(logParsingValidationResult("oneEmergency_scenario.json", true))
         // The Simulation starts with tick 0
         assertNextLine(LOG_SIMULATION_START)
         assertNextLine(logTick(0))
