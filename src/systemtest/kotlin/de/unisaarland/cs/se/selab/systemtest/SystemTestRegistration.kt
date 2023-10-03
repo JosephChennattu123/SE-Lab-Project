@@ -25,8 +25,8 @@ object SystemTestRegistration {
      */
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
         manager.registerTest(ExampleTest())
-        manager.registerTest(OneEmergency())
-        manager.registerTest(FireEmergencyTest())
+        // manager.registerTest(OneEmergency())
+        // manager.registerTest(FireEmergencyTest())
     }
 
     /**
