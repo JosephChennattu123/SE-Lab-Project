@@ -19,6 +19,7 @@ class SimpleGraphHelper {
         vertices[3] = Vertex(3, null, null)
         return vertices
     }
+
     private fun creatSimpleGraph(): Graph {
         // creat vertices
         val g = Graph(simpleVertices)
@@ -47,6 +48,3 @@ class SimpleGraphHelper {
         return g
     }
 }
-
-
-//fun creat

@@ -63,9 +63,10 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
         }
 
         return vertices[source]!!.getEdges(false)
-            .any { it.targetVertex.vertexId == target
-                || (it.sourceVertex.vertexId == target && it.isOneWay()) }
-
+            .any {
+                it.targetVertex.vertexId == target ||
+                    (it.sourceVertex.vertexId == target && !it.isOneWay())
+            }
     }
 
     /**

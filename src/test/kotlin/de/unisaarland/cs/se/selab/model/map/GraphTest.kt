@@ -2,7 +2,6 @@ package de.unisaarland.cs.se.selab.model.map
 
 import de.unisaarland.cs.se.selab.SimpleGraphHelper
 import de.unisaarland.cs.se.selab.model.Location
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 internal class GraphTest {
@@ -20,7 +19,6 @@ internal class GraphTest {
         assert(simpleGraph.getEdge(0, 1).getWeight() == 100)
         assert(simpleGraph.getEdge(0, 2).getWeight() == 60)
         assert(simpleGraph.getEdge(2, 0).getWeight() == 60)
-
     }
 
     @Test
@@ -58,7 +56,5 @@ internal class GraphTest {
         assert(simpleGraph.doesEdgeExist(3, 0))
         assert(simpleGraph.doesLocationExist(Location("v0", "r4")))
         assert(simpleGraph.getEdge(Location("v0", "r4")).getWeight() == 30)
-
     }
-
 }

@@ -46,7 +46,6 @@ internal class DijkstraTest {
                 BaseType.FIRE_STATION
             )
         assertEquals("Expected 0, but got $result4", 0, result4)
-
     }
 
     @Test
@@ -100,8 +99,6 @@ internal class DijkstraTest {
             totalTicksToArrive2,
             r2.totalTicksToArrive
         )
-
-
     }
 
     @Test
@@ -144,7 +141,6 @@ internal class DijkstraTest {
             totalTicksToArrive2,
             r2.totalTicksToArrive
         )
-
     }
 
     @Test
@@ -168,5 +164,4 @@ internal class DijkstraTest {
             r1.totalTicksToArrive
         )
     }
-
 }

@@ -93,8 +93,8 @@ object Dijkstra {
                 distanceFromSourceVertex,
                 height
             )
-
-//        println("pathToTargetVertex" + pathToTargetVertex.vertexPath + ", weight" + pathToTargetVertex.edgeWeights + pathToTargetVertex.totalTicksToArrive)
+//        println("pathToTargetVertex" + pathToTargetVertex.vertexPath + ", weight" +
+//        pathToTargetVertex.edgeWeights + pathToTargetVertex.totalTicksToArrive)
         val pathToSourceVertex = getShortestPathFromEdgeToVertex(
             graph,
             lastVisitedVertex,
@@ -137,10 +137,12 @@ object Dijkstra {
         val isOneWay: MutableList<Boolean> = mutableListOf()
         for (i in 0 until path.size - 1) {
             weights.add(graph.getEdge(path[i], path[i + 1]).getWeight())
-            isOneWay.add(graph.getEdge(
-                path[i],
-                path[i + 1]
-            ).isOneWay())
+            isOneWay.add(
+                graph.getEdge(
+                    path[i],
+                    path[i + 1]
+                ).isOneWay()
+            )
         }
         return Path(
             path,
@@ -214,10 +216,7 @@ object Dijkstra {
         // update path from target to include the remaining edge.
         // add remaining edge to be travelled.
         val path: MutableList<Int> = mutableListOf()
-        if (pathFromTarget.vertexPath.last() != sourceVertex
-            && pathFromTarget.vertexPath.first() != sourceVertex
-        )
-            path.add(sourceVertex)
+        path.add(sourceVertex)
         path.addAll(pathFromTarget.vertexPath)
         // add remaining edge weight to be travelled.
         val weights: MutableList<Int> = mutableListOf()
@@ -246,9 +245,7 @@ object Dijkstra {
                 // update path from source to include the remaining edge.
                 // add remaining edge to be travelled.
                 val newPath: MutableList<Int> = mutableListOf()
-                if (pathFromSource.vertexPath.last() != targetVertex
-                    && pathFromSource.vertexPath.first() != targetVertex)
-                    newPath.add(targetVertex)
+                newPath.add(targetVertex)
                 newPath.addAll(pathFromSource.vertexPath)
                 // add remaining edge weight to be travelled.
                 val newWeights: MutableList<Int> = mutableListOf()
@@ -258,7 +255,12 @@ object Dijkstra {
                 val newIsOneWay: MutableList<Boolean> = mutableListOf()
                 newIsOneWay.add(edge.isOneWay())
                 newIsOneWay.addAll(pathFromSource.isOneWay)
-                return Path(newPath, newWeights, newIsOneWay, roundToNextTen(newWeights.sum()) / speed)
+                return Path(
+                    newPath,
+                    newWeights,
+                    newIsOneWay,
+                    roundToNextTen(newWeights.sum()) / speed
+                )
             }
         }
         return oneWayPath
@@ -365,7 +367,6 @@ object Dijkstra {
     ) {
         val edges = vertex.getEdges(reverse)
         for (edge in edges) {
-
             if (height != null && edge.properties.height < height) {
                 continue
             }
@@ -383,7 +384,6 @@ object Dijkstra {
                     edge.targetVertex.vertexId
                 }
             val oldDistance = distancesFromSource.getValue(newVertexId)
-
 
 //            println(
 //                "reverse: $reverse. " +
