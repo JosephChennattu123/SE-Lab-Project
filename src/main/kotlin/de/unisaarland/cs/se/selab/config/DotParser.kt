@@ -5,7 +5,7 @@ package de.unisaarland.cs.se.selab.config
  */
 class DotParser(val graphFilePath: String) {
 
-    private val reader = FileReader(graphFilePath)
+    private val reader = DotFileReader(graphFilePath)
 
     var mapName = ""
     val vertices = mutableListOf<String>()
