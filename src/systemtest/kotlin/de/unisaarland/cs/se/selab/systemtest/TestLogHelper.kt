@@ -26,7 +26,7 @@ fun logParsingValidationResult(filename: String, success: Boolean): String {
  * @param tick the number of the tick
  */
 fun logTick(tick: Int): String {
-    return "Simulation Tick:  $tick"
+    return "Simulation Tick: $tick"
 }
 
 /***
@@ -122,28 +122,28 @@ fun logAssetRerouted(assetsAmount: Int): String {
  * @param reroutedAssetsAmount the number of rerouted assets
  */
 fun logNumberOfReroutedAssets(numReroutedAssets: Int): String {
-    return "Simulation Statistics: $numReroutedAssets assets rerouted"
+    return "Simulation Statistics: $numReroutedAssets assets rerouted."
 }
 
 /**
  * @param receivedEmergenciesAmount the number of received emergencies (emergency calls)
  */
 fun logNumberOfReceivedEmergencies(receivedEmergenciesAmount: Int): String {
-    return "Simulation Statistics: $receivedEmergenciesAmount received emergencies"
+    return "Simulation Statistics: $receivedEmergenciesAmount received emergencies."
 }
 
 /**
  * @param ongoingEmergenciesAmount the remaining ongoing emergencies
  */
 fun logNumberOfOngoingEmergencies(ongoingEmergenciesAmount: Int): String {
-    return "Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies"
+    return "Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies."
 }
 
 /**
  * Logs the number of total failed emergencies
  */
 fun logNumberOfFailedEmergencies(numFailedEmergencies: Int): String {
-    return "Simulation Statistics: $numFailedEmergencies failed emergencies"
+    return "Simulation Statistics: $numFailedEmergencies failed emergencies."
 }
 
 /**
