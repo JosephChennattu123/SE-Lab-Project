@@ -63,7 +63,7 @@ class EmergencyDistribution {
             model.addToAssignedEmergencies(e.id)
 
             // Log the assignment.
-            Logger.logEmergencyAssigned(e.id, nearestBaseVertexId)
+            Logger.logEmergencyAssigned(e.id, baseId)
         }
     }
 
