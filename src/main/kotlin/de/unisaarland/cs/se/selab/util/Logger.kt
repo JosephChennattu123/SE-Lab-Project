@@ -24,7 +24,7 @@ object Logger {
         if (outputFile == null) {
             printWriter?.println(output)
         } else {
-            File(outputFile).writeText(
+            File(outputFile as String).writeText(
                 output,
                 Charsets.UTF_8
             )
