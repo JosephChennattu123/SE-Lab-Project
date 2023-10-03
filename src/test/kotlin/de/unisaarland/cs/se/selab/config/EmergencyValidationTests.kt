@@ -31,6 +31,4 @@ class EmergencyValidationTests {
         val validator = ValidatorManager()
         assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
-
-
 }
