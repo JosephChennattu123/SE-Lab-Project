@@ -1,5 +1,6 @@
 package de.unisaarland.cs.se.selab.util
 
+import de.unisaarland.cs.se.selab.creatSimpleGraph
 import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.Location
 import de.unisaarland.cs.se.selab.model.map.Graph
@@ -11,12 +12,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.DefaultAsserter.assertEquals
 
 internal class DijkstraTest {
-    //    private val graph: Graph = GraphValidator().validate(DotParser("src/test/resources/mapFiles/example_map.dot"))
-//        ?: throw IllegalArgumentException("Graph creation go wrong!")
-    private val vertices: MutableMap<Int, Vertex> = mutableMapOf()
     private val simpleGraph: Graph = creatSimpleGraph()
-
-
 
     @Test
     fun getNearestBaseToEdge() {
@@ -127,31 +123,5 @@ internal class DijkstraTest {
 //    @Test
 //    fun getShortestPathFromEdgeToVertex() {
 //    }
-    private fun creatSimpleGraph(): Graph {
 
-            // creat vertices
-            vertices[0] = Vertex(0, 0, BaseType.FIRE_STATION)
-            vertices[1] = Vertex(1, 1, BaseType.FIRE_STATION)
-            vertices[2] = Vertex(2, 2, BaseType.POLICE_STATION)
-            vertices[3] = Vertex(3, null, null)
-            val g = Graph(vertices)
-
-            // creat edges
-            g.addEdge(
-                vertices[0]!!,
-                vertices[2]!!,
-                RoadProperties(PrimaryType.COUNTY, SecondaryType.NONE, "v0", "r0", 60, 30)
-            )
-            g.addEdge(
-                vertices[1]!!,
-                vertices[3]!!,
-                RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r1", 10, 30)
-            )
-            g.addEdge(
-                vertices[3]!!,
-                vertices[2]!!,
-                RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r2", 10, 30)
-            )
-            return g
-        }
 }
