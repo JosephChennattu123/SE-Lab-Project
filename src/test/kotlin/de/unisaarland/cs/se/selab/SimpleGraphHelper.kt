@@ -33,6 +33,11 @@ import de.unisaarland.cs.se.selab.model.map.Vertex
             vertices[2]!!,
             RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r2", 10, 30)
         )
+        g.addEdge(
+            vertices[0]!!,
+            vertices[1]!!,
+            RoadProperties(PrimaryType.COUNTY, SecondaryType.ONE_WAY, "v0", "r3", 100, 30)
+        )
         return g
     }
 
