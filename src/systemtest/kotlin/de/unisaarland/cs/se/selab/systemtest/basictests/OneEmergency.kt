@@ -24,7 +24,7 @@ import de.unisaarland.cs.se.selab.systemtest.logTick
  * 2 Firetrucks with water, 1200l water
  * */
 class OneEmergency : SystemTest() {
-    override val name = "ExampleTest"
+    override val name = "OneEmergency"
 
     override val map = "mapFiles/example_map.dot"
     override val assets = "assetsJsons/example_assets.json"
