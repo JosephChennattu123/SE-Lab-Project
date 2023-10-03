@@ -21,7 +21,7 @@ object Logger {
     }
 
     private fun printLog(output: String) {
-        if (outputFile == null) {
+        if (outputFile == null || outputFile == "/dev/stdout") {
             printWriter?.println(output)
         } else {
             File(outputFile as String).writeText(
