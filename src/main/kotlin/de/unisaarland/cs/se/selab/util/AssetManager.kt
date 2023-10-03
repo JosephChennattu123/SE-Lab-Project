@@ -320,11 +320,15 @@ object AssetManager {
 
                 // if vehicle is currently on the road, calculate drive time from edge to edge.
                 VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
+                    val currentVertex = vehicle.getCurrentVertexID() ?: error("current vertex is null")
+                    val nextVertex = vehicle.getNextVertexID() ?: error("next vertex is null")
+                    val distanceOnEdge = vehicle.getDistanceOnEdge() ?: error("distance on edge is null")
+                    vehicle.getDistanceOnEdge()
                     val newPath = Dijkstra.getShortestPathFromEdgeToEdge(
                         model.graph,
-                        vehicle.getCurrentVertexID(),
-                        vehicle.getNextVertexID(),
-                        vehicle.getDistanceOnEdge(),
+                        currentVertex,
+                        nextVertex,
+                        distanceOnEdge,
                         emergency.location,
                         vehicle.height
                     )
