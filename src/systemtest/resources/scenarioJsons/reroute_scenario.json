@@ -14,7 +14,7 @@
     },
     {
       "id": 1,
-      "tick": 7,
+      "tick": 2,
       "village": "Saarbruecken",
       "roadName": "GoldeneBremm",
       "emergencyType": "MEDICAL",
