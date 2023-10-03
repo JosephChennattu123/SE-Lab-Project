@@ -86,7 +86,7 @@ internal class DijkstraTest {
         )
 
 
-// todo() special scenario that the next vertex to go is one of the (lastVisitedVertex or nextVisitedVertex)
+        // todo() special scenario that the next vertex to go is one of the (lastVisitedVertex or nextVisitedVertex)
 //        val r2 =
 //            Dijkstra.getShortestPathFromEdgeToEdge(simpleGraph, 2, 0, 50, Location("v0", "r2"), 10)
 //        val vertexPath2 = listOf(0, 2)
@@ -109,12 +109,70 @@ internal class DijkstraTest {
 
     }
 
-//    @Test
-//    fun getShortestPathFromVertexToEdge() {
-//    }
-//
-//    @Test
-//    fun getShortestPathFromEdgeToVertex() {
-//    }
+    @Test
+    fun getShortestPathFromVertexToEdge() {
+        val r1 =
+            Dijkstra.getShortestPathFromVertexToEdge(simpleGraph, 0, Location("v0", "r1"), 10)
+        val vertexPath = listOf(0, 1)
+        assertEquals("Expected $vertexPath, but got ${r1.vertexPath}", vertexPath, r1.vertexPath)
+        val edgeWeights = listOf(100)
+        assertEquals(
+            "Expected $edgeWeights, but got ${r1.edgeWeights}",
+            edgeWeights,
+            r1.edgeWeights
+        )
+        val isOneWay = listOf(true)
+        assertEquals("Expected $isOneWay, but got ${r1.isOneWay}", isOneWay, r1.isOneWay)
+        val totalTicksToArrive = 10
+        assertEquals(
+            "Expected $totalTicksToArrive, but got ${r1.totalTicksToArrive}",
+            totalTicksToArrive,
+            r1.totalTicksToArrive
+        )
+
+        // test  totalTicksToArrive = 0
+        val r2 =
+            Dijkstra.getShortestPathFromVertexToEdge(simpleGraph, 1, Location("v0", "r1"), 10)
+        val vertexPath2 = listOf(1)
+        assertEquals("Expected $vertexPath2, but got ${r2.vertexPath}", vertexPath2, r2.vertexPath)
+        val edgeWeights2 = emptyList<Int>()
+        assertEquals(
+            "Expected $edgeWeights2, but got ${r2.edgeWeights}",
+            edgeWeights2,
+            r2.edgeWeights
+        )
+        val isOneWay2 = emptyList<Int>()
+        assertEquals("Expected $isOneWay2, but got ${r2.isOneWay}", isOneWay2, r2.isOneWay)
+        val totalTicksToArrive2 = 0
+        assertEquals(
+            "Expected $totalTicksToArrive2, but got ${r2.totalTicksToArrive}",
+            totalTicksToArrive2,
+            r2.totalTicksToArrive
+        )
+
+    }
+
+    @Test
+    fun getShortestPathFromEdgeToVertex() {
+        // todo() isOneWay?
+//        val r1 =
+//            Dijkstra.getShortestPathFromEdgeToVertex(simpleGraph, 2, 0, 3, 20, 10)
+//        val vertexPath = listOf(2, 0, 1, 3)
+//        assertEquals("Expected $vertexPath, but got ${r1.vertexPath}", vertexPath, r1.vertexPath)
+//        val edgeWeights = listOf(40, 100, 10)
+//        assertEquals(
+//            "Expected $edgeWeights, but got ${r1.edgeWeights}",
+//            edgeWeights,
+//            r1.edgeWeights
+//        )
+//        val isOneWay = listOf(false, true, true)
+//        assertEquals("Expected $isOneWay, but got ${r1.isOneWay}", isOneWay, r1.isOneWay)
+//        val totalTicksToArrive = 15
+//        assertEquals(
+//            "Expected $totalTicksToArrive, but got ${r1.totalTicksToArrive}",
+//            totalTicksToArrive,
+//            r1.totalTicksToArrive
+//        )
+    }
 
 }

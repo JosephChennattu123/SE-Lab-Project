@@ -233,6 +233,7 @@ object Dijkstra {
         weights.addAll(pathFromTarget.edgeWeights)
         // add remaining edge one way status.
         val isOneWay: MutableList<Boolean> = mutableListOf()
+        // todo()
         isOneWay.add(true)
         isOneWay.addAll(pathFromTarget.isOneWay)
         val oneWayPath = Path(path, weights, isOneWay, roundToNextTen(weights.sum()) / speed)
@@ -253,6 +254,7 @@ object Dijkstra {
             newWeights.addAll(pathFromSource.edgeWeights)
             // add remaining edge one way status.
             val newIsOneWay: MutableList<Boolean> = mutableListOf()
+            // todo()
             newIsOneWay.add(false)
             newIsOneWay.addAll(pathFromSource.isOneWay)
             return Path(newPath, newWeights, newIsOneWay, roundToNextTen(newWeights.sum()) / speed)
