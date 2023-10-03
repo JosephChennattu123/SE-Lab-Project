@@ -11,8 +11,6 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
     override val requiredProperties: List<String> = listOf(ID, BASE_TYPE, STAFF, LOCATION_VERTEX)
     override val optionalProperties: List<String> = listOf(DOGS, DOCTORS)
 
-    private var fail = false
-
     /**
      * Validates the information for bases and creates bases.
      *
@@ -31,21 +29,29 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
             if (!validateSpecificProperties(baseInfo, optionalProperties, mandatoryFields)) {
                 return null
             }
-
-            /*if (!validateDogsOnlyInPoliceStations(baseInfo) || !validateDoctorsOnlyInHospitals(baseInfo)) {
-                return null
-            }*/ // TODO might not be needed anymore because of validateSpecificProperties
-
-            if (baseInfo.baseType == BaseType.HOSPITAL) {
-                fail = !validateNumDoctors(baseInfo)
-            } else if (baseInfo.baseType == BaseType.POLICE_STATION) {
-                fail = !validateNumDogs(baseInfo)
-            }
-            if (fail) return null
+            if (validateSpecialNumbers(baseInfo)) return null
             if (!validateStaffBounds(baseInfo) || !validateVerticesExist(baseInfo, graph)) return null
             if (!validateAtMostOneBaseOnEachVertex(baseInfo, graph)) return null
         }
-        return baseInfos.map { Base(it.id, it.baseType, it.locationVertex, it.staff, it.doctors, it.dogs) }.toList()
+        val basesList =
+            baseInfos.map { Base(it.id, it.baseType, it.locationVertex, it.staff, it.doctors, it.dogs) }.toList()
+        val allBaseTypesExist = checkAllBaseTypesExist(basesList)
+        return if (allBaseTypesExist) basesList else null
+    }
+
+    private fun validateSpecialNumbers(baseInfo: BaseInfo): Boolean {
+        var fail = false
+        if (baseInfo.baseType == BaseType.HOSPITAL) {
+            fail = !validateNumDoctors(baseInfo)
+        } else if (baseInfo.baseType == BaseType.POLICE_STATION) {
+            fail = !validateNumDogs(baseInfo)
+        }
+        return fail
+    }
+
+    private fun checkAllBaseTypesExist(bases: List<Base>): Boolean {
+        return bases.map { it.baseType }
+            .containsAll(listOf(BaseType.POLICE_STATION, BaseType.FIRE_STATION, BaseType.HOSPITAL))
     }
 
     /**
@@ -113,8 +119,7 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      */
     private fun validateAtMostOneBaseOnEachVertex(baseInfo: BaseInfo, graph: Graph): Boolean {
         return graph.vertices.filter { (_, vertex) ->
-            vertex.vertexId == baseInfo.locationVertex &&
-                vertex.baseId != null
+            vertex.vertexId == baseInfo.locationVertex && vertex.baseId != null
         }.isEmpty()
     }
 }

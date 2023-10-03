@@ -64,7 +64,7 @@ class VehicleEvent(val vehicleId: Int, id: Int, start: Int, override var duratio
             vehicleObject.isUnavailable = false
             status = EventStatus.FINISHED
             model.currentEvents.remove(id)
-            Logger.logEventStatus(id, true)
+            Logger.logEventStatus(id, false)
         }
     }
 }

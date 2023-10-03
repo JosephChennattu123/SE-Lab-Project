@@ -24,8 +24,12 @@ class Ambulance(
     var patientPresent: Boolean? = null
     var doctorPresent: Boolean? = null
 
-    override fun setBusy() {
-        if (patientPresent == true) status = VehicleStatus.BUSY
+    override fun setBusy(): Boolean {
+        if (patientPresent == true) {
+            busyTicks = 1
+            return true
+        }
+        return false
     }
 
 /** Essentially handle emergency */
