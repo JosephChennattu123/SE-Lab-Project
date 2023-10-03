@@ -7,7 +7,7 @@ import de.unisaarland.cs.se.selab.model.map.SecondaryType
 import de.unisaarland.cs.se.selab.model.map.Vertex
 import kotlin.NumberFormatException
 
-private const val COUNTY_ROAD = "countyRoad"
+// private const val COUNTY_ROAD = "countyRoad"
 
 /**
  * Validates the graph
@@ -54,18 +54,18 @@ class GraphValidator {
         // val primaryTypes = dotParser.parsePrimaryType(attributes)
         // val secondaryTypes = dotParser.parseSecondaryType(attributes)
 
-        val edgeRange = 0 until attributes.size
+        val edgeRange = 1..attributes.size
         val edgeIds = edgeRange.toList()
 
         val allEdges: MutableMap<Int, Connection> = mutableMapOf()
         edgeIds.associateWithTo(allEdges) {
             val (source, target) = sourceTarget.getValue(it)
-            val weight = weights.getValue(it)
-            val height = heights.getValue(it)
-            val primaryType = primaryTypes.getValue(it)
-            val secondaryType = secondaryTypes.getValue(it)
-            val villageName = attributes.getValue(it).getValue(LABEL_VILLAGE)
-            val roadName = attributes.getValue(it).getValue(LABEL_ROAD_NAME)
+            val weight = weights.getValue(it - 1)
+            val height = heights.getValue(it - 1)
+            val primaryType = primaryTypes.getValue(it-1)
+            val secondaryType = secondaryTypes.getValue(it-1)
+            val villageName = attributes.getValue(it-1).getValue(LABEL_VILLAGE)
+            val roadName = attributes.getValue(it-1).getValue(LABEL_ROAD_NAME)
             Connection(
                 source,
                 target,
@@ -256,7 +256,7 @@ class GraphValidator {
      */
     private fun validateEdgeConnectsExistingVertices(): Boolean {
         val verticesInEdges: Set<Int> = sourceTarget.values.flatMap { (first, second) -> listOf(first, second) }.toSet()
-        return (vertexIds as Set<Int>).containsAll(verticesInEdges)
+        return vertexIds.containsAll(verticesInEdges)
     }
 
     /**
@@ -309,19 +309,10 @@ class GraphValidator {
      * @return true if vertices only have edges with valid village names or countyRoads
      */
     private fun validateVertexConnectedToSingleVillage(): Boolean {
-        // val dotParserObj = dotParser as DotParser
-        // val edgeStrings = dotParserObj.parseEdges()
-        // val sourceTargetMap = dotParserObj.parseSourceAndTarget(edgeStrings)
-        // val attributes = dotParserObj.parseAttributes(edgeStrings)
-        // val villageNames = dotParserObj.parseVillageName(attributes)
-
-        val primaryTypes = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_PRIMARY_TYPE)) }.toMap()
         val villageNames = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_VILLAGE)) }.toMap()
 
         val vertexIdToEdges: MutableMap<Int, Pair<List<Int>, List<Int>>> = mutableMapOf()
-
         // val primaryTypes = dotParserObj.parsePrimaryType(attributes)
-
         vertexIds.associateWithTo(vertexIdToEdges) {
             val outEdges = sourceTarget.filter { (_, value) -> value.first == it }.keys.toList()
             val inEdges = sourceTarget.filter { (_, value) -> value.second == it }.keys.toList()
@@ -334,9 +325,11 @@ class GraphValidator {
             val incomingEdgesIds = value.second
 
             val outgoingEdges =
-                outgoingEdgesIds.filter { PrimaryType.fromString(primaryTypes.getValue(it)) == PrimaryType.COUNTY }
+                outgoingEdgesIds.filter {
+                    primaryTypes.getValue(it - 1) == PrimaryType.COUNTY
+                }
             val incomingEdges =
-                incomingEdgesIds.filter { PrimaryType.fromString(primaryTypes.getValue(it)) == PrimaryType.COUNTY }
+                incomingEdgesIds.filter { primaryTypes.getValue(it - 1) == PrimaryType.COUNTY }
 
             for (outEdge: Int in outgoingEdges) {
                 val newVillageName = villageNames[outEdge] ?: return false
@@ -360,13 +353,13 @@ class GraphValidator {
      */
 
     private fun checkValidConnectedEdge(
-        primaryTypes: Map<Int, String>,
+        primaryTypes: Map<Int, PrimaryType>,
         edge: Int,
         vertexVillage: String?,
         newVillageName: String
     ): Boolean {
         val primaryType = primaryTypes[edge]
-        if (vertexVillage != newVillageName && primaryType != COUNTY_ROAD) {
+        if (vertexVillage != newVillageName && primaryType != PrimaryType.COUNTY) {
             return true
         }
         return false
@@ -471,11 +464,11 @@ class GraphValidator {
     private fun getCountyOrVillageNames(county: Boolean): List<String> {
         return if (county) {
             attributes.values
-                .filter { it[LABEL_SECONDARY_TYPE] == LABEL_COUNTY_ROAD }
+                .filter { it[LABEL_PRIMARY_TYPE] == LABEL_COUNTY_ROAD }
                 .map { it[LABEL_VILLAGE] as String }
         } else { // non countyRoads i.e. village names
             attributes.values
-                .filter { it[LABEL_SECONDARY_TYPE] != LABEL_COUNTY_ROAD }
+                .filter { it[LABEL_PRIMARY_TYPE] != LABEL_COUNTY_ROAD }
                 .map { it[LABEL_VILLAGE] as String }
         }
     }
