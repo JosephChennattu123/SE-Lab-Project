@@ -28,7 +28,6 @@ class UpdatePhase {
         processEmergencies(model.getCurrentEmergencies(), model) // TODO needs checking might be wrong
         processActiveEvents(model.getCurrentEventsObjects(), model.currentEvents)
         processPostponedEvents(model)
-        timeUpdate(model)
     }
 
     /**
@@ -40,12 +39,15 @@ class UpdatePhase {
                 VehicleStatus.BUSY -> {
                     if (vehicle.decreaseBusyTicks()) vehicle.status = VehicleStatus.AT_BASE
                 }
+
                 VehicleStatus.ASSIGNED -> {
                     vehicle.status = VehicleStatus.TO_EMERGENCY
                 }
+
                 VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
                     vehicle.driveUpdate()
                 }
+
                 else -> {}
             }
         }
@@ -153,9 +155,5 @@ class UpdatePhase {
                 vehicleEventsPostponed.applyEffect(model)
             }
         }
-    }
-
-    private fun timeUpdate(model: Model) {
-        model.currentTick++
     }
 }
