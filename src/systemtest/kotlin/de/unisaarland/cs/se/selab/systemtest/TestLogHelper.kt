@@ -43,8 +43,7 @@ fun logEmergencyAssigned(emergencyId: Int, baseId: Int): String {
  * @param arrivesInt the number of ticks it takes the vehicle to arrive
  */
 fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int): String {
-    return "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
-        "ticks to arrive."
+    return "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt ticks to arrive."
 }
 
 /**
