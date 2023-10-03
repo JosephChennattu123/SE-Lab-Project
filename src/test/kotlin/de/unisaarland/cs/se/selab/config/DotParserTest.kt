@@ -6,10 +6,10 @@ import kotlin.test.assertTrue
 
 internal class DotParserTest {
     val validMap = "src/systemtest/resources/mapFiles/example_map.dot"
-    val brokenMap1 = "src/test/resources/broken_map1.dot"
-    val brokenMap2 = "src/test/resources/broken_map2.dot"
-    val brokenMap3 = "src/test/resources/broken_map3.dot"
-    val brokenMap4 = "src/test/resources/broken_map4.dot"
+    val brokenMap1 = "src/test/resources/dotParserMaps/broken_map1.dot"
+    val brokenMap2 = "src/test/resources/dotParserMaps/broken_map2.dot"
+    val brokenMap3 = "src/test/resources/dotParserMaps/broken_map3.dot"
+    val brokenMap4 = "src/test/resources/dotParserMaps/broken_map4.dot"
 
     @Test
     fun testValidFile() {

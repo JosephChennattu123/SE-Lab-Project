@@ -8,7 +8,7 @@ import de.unisaarland.cs.se.selab.model.BaseType
  * @param baseId the id of the base at the that vertex
  * @param baseType the type of the base
  */
-class Vertex(val vertexId: Int, val baseId: Int?, val baseType: BaseType?) {
+class Vertex(val vertexId: Int, var baseId: Int?, var baseType: BaseType?) {
     private val outgoingEdges: MutableList<Edge> = mutableListOf()
     private val ingoingEdges: MutableList<Edge> = mutableListOf()
 
