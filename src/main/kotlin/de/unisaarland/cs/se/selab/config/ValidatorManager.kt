@@ -40,7 +40,7 @@ class ValidatorManager {
         this.dotParser = dotParser
         this.jsonParser = jsonParser
 
-        dotParser.parse()
+        // dotParser.parse()
         if (!validateGraph()) {
             Logger.logParsingValidationResult(dotParser.graphFilePath, false)
             return null
