@@ -41,7 +41,7 @@ class AssetAllocation {
      * Sort Vehicles by id, and check if the status is AT_BASE
      * */
     private fun sortAtBaseVehicles(vehicles: List<Vehicle>): MutableList<Vehicle> {
-        return vehicles.filter { it.status == VehicleStatus.AT_BASE }.sortedBy { it.vehicleID } as MutableList<Vehicle>
+        return vehicles.filter { it.status == VehicleStatus.AT_BASE }.sortedBy { it.vehicleID }.toMutableList()
     }
 
     /**
