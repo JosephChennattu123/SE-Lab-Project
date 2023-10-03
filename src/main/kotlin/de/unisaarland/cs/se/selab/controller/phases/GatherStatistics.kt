@@ -15,14 +15,14 @@ class GatherStatistics {
      */
     fun execute(model: Model) {
         Logger.logSimulationEnded()
-        Logger.logStatistics(
+
+        val receivedEmergencies: Int = if (model.maxTick == null) {
+            model.emergencies.size
+        } else {
             model.emergencies.filter {
-                it.key < (
-                    model.maxTick
-                        ?: throw IllegalArgumentException("How could the maxTick be null?!")
-                    )
-            }.values.size,
-            model.assignedEmergencies.size
-        )
+                it.value.scheduledTick < model.maxTick
+            }.values.size
+        }
+        Logger.logStatistics(receivedEmergencies, model.assignedEmergencies.size)
     }
 }

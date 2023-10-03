@@ -62,17 +62,17 @@ class GraphValidator {
             val (source, target) = sourceTarget.getValue(it)
             val weight = weights.getValue(it - 1)
             val height = heights.getValue(it - 1)
-            val primaryType = primaryTypes.getValue(it-1)
-            val secondaryType = secondaryTypes.getValue(it-1)
-            val villageName = attributes.getValue(it-1).getValue(LABEL_VILLAGE)
-            val roadName = attributes.getValue(it-1).getValue(LABEL_ROAD_NAME)
+            val primaryType = primaryTypes.getValue(it - 1)
+            val secondaryType = secondaryTypes.getValue(it - 1)
+            val villageName = attributes.getValue(it - 1).getValue(LABEL_VILLAGE)
+            val roadName = attributes.getValue(it - 1).getValue(LABEL_ROAD_NAME)
             Connection(
                 source,
                 target,
                 weight,
                 height,
-                primaryType as PrimaryType,
-                secondaryType as SecondaryType,
+                primaryType,
+                secondaryType,
                 villageName,
                 roadName
             )
@@ -166,7 +166,7 @@ class GraphValidator {
 
     private fun buildGraph(): Graph? {
         val vertices: MutableMap<Int, Vertex> = mutableMapOf()
-        for (vertexId in vertexIds as Set<Int>) {
+        for (vertexId in vertexIds) {
             val vertex = Vertex(vertexId, null, null)
             vertices[vertexId] = vertex
         }
@@ -217,7 +217,7 @@ class GraphValidator {
      */
     private fun validateVerticesConnected(): Boolean {
         val verticesInEdges: Set<Int> = sourceTarget.values.flatMap { (first, second) -> listOf(first, second) }.toSet()
-        return verticesInEdges.containsAll(this.vertexIds as Set<Int>)
+        return verticesInEdges.containsAll(this.vertexIds)
     }
 
     /**

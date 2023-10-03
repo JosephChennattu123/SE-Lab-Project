@@ -55,7 +55,7 @@ object Logger {
      * @param tick the number of the tick
      */
     fun logTick(tick: Int) {
-        printLog("Simulation Tick:  $tick")
+        printLog("Simulation Tick: $tick")
     }
 
     /***
@@ -166,10 +166,10 @@ object Logger {
      * @param ongoingEmergenciesAmount the remaining ongoing emergencies
      */
     fun logStatistics(receivedEmergenciesAmount: Int, ongoingEmergenciesAmount: Int) {
-        printLog("Simulation Statistics: $numReroutedAssets assets rerouted")
-        printLog("Simulation Statistics: $receivedEmergenciesAmount received emergencies")
-        printLog("Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies")
-        printLog("Simulation Statistics: $numFailedEmergencies failed emergencies")
+        printLog("Simulation Statistics: $numReroutedAssets assets rerouted.")
+        printLog("Simulation Statistics: $receivedEmergenciesAmount received emergencies.")
+        printLog("Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies.")
+        printLog("Simulation Statistics: $numFailedEmergencies failed emergencies.")
         printLog("Simulation Statistics: $numResolvedEmergency resolved emergencies.")
     }
 }
