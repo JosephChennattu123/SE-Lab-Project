@@ -12,18 +12,7 @@ class FireEmergencyTest : SystemTest() {
     override val maxTicks = 22
 
     override suspend fun run() {
-        // everything is parsed and validated
-        assertNextLine(logParsingValidationResult("example_map.dot", true))
-        assertNextLine(logParsingValidationResult("fire_emergency_assets.json", true))
-        assertNextLine(logParsingValidationResult("fire_emergency_scenario.json", true))
-
-        // The Simulation starts with tick 0
-        assertNextLine(LOG_SIMULATION_START)
-        assertNextLine(logTick(0)) // road closure happens on  2->3,2->4 and 1->4
-        assertNextLine(logEventStatus(0, true)) // trigger road closure event
-        assertNextLine(logEventStatus(1, true)) // trigger road closure event
-        assertNextLine(logEventStatus(2, true)) // trigger road closure event
-
+        assertInitialization()
         // Simulation Ticks and Events
         assertNextLine(logTick(1)) // traffic jam happens on 1->3 with factor 200,becomes basically blocked
         assertNextLine(logEventStatus(3, true)) // trigger traffic jam event
@@ -32,10 +21,7 @@ class FireEmergencyTest : SystemTest() {
         assertNextLine(logEmergencyAssigned(0, 3)) // assigning emergency 0 to base 3
 
         // Allocating assets to the emergency
-        assertNextLine(logAssetAllocated(0, 0, 2))
-        assertNextLine(logAssetAllocated(1, 0, 2))
-        assertNextLine(logAssetAllocated(2, 0, 2))
-        assertNextLine(logAssetAllocated(3, 0, 2))
+        allocateAssets()
         // Requesting additional assets
         assertNextLine(logRequest(0, 5, 0)) // requesting assets from base 5 for emergency 0
         assertNextLine(logAssetAllocated(4, 0, 3))
@@ -60,8 +46,6 @@ class FireEmergencyTest : SystemTest() {
         assertNextLine(logAssetArrived(2, 5))
         assertNextLine(logAssetArrived(3, 5))
         assertNextLine(logAssetArrived(4, 5))
-
-
         assertNextLine(logTick(6))
         assertNextLine(logAssetArrived(5, 5))
         assertNextLine(logAssetArrived(6, 5))
@@ -72,8 +56,6 @@ class FireEmergencyTest : SystemTest() {
         assertNextLine(logTick(9))
 
         // More asset arrivals
-
-
         assertNextLine(logTick(10))
 
         assertNextLine(logAssetArrived(7, 3))
@@ -93,7 +75,6 @@ class FireEmergencyTest : SystemTest() {
         assertNextLine(logAssetArrived(10, 3))
         assertNextLine(logAssetArrived(11, 3))
 
-
         // All assets have arrived, emergency handling can start
         assertNextLine(logEmergencyHandlingStart(0))
 
@@ -106,6 +87,25 @@ class FireEmergencyTest : SystemTest() {
 
         assertNextLine(logTick(19))
 
+        endSimulation()
+
+        gatherStats()
+    }
+    private suspend fun assertInitialization() {
+        // everything is parsed and validated
+        assertNextLine(logParsingValidationResult("example_map.dot", true))
+        assertNextLine(logParsingValidationResult("fire_emergency_assets.json", true))
+        assertNextLine(logParsingValidationResult("fire_emergency_scenario.json", true))
+
+        // The Simulation starts with tick 0
+        assertNextLine(LOG_SIMULATION_START)
+        assertNextLine(logTick(0)) // road closure happens on  2->3,2->4 and 1->4
+
+        assertNextLine(logEventStatus(0, true)) // trigger road closure event
+        assertNextLine(logEventStatus(1, true)) // trigger road closure event
+        assertNextLine(logEventStatus(2, true)) // trigger road closure event
+    }
+    private suspend fun endSimulation() {
         // Ending events
         assertNextLine(logEventStatus(0, false))
         assertNextLine(logEventStatus(1, false))
@@ -117,7 +117,8 @@ class FireEmergencyTest : SystemTest() {
 
         // The Simulation should end
         assertNextLine(LOG_SIMULATION_ENDED)
-
+    }
+    private suspend fun gatherStats() {
         // Statistics
         assertNextLine(logNumberOfReroutedAssets(0))
         assertNextLine(logNumberOfReceivedEmergencies(1))
@@ -127,5 +128,12 @@ class FireEmergencyTest : SystemTest() {
 
         // end of file is reached
         assertEnd()
+    }
+
+    private suspend fun allocateAssets() {
+        assertNextLine(logAssetAllocated(0, 0, 2))
+        assertNextLine(logAssetAllocated(1, 0, 2))
+        assertNextLine(logAssetAllocated(2, 0, 2))
+        assertNextLine(logAssetAllocated(3, 0, 2))
     }
 }

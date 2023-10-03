@@ -1,5 +1,6 @@
 package de.unisaarland.cs.se.selab.config
 
+import java.io.File
 import java.io.FileReader
 import java.lang.IndexOutOfBoundsException
 
@@ -7,9 +8,9 @@ import java.lang.IndexOutOfBoundsException
  * class used to read a file character by character.
  * @param filePath the path to the file to be read.
  * */
-class FileReader(filePath: String) {
+class DotFileReader(filePath: String) {
 
-    val fileString: String = FileReader(filePath).readText()
+    val fileString: String = FileReader(filePath.replace("/", File.separator)).readText()
     private var currentIndex: Int = 0
     private val maxIndex: Int = fileString.length - 1
 

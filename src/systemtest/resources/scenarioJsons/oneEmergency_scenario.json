@@ -1,5 +1,15 @@
 {
   "events": [
+    {
+      "id": 1,
+      "type": "RUSH_HOUR",
+      "tick": 100,
+      "duration": 1,
+      "roadTypes": [
+        "MAIN_STREET"
+      ],
+      "factor": 1
+    }
   ],
   "emergencyCalls": [
     {
