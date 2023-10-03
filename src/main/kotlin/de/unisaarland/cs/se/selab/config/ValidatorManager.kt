@@ -53,7 +53,7 @@ class ValidatorManager {
         try {
             jsonParser.validateAssetsSchema()
         } catch (e: ValidationException) {
-            Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
+            // Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
             Logger.outputLogger.error {
                 "${"Error: invalid assets-file detected by schema-validation"} ${e.stackTrace}"
             }
@@ -69,7 +69,7 @@ class ValidatorManager {
         try {
             jsonParser.validateScenarioSchema()
         } catch (e: ValidationException) {
-            Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
+            // Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
             Logger.outputLogger.error {
                 "${"Error: invalid scenario-file detected by schema-validation"} ${e.stackTrace}"
             }
