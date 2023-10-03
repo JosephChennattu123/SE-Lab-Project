@@ -204,14 +204,6 @@ object Dijkstra {
         height: Int
     ): Path {
         val edge = graph.getEdge(sourceVertex, targetVertex)
-        val pathFromSource =
-            getShortestPathFromVertexToVertex(
-                graph,
-                sourceVertex,
-                destinationVertex,
-                height
-            )
-//        println("pathFromSource" + pathFromSource.vertexPath)
         val pathFromTarget =
             getShortestPathFromVertexToVertex(
                 graph,
@@ -219,12 +211,12 @@ object Dijkstra {
                 destinationVertex,
                 height
             )
-//        println("pathFromTarget" + pathFromTarget.vertexPath)
         // update path from target to include the remaining edge.
         // add remaining edge to be travelled.
         val path: MutableList<Int> = mutableListOf()
         if (pathFromTarget.vertexPath.last() != sourceVertex
-            && pathFromTarget.vertexPath.first() != sourceVertex)
+            && pathFromTarget.vertexPath.first() != sourceVertex
+        )
             path.add(sourceVertex)
         path.addAll(pathFromTarget.vertexPath)
         // add remaining edge weight to be travelled.
@@ -233,31 +225,41 @@ object Dijkstra {
         weights.addAll(pathFromTarget.edgeWeights)
         // add remaining edge one way status.
         val isOneWay: MutableList<Boolean> = mutableListOf()
-        // todo()
-        isOneWay.add(true)
+        isOneWay.add(edge.isOneWay())
         isOneWay.addAll(pathFromTarget.isOneWay)
         val oneWayPath = Path(path, weights, isOneWay, roundToNextTen(weights.sum()) / speed)
-        // check if it is shorter to travel back to source and then to destination.
-        if (pathFromSource.getTotalDistance() + currentDistanceOnEdge <
-            pathFromTarget.getTotalDistance() + (edge.getWeight() - currentDistanceOnEdge)
-        ) {
-            // update path from source to include the remaining edge.
-            // add remaining edge to be travelled.
-            val newPath: MutableList<Int> = mutableListOf()
-            if (pathFromSource.vertexPath.last() != targetVertex
-                && pathFromSource.vertexPath.first() != targetVertex)
-                newPath.add(targetVertex)
-            newPath.addAll(pathFromSource.vertexPath)
-            // add remaining edge weight to be travelled.
-            val newWeights: MutableList<Int> = mutableListOf()
-            newWeights.add(currentDistanceOnEdge)
-            newWeights.addAll(pathFromSource.edgeWeights)
-            // add remaining edge one way status.
-            val newIsOneWay: MutableList<Boolean> = mutableListOf()
-            // todo()
-            newIsOneWay.add(false)
-            newIsOneWay.addAll(pathFromSource.isOneWay)
-            return Path(newPath, newWeights, newIsOneWay, roundToNextTen(newWeights.sum()) / speed)
+
+//        println("pathFromSource" + pathFromSource.vertexPath)
+        if (!edge.isOneWay()) {
+            val pathFromSource =
+                getShortestPathFromVertexToVertex(
+                    graph,
+                    sourceVertex,
+                    destinationVertex,
+                    height
+                )
+//        println("pathFromTarget" + pathFromTarget.vertexPath)
+            // check if it is shorter to travel back to source and then to destination.
+            if (pathFromSource.getTotalDistance() + currentDistanceOnEdge <
+                pathFromTarget.getTotalDistance() + (edge.getWeight() - currentDistanceOnEdge)
+            ) {
+                // update path from source to include the remaining edge.
+                // add remaining edge to be travelled.
+                val newPath: MutableList<Int> = mutableListOf()
+                if (pathFromSource.vertexPath.last() != targetVertex
+                    && pathFromSource.vertexPath.first() != targetVertex)
+                    newPath.add(targetVertex)
+                newPath.addAll(pathFromSource.vertexPath)
+                // add remaining edge weight to be travelled.
+                val newWeights: MutableList<Int> = mutableListOf()
+                newWeights.add(currentDistanceOnEdge)
+                newWeights.addAll(pathFromSource.edgeWeights)
+                // add remaining edge one way status.
+                val newIsOneWay: MutableList<Boolean> = mutableListOf()
+                newIsOneWay.add(edge.isOneWay())
+                newIsOneWay.addAll(pathFromSource.isOneWay)
+                return Path(newPath, newWeights, newIsOneWay, roundToNextTen(newWeights.sum()) / speed)
+            }
         }
         return oneWayPath
     }
