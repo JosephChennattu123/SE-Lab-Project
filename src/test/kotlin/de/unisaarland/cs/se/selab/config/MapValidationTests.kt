@@ -19,65 +19,51 @@ class MapValidationTests {
     // scenarios.
     val simpleScenario = "src/test/resources/validationResources/scenarios/OneEventOneEmergency.json"
 
-
-    @Test
-    fun illegalRoadTypes() {
-    }
-
     @Test
     fun edgeIsLoop() {
         val dotParser = DotParser(mapWithLoop)
-        val jsonParserTest = JsonParser(simpleAssets,simpleScenario)
+        val jsonParserTest = JsonParser(simpleAssets, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
     fun twoEdgesSameSourceAndTarget() {
         val dotParser = DotParser(mapWithTwoEdgesSameSourceAndTarget)
-        val jsonParserTest = JsonParser(simpleAssets,simpleScenario)
+        val jsonParserTest = JsonParser(simpleAssets, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
     fun oneVertexDifferentVillages() {
         val dotParser = DotParser(vertexInManyVillages)
-        val jsonParserTest = JsonParser(simpleAssets,simpleScenario)
+        val jsonParserTest = JsonParser(simpleAssets, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
     fun noMainStreetsInVillage() {
         val dotParser = DotParser(noMainStreets)
-        val jsonParserTest = JsonParser(simpleAssets,simpleScenario)
+        val jsonParserTest = JsonParser(simpleAssets, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
     fun illegalRoadDimensions() {
         val dotParser = DotParser(illegalRoads)
-        val jsonParserTest = JsonParser(simpleAssets,simpleScenario)
+        val jsonParserTest = JsonParser(simpleAssets, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
-
-    @Test
-    fun villageIsCounty() {}
 
     @Test
     fun mapTooSmall() {
         val dotParser = DotParser(smallMap)
-        val jsonParserTest = JsonParser(simpleAssets,simpleScenario)
+        val jsonParserTest = JsonParser(simpleAssets, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
-
-
-
-
-
-
 }

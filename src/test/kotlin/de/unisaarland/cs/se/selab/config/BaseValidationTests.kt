@@ -21,62 +21,59 @@ class BaseValidationTests {
     // scenarios.
     val simpleScenario = "src/test/resources/validationResources/scenarios/OneEventOneEmergency.json"
 
-
-
     @Test
     fun baseWithNoVertex() {
         val dotParser = DotParser(simpleMap)
-        val jsonParserTest = JsonParser(baseWithNoVertex,simpleScenario)
+        val jsonParserTest = JsonParser(baseWithNoVertex, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
     fun twoBasesOneVertex() {
         val dotParser = DotParser(simpleMap)
-        val jsonParserTest = JsonParser(twoBasesOneVertex,simpleScenario)
+        val jsonParserTest = JsonParser(twoBasesOneVertex, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
-    fun notAllDepartmentsPresent(){
+    fun notAllDepartmentsPresent() {
         val dotParser = DotParser(simpleMap)
-        val jsonParserTest = JsonParser(noPolice,simpleScenario)
+        val jsonParserTest = JsonParser(noPolice, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
     fun baseWithNoVehicle() {
         val dotParser = DotParser(simpleMap)
-        val jsonParserTest = JsonParser(baseWithNoVehicles,simpleScenario)
+        val jsonParserTest = JsonParser(baseWithNoVehicles, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
     fun illegalPoliceAssets() {
         val dotParser = DotParser(simpleMap)
-        val jsonParserTest = JsonParser(policeWithAmbulance,simpleScenario)
+        val jsonParserTest = JsonParser(policeWithAmbulance, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
     fun illegalHospitalAssets() {
         val dotParser = DotParser(simpleMap)
-        val jsonParserTest = JsonParser(hospitalWithFireTruck,simpleScenario)
+        val jsonParserTest = JsonParser(hospitalWithFireTruck, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
 
     @Test
     fun illegalFireDepartmentAssets() {
         val dotParser = DotParser(simpleMap)
-        val jsonParserTest = JsonParser(fireStationWithAmbulance,simpleScenario)
+        val jsonParserTest = JsonParser(fireStationWithAmbulance, simpleScenario)
         val validator = ValidatorManager()
-        assertNull(validator.validate(dotParser,jsonParserTest,null))
+        assertNull(validator.validate(dotParser, jsonParserTest, null))
     }
-
 }
