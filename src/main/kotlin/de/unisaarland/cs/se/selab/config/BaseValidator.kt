@@ -122,6 +122,7 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
             if (vertex.vertexId == baseInfo.locationVertex) {
                 return if (vertex.baseId == null) {
                     vertex.baseId = baseInfo.id
+                    vertex.baseType = baseInfo.baseType
                     true
                 } else {
                     false
