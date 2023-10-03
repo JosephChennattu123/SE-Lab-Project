@@ -23,9 +23,14 @@ object Dijkstra {
     fun getNearestBaseToEdge(graph: Graph, location: Location, baseType: BaseType): Int? {
         val edge = graph.getEdge(location)
         val nearestBasesToTarget = findNearestBases(graph, edge.targetVertex.vertexId, baseType)
+//        println("----------------------------")
         val nearestBasesToSource = findNearestBases(graph, edge.sourceVertex.vertexId, baseType)
         val nearestBaseToTarget = nearestBasesToTarget?.minBy { it.value }
+//        println(edge.targetVertex.vertexId)
+//        println(nearestBaseToTarget)
         val nearestBaseToSource = nearestBasesToSource?.minBy { it.value }
+//        println(edge.sourceVertex.vertexId)
+//        println(nearestBasesToSource)
         if (nearestBaseToSource != null) {
             if (nearestBaseToTarget != null) {
                 return if (nearestBasesToSource.getValue(nearestBaseToSource.key)
@@ -52,6 +57,7 @@ object Dijkstra {
         baseType: BaseType,
         requestedBases: Set<Int>
     ): Int? {
+        assert(requestedBases.contains(sourceVertex)) { "requestedBases must contain the sourceVertex" }
         val nearestBases = findNearestBases(graph, sourceVertex, baseType, requestedBases)
         if (nearestBases != null) {
             return nearestBases.minBy { it.value }.key
@@ -87,6 +93,8 @@ object Dijkstra {
                 distanceFromSourceVertex,
                 height
             )
+//        println("pathToTargetVertex" + pathToTargetVertex.vertexPath + ", weight" +
+//        pathToTargetVertex.edgeWeights + pathToTargetVertex.totalTicksToArrive)
         val pathToSourceVertex = getShortestPathFromEdgeToVertex(
             graph,
             lastVisitedVertex,
@@ -95,6 +103,11 @@ object Dijkstra {
             distanceFromSourceVertex,
             height
         )
+//        println(
+//                "pathToSourceVertex" + pathToSourceVertex.vertexPath
+//                    + ", weight" + pathToSourceVertex.edgeWeights + pathToSourceVertex.totalTicksToArrive
+//            )
+
         return if (pathToTargetVertex.totalTicksToArrive < pathToSourceVertex.totalTicksToArrive) {
             pathToTargetVertex
         } else {
@@ -120,15 +133,16 @@ object Dijkstra {
         val distanceFromSourceVertex =
             dijkstraAlgorithm(graph, sourceVertex, false, height, parentMap)
         val path = reconstructPath(sourceVertex, targetVertex, parentMap)
-        val weights: List<Int> = mutableListOf()
-        val isOneWay: List<Boolean> = mutableListOf()
-        for (i in 0 until path.size - 2) {
-            weights + graph.getEdge(path[i], path[i + 1]).getWeight()
-            isOneWay +
+        val weights: MutableList<Int> = mutableListOf()
+        val isOneWay: MutableList<Boolean> = mutableListOf()
+        for (i in 0 until path.size - 1) {
+            weights.add(graph.getEdge(path[i], path[i + 1]).getWeight())
+            isOneWay.add(
                 graph.getEdge(
                     path[i],
                     path[i + 1]
                 ).isOneWay()
+            )
         }
         return Path(
             path,
@@ -192,42 +206,62 @@ object Dijkstra {
         height: Int
     ): Path {
         val edge = graph.getEdge(sourceVertex, targetVertex)
-        val pathFromSource =
-            getShortestPathFromVertexToVertex(graph, sourceVertex, destinationVertex, height)
         val pathFromTarget =
-            getShortestPathFromVertexToVertex(graph, targetVertex, destinationVertex, height)
+            getShortestPathFromVertexToVertex(
+                graph,
+                targetVertex,
+                destinationVertex,
+                height
+            )
         // update path from target to include the remaining edge.
         // add remaining edge to be travelled.
-        val path: List<Int> = mutableListOf()
-        path + sourceVertex
-        path + pathFromTarget.vertexPath
+        val path: MutableList<Int> = mutableListOf()
+        path.add(sourceVertex)
+        path.addAll(pathFromTarget.vertexPath)
         // add remaining edge weight to be travelled.
-        val weights: List<Int> = mutableListOf()
-        weights + (edge.getWeight() - currentDistanceOnEdge)
-        weights + pathFromTarget.edgeWeights
+        val weights: MutableList<Int> = mutableListOf()
+        weights.add(edge.getWeight() - currentDistanceOnEdge)
+        weights.addAll(pathFromTarget.edgeWeights)
         // add remaining edge one way status.
-        val isOneWay: List<Boolean> = mutableListOf()
-        isOneWay + true
-        isOneWay + pathFromTarget.isOneWay
+        val isOneWay: MutableList<Boolean> = mutableListOf()
+        isOneWay.add(edge.isOneWay())
+        isOneWay.addAll(pathFromTarget.isOneWay)
         val oneWayPath = Path(path, weights, isOneWay, roundToNextTen(weights.sum()) / speed)
-        // check if it is shorter to travel back to source and then to destination.
-        if (pathFromSource.getTotalDistance() + currentDistanceOnEdge <
-            pathFromTarget.getTotalDistance() + (edge.getWeight() - currentDistanceOnEdge)
-        ) {
-            // update path from source to include the remaining edge.
-            // add remaining edge to be travelled.
-            val newPath: List<Int> = mutableListOf()
-            newPath + targetVertex
-            newPath + pathFromSource.vertexPath
-            // add remaining edge weight to be travelled.
-            val newWeights: List<Int> = mutableListOf()
-            newWeights + currentDistanceOnEdge
-            newWeights + pathFromSource.edgeWeights
-            // add remaining edge one way status.
-            val newIsOneWay: List<Boolean> = mutableListOf()
-            newIsOneWay + false
-            newIsOneWay + pathFromSource.isOneWay
-            return Path(newPath, newWeights, newIsOneWay, roundToNextTen(newWeights.sum()) / speed)
+
+//        println("pathFromSource" + pathFromSource.vertexPath)
+        if (!edge.isOneWay()) {
+            val pathFromSource =
+                getShortestPathFromVertexToVertex(
+                    graph,
+                    sourceVertex,
+                    destinationVertex,
+                    height
+                )
+//        println("pathFromTarget" + pathFromTarget.vertexPath)
+            // check if it is shorter to travel back to source and then to destination.
+            if (pathFromSource.getTotalDistance() + currentDistanceOnEdge <
+                pathFromTarget.getTotalDistance() + (edge.getWeight() - currentDistanceOnEdge)
+            ) {
+                // update path from source to include the remaining edge.
+                // add remaining edge to be travelled.
+                val newPath: MutableList<Int> = mutableListOf()
+                newPath.add(targetVertex)
+                newPath.addAll(pathFromSource.vertexPath)
+                // add remaining edge weight to be travelled.
+                val newWeights: MutableList<Int> = mutableListOf()
+                newWeights.add(currentDistanceOnEdge)
+                newWeights.addAll(pathFromSource.edgeWeights)
+                // add remaining edge one way status.
+                val newIsOneWay: MutableList<Boolean> = mutableListOf()
+                newIsOneWay.add(edge.isOneWay())
+                newIsOneWay.addAll(pathFromSource.isOneWay)
+                return Path(
+                    newPath,
+                    newWeights,
+                    newIsOneWay,
+                    roundToNextTen(newWeights.sum()) / speed
+                )
+            }
         }
         return oneWayPath
     }
@@ -246,6 +280,7 @@ object Dijkstra {
         val nearestBases = HashMap<Int, Int>()
         val distanceFromSourceVertex =
             dijkstraAlgorithm(graph, vertexId, true, parentMap = HashMap())
+//        println(distanceFromSourceVertex)
         val filterVertices = distanceFromSourceVertex.keys.filter {
             !excludedBases.contains(it) && graph.vertices[it]?.baseType == baseType
         }
@@ -284,6 +319,7 @@ object Dijkstra {
             distancesFromSource[vertex.vertexId] = Int.MAX_VALUE
         }
         distancesFromSource[source] = 0
+//        println("start" + distancesFromSource)
 
         while (visited.containsValue(false)) {
             // find the vertex with the minimum distance from the source vertex.
@@ -293,6 +329,8 @@ object Dijkstra {
 
             // relax all edges of the vertex.
             updateParent(currentVertex, height, distancesFromSource, parentMap, reverse)
+//            println(visited)
+//            println(distancesFromSource)
         }
         return distancesFromSource
     }
@@ -309,7 +347,8 @@ object Dijkstra {
         distances: HashMap<Int, Int>,
         visited: HashMap<Int, Boolean>
     ): Vertex {
-        return vertices.filter { !visited.getValue(it.vertexId) }.minBy { distances.getValue(it.vertexId) }
+        return vertices.filter { !visited.getValue(it.vertexId) }
+            .minBy { distances.getValue(it.vertexId) }
     }
 
     /**
@@ -331,11 +370,30 @@ object Dijkstra {
             if (height != null && edge.properties.height < height) {
                 continue
             }
-            val newDistance = distancesFromSource.getValue(vertex.vertexId) + edge.getWeight()
-            val oldDistance = distancesFromSource.getValue(edge.targetVertex.vertexId)
+
+            var newDistance = distancesFromSource.getValue(vertex.vertexId)
+            if (newDistance != Int.MAX_VALUE) {
+                newDistance += edge.getWeight()
+            }
+
+            // vertex.getEdges(reverse) can guarantee this direction of edge exit
+            val newVertexId =
+                if (vertex.vertexId != edge.sourceVertex.vertexId) {
+                    edge.sourceVertex.vertexId
+                } else {
+                    edge.targetVertex.vertexId
+                }
+            val oldDistance = distancesFromSource.getValue(newVertexId)
+
+//            println(
+//                "reverse: $reverse. " +
+//                    "vertexId ${vertex.vertexId} edgeId ${edge.edgeId}  newVertexId $newVertexId" +
+//                    ": newDistance $newDistance, oldDistance $oldDistance"
+//            )
+
             if (newDistance < oldDistance) {
-                distancesFromSource[edge.targetVertex.vertexId] = newDistance
-                parentMap[edge.targetVertex.vertexId] = vertex.vertexId
+                distancesFromSource[newVertexId] = newDistance
+                parentMap[newVertexId] = vertex.vertexId
             }
         }
     }
@@ -345,15 +403,17 @@ object Dijkstra {
         target: Int,
         parentMap: HashMap<Int, Int>
     ): List<Int> {
-        var path: List<Int> = mutableListOf()
+//        assert (parentMap.keys.contains(target))
+//        println("source: $source, target: $target, parent: $parentMap")
+        val path: MutableList<Int> = mutableListOf()
         var currentVertex = target
         while (currentVertex != source) {
-            path + currentVertex
+            path.add(currentVertex)
             currentVertex = parentMap.getValue(currentVertex)
         }
-        path + source
-        path = path.reversed()
-        return path
+        path.add(source)
+//        println("return: ${path.reversed()}")
+        return path.reversed()
     }
 
     private fun roundToNextTen(number: Int): Int {

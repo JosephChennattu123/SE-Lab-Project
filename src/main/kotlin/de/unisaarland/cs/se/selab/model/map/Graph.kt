@@ -28,6 +28,9 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
         vertices[source]?.getEdges(false)
             ?.find { it.targetVertex.vertexId == target }
             ?.let { return it }
+        vertices[target]?.getEdges(false)
+            ?.find { it.targetVertex.vertexId == source }
+            ?.let { return it }
         error("Edge not found: $source -> $target")
     }
 
@@ -55,8 +58,11 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
      * @return true if edge does exist
      */
     fun doesEdgeExist(source: Int, target: Int): Boolean {
-        val vertex = vertices[source] ?: return false
-        return vertex.getEdges(false).any { it.targetVertex.vertexId == target }
+        val vertices = vertices[source] ?: return false
+        return vertices.getEdges(false).any {
+            it.targetVertex.vertexId == target ||
+                (it.sourceVertex.vertexId == target && !it.isOneWay())
+        }
     }
 
     /**
@@ -87,6 +93,10 @@ class Graph(val vertices: MutableMap<Int, Vertex>) {
         val edge = Edge.createNewEdge(source, target, properties)
         source.addOutgoingEdge(edge)
         target.addIngoingEdge(edge)
+        if (properties.secondaryType != SecondaryType.ONE_WAY) {
+            source.addIngoingEdge(edge)
+            target.addOutgoingEdge(edge)
+        }
         villages.getOrPut(properties.villageName) { mutableMapOf() }[properties.roadName] = edge
         if (properties.roadType == PrimaryType.COUNTY) {
             countyNames.add(properties.villageName)
