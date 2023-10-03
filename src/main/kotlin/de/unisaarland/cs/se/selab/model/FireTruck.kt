@@ -22,7 +22,7 @@ class FireTruck(
 ) {
 
     var waterLevel: Int? = null
-    val ladderLength: Int? = null
+    val ladderLength: Int? = maxAssetCapacity
     val waterCapacity: Int? = null
 
     override fun setBusy() {
