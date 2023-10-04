@@ -4,7 +4,7 @@ import de.unisaarland.cs.se.selab.systemtest.*
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
 class TestReroute : SystemTest() {
-    override val name = "ExampleTest"
+    override val name = "TestReroute"
 
     override val map = "mapFiles/example_map_modified.dot"
     override val assets = "assetsJsons/reroute_assets.json"

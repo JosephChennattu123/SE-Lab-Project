@@ -18,7 +18,7 @@ fun logParsingValidationResult(filename: String, success: Boolean): String {
     return if (success) {
         "Initialization Info: $filename successfully parsed and validated"
     } else {
-        "Initialization Info: $filename successfully parsed and validated"
+        "Initialization Info: $filename invalid"
     }
 }
 
@@ -26,7 +26,7 @@ fun logParsingValidationResult(filename: String, success: Boolean): String {
  * @param tick the number of the tick
  */
 fun logTick(tick: Int): String {
-    return "Simulation Tick:  $tick"
+    return "Simulation Tick: $tick"
 }
 
 /***
@@ -43,8 +43,7 @@ fun logEmergencyAssigned(emergencyId: Int, baseId: Int): String {
  * @param arrivesInt the number of ticks it takes the vehicle to arrive
  */
 fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int): String {
-    return "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
-        "ticks to arrive."
+    return "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt ticks to arrive."
 }
 
 /**
@@ -52,7 +51,7 @@ fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int): String {
  * @param emergencyId the id of the new emergency
  */
 fun logAssetReallocated(assetId: Int, emergencyId: Int): String {
-    return "Asset Reallocation: $assetId reallocated to $emergencyId"
+    return "Asset Reallocation: $assetId reallocated to $emergencyId."
 }
 
 /**
@@ -61,14 +60,14 @@ fun logAssetReallocated(assetId: Int, emergencyId: Int): String {
  * @param emergencyId the id of the emergency
  */
 fun logRequest(requestId: Int, targetBaseId: Int, emergencyId: Int): String {
-    return "Asset Request: $requestId sent to $targetBaseId for $emergencyId"
+    return "Asset Request: $requestId sent to $targetBaseId for $emergencyId."
 }
 
 /**
  * @param emergencyId the id of the emergency
  */
 fun logRequestFailed(emergencyId: Int): String {
-    return "Request Failed: $emergencyId failed"
+    return "Request Failed: $emergencyId failed."
 }
 
 /**
@@ -76,14 +75,14 @@ fun logRequestFailed(emergencyId: Int): String {
  * @param vertexId the id of the vertex
  */
 fun logAssetArrived(assetId: Int, vertexId: Int): String {
-    return "Asset Arrival: $assetId arrived at $vertexId"
+    return "Asset Arrival: $assetId arrived at $vertexId."
 }
 
 /**
  * @param emergencyId the id of the emergency
  */
 fun logEmergencyHandlingStart(emergencyId: Int): String {
-    return "Emergency Handling Start: $emergencyId handling started"
+    return "Emergency Handling Start: $emergencyId handling started."
 }
 
 /**
@@ -93,9 +92,9 @@ fun logEmergencyHandlingStart(emergencyId: Int): String {
  */
 fun logEmergencyResult(emergencyId: Int, success: Boolean): String {
     return if (success) {
-        "Emergency Resolved: $emergencyId resolved"
+        "Emergency Resolved: $emergencyId resolved."
     } else {
-        "Emergency Failed: $emergencyId failed"
+        "Emergency Failed: $emergencyId failed."
     }
 }
 
@@ -105,9 +104,9 @@ fun logEmergencyResult(emergencyId: Int, success: Boolean): String {
  */
 fun logEventStatus(eventId: Int, triggered: Boolean): String {
     return if (triggered) {
-        "Event Triggered: $eventId triggered"
+        "Event Triggered: $eventId triggered."
     } else {
-        "Event Ended: $eventId ended"
+        "Event Ended: $eventId ended."
     }
 }
 
@@ -122,28 +121,28 @@ fun logAssetRerouted(assetsAmount: Int): String {
  * @param reroutedAssetsAmount the number of rerouted assets
  */
 fun logNumberOfReroutedAssets(numReroutedAssets: Int): String {
-    return "Simulation Statistics: $numReroutedAssets assets rerouted"
+    return "Simulation Statistics: $numReroutedAssets assets rerouted."
 }
 
 /**
  * @param receivedEmergenciesAmount the number of received emergencies (emergency calls)
  */
 fun logNumberOfReceivedEmergencies(receivedEmergenciesAmount: Int): String {
-    return "Simulation Statistics: $receivedEmergenciesAmount received emergencies"
+    return "Simulation Statistics: $receivedEmergenciesAmount received emergencies."
 }
 
 /**
  * @param ongoingEmergenciesAmount the remaining ongoing emergencies
  */
 fun logNumberOfOngoingEmergencies(ongoingEmergenciesAmount: Int): String {
-    return "Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies"
+    return "Simulation Statistics: $ongoingEmergenciesAmount ongoing emergencies."
 }
 
 /**
  * Logs the number of total failed emergencies
  */
 fun logNumberOfFailedEmergencies(numFailedEmergencies: Int): String {
-    return "Simulation Statistics: $numFailedEmergencies failed emergencies"
+    return "Simulation Statistics: $numFailedEmergencies failed emergencies."
 }
 
 /**

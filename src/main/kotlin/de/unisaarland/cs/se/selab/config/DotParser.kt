@@ -11,6 +11,7 @@ class DotParser(val graphFilePath: String) {
     val vertices = mutableListOf<String>()
     val edgeIdToSourceTarget = mutableMapOf<Int, Pair<String, String>>()
     val edgeIdToAttributes = mutableMapOf<Int, MutableMap<String, String>>()
+    private var isValid = reader.fileString.isNotBlank()
 
     private val labelList: List<String> = listOf(
         LABEL_VILLAGE,
@@ -31,11 +32,10 @@ class DotParser(val graphFilePath: String) {
      * Parses the dot file for the graph and checks that it is correct syntactically
      */
     fun parse(): Boolean {
-        var isValid = reader.fileString.isNotBlank()
         while (!reader.endReached() && isValid) {
             when (reader.readChar()) {
                 'd' -> {
-                    parseDigraph()
+                    isValid = parseDigraph()
                 }
 
                 '{' -> {
@@ -57,7 +57,7 @@ class DotParser(val graphFilePath: String) {
         return isValid
     }
 
-    private fun parseDigraph() {
+    private fun parseDigraph(): Boolean {
         var count = 0
         while (!reader.endReached() && count < LABEL_DIGRAPH.length) {
             when (val character = reader.readChar()) {
@@ -67,7 +67,7 @@ class DotParser(val graphFilePath: String) {
                 }
 
                 else -> {
-                    error("Error in digraph: unexpected character \' $character\'")
+                    return false
                 }
             }
         }
@@ -75,6 +75,7 @@ class DotParser(val graphFilePath: String) {
             reader.increaseIndexToNextNonWhiteSpaceChar()
         }
         mapName = parseId()
+        return true
     }
 
     /**
@@ -188,6 +189,7 @@ class DotParser(val graphFilePath: String) {
                 label[count] -> {
                     count++
                 }
+
                 else -> {
                     break
                 }
@@ -256,6 +258,14 @@ class DotParser(val graphFilePath: String) {
                 ';', '-' -> {
                     reader.decreaseIndexToNextNonWhiteSpaceChar()
                     return number
+                }
+
+                '0' -> {
+                    reader.increaseIndex()
+                    if (reader.isNumber(reader.readChar()) == reader.readChar()) {
+                        isValid = false
+                        return number
+                    }
                 }
 
                 else -> {

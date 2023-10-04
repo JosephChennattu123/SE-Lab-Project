@@ -16,6 +16,7 @@ abstract class Vehicle(
     val staffCapacity: Int,
     val maxAssetCapacity: Int?
 ) {
+    val currentNumberOfAssets: Int? = maxAssetCapacity
     var emergencyID: Int? = null
     var status: VehicleStatus = VehicleStatus.AT_BASE
     var isUnavailable: Boolean = false
@@ -31,7 +32,11 @@ abstract class Vehicle(
         positionTracker.updatePosition()
         if (positionTracker.destinationReached()) {
             val destinationVertexID = positionTracker.getDestination()
-            Logger.logAssetArrived(vehicleID, destinationVertexID)
+            if (destinationVertexID != null) {
+                Logger.logAssetArrived(vehicleID, destinationVertexID)
+            } else {
+                error("destinationVertexID is null")
+            }
             status = if (destinationVertexID == baseID) {
                 if (setBusy()) {
                     VehicleStatus.BUSY
@@ -80,17 +85,17 @@ abstract class Vehicle(
     }
 
     /** returns current vertex id */
-    fun getCurrentVertexID(): Int {
+    fun getCurrentVertexID(): Int? {
         return positionTracker.getCurrentVertex()
     }
 
     /** returns the next vertex about to be reached */
-    fun getNextVertexID(): Int {
+    fun getNextVertexID(): Int? {
         return positionTracker.getNextVertex()
     }
 
     /** returns the current distance on edge */
-    fun getDistanceOnEdge(): Int {
+    fun getDistanceOnEdge(): Int? {
         return positionTracker.positionOnEdge
     }
 
@@ -99,4 +104,11 @@ abstract class Vehicle(
 
     /** resets vehicle properties after busyTimer is 0 */
     abstract fun resetAfterBusy()
+
+    /**
+     * returns the id of the destination vertex.
+     * */
+    fun getDestination(): Int? {
+        return positionTracker.getDestination()
+    }
 }

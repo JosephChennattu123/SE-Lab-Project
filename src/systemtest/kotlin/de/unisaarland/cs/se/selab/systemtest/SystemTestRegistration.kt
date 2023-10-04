@@ -1,14 +1,32 @@
 package de.unisaarland.cs.se.selab.systemtest
 
-// import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
+// import de.unisaarland.cs.se.selab.systemtest.basictests.FireEmergencyTest
 import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
 import de.unisaarland.cs.se.selab.systemtest.basictests.FireEmergencyTest
 import de.unisaarland.cs.se.selab.systemtest.basictests.OneEmergency
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
+import de.unisaarland.cs.se.selab.systemtest.validation.BaseWithNoVertex
+import de.unisaarland.cs.se.selab.systemtest.validation.EmergencyDoctorWithLadder
+import de.unisaarland.cs.se.selab.systemtest.validation.EmergencyOnNonExistingRoad
+import de.unisaarland.cs.se.selab.systemtest.validation.EventOnNonExistingRoad
+import de.unisaarland.cs.se.selab.systemtest.validation.FireStationWithAmbulance
+import de.unisaarland.cs.se.selab.systemtest.validation.FireTruckWithAmbulance
+import de.unisaarland.cs.se.selab.systemtest.validation.HospitalWithFireTruck
+import de.unisaarland.cs.se.selab.systemtest.validation.MissingDepartmentFireStation
+import de.unisaarland.cs.se.selab.systemtest.validation.MissingDepartmentHospital
+import de.unisaarland.cs.se.selab.systemtest.validation.MissingDepartmentPolice
+import de.unisaarland.cs.se.selab.systemtest.validation.MixedBases
+import de.unisaarland.cs.se.selab.systemtest.validation.MixedEvents
+import de.unisaarland.cs.se.selab.systemtest.validation.MixedVehicles
+import de.unisaarland.cs.se.selab.systemtest.validation.PoliceCarWithWater
+import de.unisaarland.cs.se.selab.systemtest.validation.PoliceNoVehicles
+import de.unisaarland.cs.se.selab.systemtest.validation.PoliceStationWithAmbulance
+import de.unisaarland.cs.se.selab.systemtest.validation.TwoBasesOneVertex
+import de.unisaarland.cs.se.selab.systemtest.validation.VehicleEventNoVehicle
+import de.unisaarland.cs.se.selab.systemtest.validation.VehiclesWithIllegalValues
 
 object SystemTestRegistration {
     fun registerSystemTests(manager: SystemTestManager) {
-        // might not be used anymore
         manager
     }
 
@@ -27,6 +45,25 @@ object SystemTestRegistration {
         manager.registerTest(ExampleTest())
         manager.registerTest(OneEmergency())
         manager.registerTest(FireEmergencyTest())
+        manager.registerTest(BaseWithNoVertex())
+        manager.registerTest(EmergencyDoctorWithLadder())
+        manager.registerTest(FireStationWithAmbulance())
+        manager.registerTest(FireTruckWithAmbulance())
+        manager.registerTest(HospitalWithFireTruck())
+        manager.registerTest(MissingDepartmentPolice())
+        manager.registerTest(MissingDepartmentFireStation())
+        manager.registerTest(MissingDepartmentHospital())
+        manager.registerTest(PoliceNoVehicles())
+        manager.registerTest(PoliceCarWithWater())
+        manager.registerTest(PoliceStationWithAmbulance())
+        manager.registerTest(TwoBasesOneVertex())
+        manager.registerTest(VehiclesWithIllegalValues())
+        manager.registerTest(MixedVehicles())
+        manager.registerTest(MixedBases())
+        manager.registerTest(MixedEvents())
+        manager.registerTest(EmergencyOnNonExistingRoad())
+        manager.registerTest(EventOnNonExistingRoad())
+        manager.registerTest(VehicleEventNoVehicle())
     }
 
     /**
@@ -43,6 +80,26 @@ object SystemTestRegistration {
      */
     fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
         manager
+//        manager.registerTest(ExampleTest())
+//        manager.registerTest(BaseWithNoVertex())
+//        manager.registerTest(EmergencyDoctorWithLadder())
+//        manager.registerTest(FireStationWithAmbulance())
+//        manager.registerTest(FireTruckWithAmbulance())
+//        manager.registerTest(HospitalWithFireTruck())
+//        manager.registerTest(MissingDepartmentPolice())
+//        manager.registerTest(MissingDepartmentFireStation())
+//        manager.registerTest(MissingDepartmentHospital())
+//        manager.registerTest(PoliceNoVehicles())
+//        manager.registerTest(PoliceCarWithWater())
+//        manager.registerTest(PoliceStationWithAmbulance())
+//        manager.registerTest(TwoBasesOneVertex())
+//        manager.registerTest(VehiclesWithIllegalValues())
+//        manager.registerTest(MixedVehicles())
+//        manager.registerTest(MixedBases())
+//        manager.registerTest(MixedEvents())
+//        manager.registerTest(EmergencyOnNonExistingRoad())
+//        manager.registerTest(EventOnNonExistingRoad())
+//        manager.registerTest(VehicleEventNoVehicle())
     }
 
     /**
