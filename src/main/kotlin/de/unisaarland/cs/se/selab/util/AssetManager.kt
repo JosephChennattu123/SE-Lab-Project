@@ -379,6 +379,11 @@ object AssetManager {
                     emergency.id,
                     paths.getValue(vehicle.vehicleID).totalTicksToArrive
                 )
+                if (vehicle.status == VehicleStatus.AT_BASE) {
+                    vehicle.status = VehicleStatus.ASSIGNED
+                } else {
+                    vehicle.status = VehicleStatus.TO_EMERGENCY
+                }
             }
         }
         // remove fulfilled requirements from the emergency.
