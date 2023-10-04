@@ -18,7 +18,7 @@ fun logParsingValidationResult(filename: String, success: Boolean): String {
     return if (success) {
         "Initialization Info: $filename successfully parsed and validated"
     } else {
-        "Initialization Info: $filename successfully parsed and validated"
+        "Initialization Info: $filename invalid"
     }
 }
 
@@ -51,7 +51,7 @@ fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int): String {
  * @param emergencyId the id of the new emergency
  */
 fun logAssetReallocated(assetId: Int, emergencyId: Int): String {
-    return "Asset Reallocation: $assetId reallocated to $emergencyId"
+    return "Asset Reallocation: $assetId reallocated to $emergencyId."
 }
 
 /**
@@ -60,14 +60,14 @@ fun logAssetReallocated(assetId: Int, emergencyId: Int): String {
  * @param emergencyId the id of the emergency
  */
 fun logRequest(requestId: Int, targetBaseId: Int, emergencyId: Int): String {
-    return "Asset Request: $requestId sent to $targetBaseId for $emergencyId"
+    return "Asset Request: $requestId sent to $targetBaseId for $emergencyId."
 }
 
 /**
  * @param emergencyId the id of the emergency
  */
 fun logRequestFailed(emergencyId: Int): String {
-    return "Request Failed: $emergencyId failed"
+    return "Request Failed: $emergencyId failed."
 }
 
 /**
@@ -75,14 +75,14 @@ fun logRequestFailed(emergencyId: Int): String {
  * @param vertexId the id of the vertex
  */
 fun logAssetArrived(assetId: Int, vertexId: Int): String {
-    return "Asset Arrival: $assetId arrived at $vertexId"
+    return "Asset Arrival: $assetId arrived at $vertexId."
 }
 
 /**
  * @param emergencyId the id of the emergency
  */
 fun logEmergencyHandlingStart(emergencyId: Int): String {
-    return "Emergency Handling Start: $emergencyId handling started"
+    return "Emergency Handling Start: $emergencyId handling started."
 }
 
 /**
@@ -92,9 +92,9 @@ fun logEmergencyHandlingStart(emergencyId: Int): String {
  */
 fun logEmergencyResult(emergencyId: Int, success: Boolean): String {
     return if (success) {
-        "Emergency Resolved: $emergencyId resolved"
+        "Emergency Resolved: $emergencyId resolved."
     } else {
-        "Emergency Failed: $emergencyId failed"
+        "Emergency Failed: $emergencyId failed."
     }
 }
 
@@ -104,9 +104,9 @@ fun logEmergencyResult(emergencyId: Int, success: Boolean): String {
  */
 fun logEventStatus(eventId: Int, triggered: Boolean): String {
     return if (triggered) {
-        "Event Triggered: $eventId triggered"
+        "Event Triggered: $eventId triggered."
     } else {
-        "Event Ended: $eventId ended"
+        "Event Ended: $eventId ended."
     }
 }
 
