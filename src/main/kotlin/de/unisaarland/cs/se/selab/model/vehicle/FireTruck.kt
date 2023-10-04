@@ -20,40 +20,40 @@ class FireTruck(
     staffCapacity,
     maxAssetCapacity
 ) {
-
-    var waterLevel: Int? = null
-    val ladderLength: Int? = null
-    val waterCapacity: Int? = null
-
     override fun setBusy(): Boolean {
-        busyTicks = (waterCapacity as Int - waterLevel as Int) / THREE_HUNDRED
-        return busyTicks != 0
-    }
-
-    override fun handleEmergency(amount: Int): Int {
-        status = VehicleStatus.HANDLING
-        if (waterCapacity != null) {
-            val returnAmount = amount - (waterCapacity - waterLevel as Int)
-            return if (returnAmount < 0) {
-                waterLevel = waterCapacity + returnAmount
-                0
+        if (vehicleType == VehicleType.FIRE_TRUCK_WATER) {
+            val maxWaterLevel = maxAssetCapacity ?: error("max water capacity is null")
+            val currentWaterLevel = currentNumberOfAssets ?: error("current water level is null")
+            return if (currentNumberOfAssets != maxWaterLevel) {
+                busyTicks = (maxWaterLevel - currentWaterLevel) / WATER_REFILL_RATE
+                true
             } else {
-                waterLevel = waterCapacity
-                returnAmount
+                false
             }
         }
-        return amount
+        return false
     }
 
-    /** checks if vehicle is filled up with water */
-    fun isFull(): Boolean {
-        return waterCapacity == waterLevel
+    /**
+     * In the case of Water_Firetrucks decreases the amount of water
+     * by amount and returns the amount - waterLevel.
+     * Otherwise, returns 0.
+     * */
+    override fun handleEmergency(amount: Int): Int {
+        status = VehicleStatus.HANDLING
+        if (vehicleType == VehicleType.FIRE_TRUCK_WATER) {
+            val water = currentNumberOfAssets ?: error("currentNumberOfAssets is null")
+            val remainingAmount = amount - water
+            currentNumberOfAssets = if (water <= amount) 0 else water - amount
+            return remainingAmount
+        }
+        return 0
     }
 
     /** resets vehicle assets possessed to zero */
     override fun resetAfterBusy() {
-        waterLevel = waterCapacity
+        currentNumberOfAssets = maxAssetCapacity
     }
 }
 
-const val THREE_HUNDRED: Int = 300
+const val WATER_REFILL_RATE: Int = 300

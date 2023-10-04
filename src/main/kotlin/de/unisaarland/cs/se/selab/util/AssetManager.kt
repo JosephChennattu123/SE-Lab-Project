@@ -579,10 +579,11 @@ object AssetManager {
         vehicle: Vehicle,
         requiredAmount: Int?
     ): Boolean {
-        if (vehicle.currentNumberOfAssets != null && requiredAmount != null) {
-            return vehicle.currentNumberOfAssets >= requiredAmount
+        val ladderLength = vehicle.currentNumberOfAssets ?: error("ladder length is null")
+        if (requiredAmount != null) {
+            return ladderLength >= requiredAmount
         } else {
-            error("Ladder is null")
+            error("required ladder is null")
         }
     }
 
