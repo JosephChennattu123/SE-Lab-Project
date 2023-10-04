@@ -1,0 +1,64 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "RUSH_HOUR",
+      "tick": 3,
+      "duration": 5,
+      "factor": 2,
+      "roadTypes": [
+        "MAIN_STREET",
+        "SIDE_STREET"
+      ]
+    },
+    {
+      "id": 1,
+      "type": "VEHICLE_UNAVAILABLE",
+      "tick": 3,
+      "duration": 10,
+      "vehicleID": 3
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "one_two",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 10
+    },
+    {
+      "id": 1,
+      "tick": 4,
+      "village": "Berlin",
+      "roadName": "zero_three",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 10
+    },
+    {
+      "id": 2,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "zero_one",
+      "emergencyType": "MEDICAL",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 10
+    },
+    {
+      "id": 3,
+      "tick": 4,
+      "village": "Berlin",
+      "roadName": "zero_three",
+      "emergencyType": "MEDICAL",
+      "severity": 2,
+      "handleTime": 1,
+      "maxDuration": 10
+    }
+  ]
+}
