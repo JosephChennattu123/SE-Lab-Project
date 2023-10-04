@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.controller.phases
 
 import de.unisaarland.cs.se.selab.controller.events.Event
+import de.unisaarland.cs.se.selab.controller.events.EventType
 import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.EmergencyType
 import de.unisaarland.cs.se.selab.model.Model
@@ -33,7 +34,7 @@ class EmergencyDistribution {
 
         for (e in currentEmergencies) {
             // Iterate over emergencies and get the nearest base using one of the Dijkstra methods.
-            var nearestBaseId: Int? = 0
+            var nearestBaseVertexId: Int? = null
             val loc = e.location
             val edge = model.graph.getEdge(loc)
             val activeEvent = edge.activeEventId?.let { model.getEventById(it) }
@@ -41,29 +42,34 @@ class EmergencyDistribution {
                 handleActiveRoadClosureEvent(activeEvent, edge, model)
             }
             if (e.type == EmergencyType.CRIME) {
-                nearestBaseId = Dijkstra.getNearestBaseToEdge(graph, loc, BaseType.POLICE_STATION)
+                nearestBaseVertexId = Dijkstra.getNearestBaseVertexIdToEdge(graph, loc, BaseType.POLICE_STATION)
             }
-            if (e.type == EmergencyType.FIRE) {
-                nearestBaseId = Dijkstra.getNearestBaseToEdge(graph, loc, BaseType.FIRE_STATION)
+            if (e.type == EmergencyType.ACCIDENT || e.type == EmergencyType.FIRE) {
+                nearestBaseVertexId = Dijkstra.getNearestBaseVertexIdToEdge(graph, loc, BaseType.FIRE_STATION)
             }
-            if (e.type == EmergencyType.ACCIDENT || e.type == EmergencyType.MEDICAL) {
-                nearestBaseId = Dijkstra.getNearestBaseToEdge(graph, loc, BaseType.HOSPITAL)
+            if (e.type == EmergencyType.MEDICAL) {
+                nearestBaseVertexId = Dijkstra.getNearestBaseVertexIdToEdge(graph, loc, BaseType.HOSPITAL)
             }
 
             // Assign the emergency ID to the base.
-            model.getBaseById(nearestBaseId as Int)?.addEmergency(e.id)
+            if (nearestBaseVertexId == null) {
+                error("a base should exist at this stage")
+            }
+            val baseId = model.graph.vertices.getValue(nearestBaseVertexId).baseId
+            model.getBaseById(baseId as Int)?.addEmergency(e.id)
+            e.mainBaseID = baseId
 
             // Add the emergency to the list of active emergencies in the model.
             model.addToAssignedEmergencies(e.id)
 
             // Log the assignment.
-            Logger.logEmergencyAssigned(e.id, nearestBaseId)
+            Logger.logEmergencyAssigned(e.id, baseId)
         }
     }
 
     /**used to solve the issue for road Closure on a road to assign emergency */
     fun handleActiveRoadClosureEvent(activeEvent: Event, edge: Edge, model: Model) {
-        if (activeEvent.eventType == de.unisaarland.cs.se.selab.controller.events.EventType.ROAD_CLOSURE) {
+        if (activeEvent.eventType == EventType.ROAD_CLOSURE) {
             model.roadToPostponedEvents[edge.edgeId]?.let { postponedEventsList ->
                 if (postponedEventsList.isNotEmpty()) {
                     postponedEventsList.add(edge.activeEventId as Int)

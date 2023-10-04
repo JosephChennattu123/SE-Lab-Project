@@ -6,6 +6,7 @@ import de.unisaarland.cs.se.selab.model.Base
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Vehicle
+import de.unisaarland.cs.se.selab.model.VehicleType
 import de.unisaarland.cs.se.selab.model.map.Graph
 import de.unisaarland.cs.se.selab.util.Logger
 import org.everit.json.schema.ValidationException
@@ -40,6 +41,8 @@ class ValidatorManager {
         this.dotParser = dotParser
         this.jsonParser = jsonParser
 
+        var fail = false
+
         // dotParser.parse()
         if (!validateGraph()) {
             Logger.logParsingValidationResult(dotParser.graphFilePath, false)
@@ -50,11 +53,14 @@ class ValidatorManager {
         try {
             jsonParser.validateAssetsSchema()
         } catch (e: ValidationException) {
-            Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
-            throw e
+            // Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
+            Logger.outputLogger.error {
+                "${"Error: invalid assets-file detected by schema-validation"} ${e.stackTrace}"
+            }
+            fail = true
         }
         // jsonParser.parseAssets()
-        if (!validateBases(graph as Graph) || !validateVehicles(bases as List<Base>)) {
+        if (fail || !validateBases(graph as Graph) || !validateVehicles(bases as List<Base>)) {
             Logger.logParsingValidationResult(jsonParser.assetsFilePath, false)
             return null
         }
@@ -63,32 +69,45 @@ class ValidatorManager {
         try {
             jsonParser.validateScenarioSchema()
         } catch (e: ValidationException) {
-            Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
-            throw e
+            // Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
+            Logger.outputLogger.error {
+                "${"Error: invalid scenario-file detected by schema-validation"} ${e.stackTrace}"
+            }
+            fail = true
         }
         // jsonParser.parseEmergenciesEvents()
-        if (!validateEmergencies(graph as Graph) || !validateEvent(graph as Graph, vehicles as List<Vehicle>)) {
+        if (fail || !validateEmergencies(graph as Graph) || !validateEvent(graph as Graph, vehicles as List<Vehicle>)) {
             Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
             return null
         }
         Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, true)
 
-        val model = buildModel(maxTick)
+        val model = buildModel(maxTick) ?: return null
 
         controlCenter = ControlCenter(model)
         return controlCenter
     }
 
-    private fun buildModel(maxTick: Int?): Model {
+    private fun buildModel(maxTick: Int?): Model? {
+        val basesList = bases as List<Base>
         val emergenciesList = emergencies as List<Emergency>
         val eventsList = events as List<Event>
 
-        val basesMap = (bases as List<Base>).associateBy { it.baseId }
+        val basesMap = basesList.associateBy { it.baseId }
         val vehiclesMap = (vehicles as List<Vehicle>).associateBy { it.vehicleID }
+
+        if (!addVehiclesToBases(basesList, vehiclesMap)) {
+            return null
+        }
+        val numVehiclesInBases = basesList.map { it.vehicles.size }
+        if (numVehiclesInBases.any { it == 0 }) {
+            return null
+        }
+        val vehiclesToBasesMap = (vehicles as List<Vehicle>).associate { Pair(it.vehicleID, it.baseID) }
+
         val emergenciesMap = emergenciesList.associateBy { it.id }
         val eventsMap = eventsList.associateBy { it.id }
 
-        val vehiclesToBasesMap = (vehicles as List<Vehicle>).associate { Pair(it.vehicleID, it.baseID) }
         val tickToEmergencyId: MutableMap<Int, List<Int>> = mutableMapOf()
         emergenciesList.map { it.scheduledTick }.toSet().associateWithTo(tickToEmergencyId) {
             val elements: MutableList<Int> = mutableListOf()
@@ -114,6 +133,20 @@ class ValidatorManager {
             graph as Graph, maxTick, basesMap, vehiclesMap, vehiclesToBasesMap, emergenciesMap, tickToEmergencyId,
             eventsMap, tickToEventId
         )
+    }
+
+    private fun addVehiclesToBases(basesList: List<Base>, vehiclesMap: Map<Int, Vehicle>): Boolean {
+        basesList.forEach { base ->
+            val vehiclesForBase = vehiclesMap.values.filter { it.baseID == base.baseId }
+            vehiclesForBase.forEach { vehicle ->
+                if (base.baseType == VehicleType.getBaseType(vehicle.vehicleType)) {
+                    base.addVehicle(vehicle.vehicleID)
+                } else {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     /**

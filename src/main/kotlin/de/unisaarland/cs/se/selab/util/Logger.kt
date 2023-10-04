@@ -1,5 +1,6 @@
 package de.unisaarland.cs.se.selab.util
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.io.File
 import java.io.PrintWriter
 
@@ -13,6 +14,7 @@ object Logger {
     private var numReroutedAssets: Int = 0
     private var numFailedEmergencies: Int = 0
     private var numResolvedEmergency: Int = 0
+    val outputLogger = KotlinLogging.logger {} // needed for logging of exceptions, can be used for debugging
 
     private var printWriter: PrintWriter? = null
 
@@ -39,7 +41,7 @@ object Logger {
         val output: String = if (success) {
             "Initialization Info: $filename successfully parsed and validated"
         } else {
-            "Initialization Info: $filename successfully parsed and validated"
+            "Initialization Info: $filename invalid"
         }
         printLog(output)
     }
@@ -73,8 +75,7 @@ object Logger {
      */
     fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int) {
         printLog(
-            "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
-                "ticks to arrive."
+            "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt ticks to arrive."
         )
     }
 

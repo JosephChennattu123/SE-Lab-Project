@@ -4,7 +4,7 @@ import de.unisaarland.cs.se.selab.systemtest.*
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
 class FireEmergencyTest : SystemTest() {
-    override val name = "ExampleTest"
+    override val name = "FireEmergencyTest"
 
     override val map = "mapFiles/example_map.dot"
     override val assets = "assetsJsons/fire_emergency_assets.json"

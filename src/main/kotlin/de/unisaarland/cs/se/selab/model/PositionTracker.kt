@@ -6,21 +6,22 @@ package de.unisaarland.cs.se.selab.model
  *
  * */
 class PositionTracker {
-    lateinit var path: Path
-    var currentVertexIndex: Int = 0
-    var positionOnEdge: Int = 0
+    var path: Path? = null
+    var currentVertexIndex: Int? = null
+    var positionOnEdge: Int? = null
 
     /** updates Position: updates the value of current Vertex index and position on Edge*/
     fun updatePosition() {
         var distance = SPEED
         while (!destinationReached() && distance != 0) {
-            distance = path.edgeWeights[currentVertexIndex] - (positionOnEdge + distance)
+            distance =
+                path?.edgeWeights?.get(currentVertexIndex as Int)?.minus(positionOnEdge as Int + distance) as Int
             if (distance < 0) {
                 positionOnEdge = 0
-                currentVertexIndex++
+                currentVertexIndex = currentVertexIndex?.plus(1)
                 distance *= -1
             } else {
-                positionOnEdge = path.edgeWeights[currentVertexIndex] - distance
+                positionOnEdge = path?.edgeWeights?.get(currentVertexIndex as Int) as Int - distance
                 distance = 0
             }
         }
@@ -28,47 +29,75 @@ class PositionTracker {
 
     /** @returns true if path has to be changed and false if not. If path has to be changed,(.ie starting point
      * has change) then currentVertexIndex
-     * is reset to 0 and position on edge is updated  * */
-
-    fun assignPath(path: Path): Boolean {
-        return if (path.vertexPath == this.path.vertexPath && path.edgeWeights == this.path.edgeWeights &&
-            path.totalTicksToArrive == this.path.totalTicksToArrive
+     * is reset to 0 and position on edge is updated   */
+    fun assignPath(newPath: Path): Boolean {
+        if (path == null) {
+            path = newPath
+            currentVertexIndex = newPath.vertexPath[0]
+            positionOnEdge = 0
+            return true
+        }
+        return if (newPath.vertexPath == this.path?.vertexPath && newPath.edgeWeights == this.path?.edgeWeights &&
+            newPath.totalTicksToArrive == this.path?.totalTicksToArrive
         ) {
             false
         } else {
-            if (path.vertexPath[0] == this.path.vertexPath[currentVertexIndex]) {
-                this.path = path
-                true
-            } else {
-                positionOnEdge = this.path.edgeWeights[currentVertexIndex] - positionOnEdge
-                currentVertexIndex = 0
-                this.path = path
-                true
-            }
+            val oldSumOfWeights = path?.edgeWeights?.sum()
+            val newSumOfWeights = newPath.edgeWeights.sum()
+            val currentPath = path?.vertexPath ?: error("path is null")
+            path = newPath
+            currentVertexIndex = newPath.vertexPath[0]
+            positionOnEdge = 0
+            return oldSumOfWeights == newSumOfWeights && areEdgesTheSame(currentPath, newPath.vertexPath)
         }
     }
 
     /** returns current Vertex of vehicle */
-    fun getCurrentVertex(): Int {
-        return path.vertexPath[currentVertexIndex]
+    fun getCurrentVertex(): Int? {
+        return path?.vertexPath?.get(currentVertexIndex as Int)
     }
 
     /** returns the id of the next vertex that will be reached */
-    fun getNextVertex(): Int {
-        return path.vertexPath[currentVertexIndex + 1]
+    fun getNextVertex(): Int? {
+        return path?.vertexPath?.get(currentVertexIndex as Int + 1)
     }
 
     /** @returns true if destination vertex is reached */
     fun destinationReached(): Boolean {
-        if (path.vertexPath.last() == path.vertexPath[currentVertexIndex]) {
-            return true
-        }
-        return false
+        return path?.vertexPath?.last() == path?.vertexPath?.get(currentVertexIndex as Int)
     }
 
     /** @returns id of destination vertex*/
-    fun getDestination(): Int {
-        return path.vertexPath.last()
+    fun getDestination(): Int? {
+        return path?.vertexPath?.last()
+    }
+
+    /**
+     * checks if two one path belongs to the same set of edges.
+     * */
+    private fun areEdgesTheSame(path1: List<Int>, path2: List<Int>): Boolean {
+        // if sizes are not equal there must be an edge which is different.
+        if (path1.size != path2.size) {
+            return false
+        }
+
+        val edges1 = mutableListOf<Pair<Int, Int>>()
+        val edges2 = mutableListOf<Pair<Int, Int>>()
+        for (i in path1.indices) {
+            edges1.add(Pair(path1[i], path1[i + 1]))
+        }
+        for (i in path2.indices) {
+            edges2.add(Pair(path2[i], path2[i + 1]))
+        }
+
+        for (edge in edges1) {
+            val edgeReversed = Pair(edge.second, edge.first)
+            if (!edges2.contains(edge) || !edges2.contains(edgeReversed)) {
+                return false
+            }
+        }
+
+        return true
     }
 }
 
