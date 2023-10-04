@@ -40,9 +40,44 @@ object SystemTestRegistration {
      * If all tests of this section pass: -
      */
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
+        manager
         // manager.registerTest(ExampleTest())
         // manager.registerTest(OneEmergency())
         // manager.registerTest(FireEmergencyTest())
+        // manager.registerTest(BaseWithNoVertex())
+//        manager.registerTest(EmergencyDoctorWithLadder())
+//        manager.registerTest(FireStationWithAmbulance())
+//        manager.registerTest(FireTruckWithAmbulance())
+//        manager.registerTest(HospitalWithFireTruck())
+//        manager.registerTest(MissingDepartmentPolice())
+//        manager.registerTest(MissingDepartmentFireStation())
+//        manager.registerTest(MissingDepartmentHospital())
+//        manager.registerTest(PoliceNoVehicles())
+//        manager.registerTest(PoliceCarWithWater())
+//        manager.registerTest(PoliceStationWithAmbulance())
+//        manager.registerTest(TwoBasesOneVertex())
+//        manager.registerTest(VehiclesWithIllegalValues())
+//        manager.registerTest(MixedVehicles())
+//        manager.registerTest(MixedBases())
+//        manager.registerTest(MixedEvents())
+//        manager.registerTest(EmergencyOnNonExistingRoad())
+//        manager.registerTest(EventOnNonExistingRoad())
+//        manager.registerTest(VehicleEventNoVehicle())
+    }
+
+    /**
+     * Second Section: Validation system tests
+     * finished validation tests go here
+     *
+     * Description:
+     * This second part is only concerned with the validation process of the configuration files, and will
+     * therefore only result in possibly incorrect log messages before the 'Simulation start' message
+     * (i.e. the simulation behaves exactly as in the reference implementation).
+     *
+     * Runs: Every 8 hours
+     * If all tests of this section pass: Runs them on the validation-phase mutants
+     */
+    fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
         manager.registerTest(BaseWithNoVertex())
         manager.registerTest(EmergencyDoctorWithLadder())
         manager.registerTest(FireStationWithAmbulance())
@@ -62,22 +97,6 @@ object SystemTestRegistration {
         manager.registerTest(EmergencyOnNonExistingRoad())
         manager.registerTest(EventOnNonExistingRoad())
         manager.registerTest(VehicleEventNoVehicle())
-    }
-
-    /**
-     * Second Section: Validation system tests
-     * finished validation tests go here
-     *
-     * Description:
-     * This second part is only concerned with the validation process of the configuration files, and will
-     * therefore only result in possibly incorrect log messages before the 'Simulation start' message
-     * (i.e. the simulation behaves exactly as in the reference implementation).
-     *
-     * Runs: Every 8 hours
-     * If all tests of this section pass: Runs them on the validation-phase mutants
-     */
-    fun registerSystemTestsMutantValidation(manager: SystemTestManager) {
-        manager
     }
 
     /**
