@@ -13,6 +13,7 @@ object Dijkstra {
 
     private const val speed: Int = 10
     private const val num9: Int = 9
+    private const val THE_NUMBER_ONE = 1
 
     /**
      * Finds the nearest base to the given edge given as location.
@@ -148,7 +149,7 @@ object Dijkstra {
             path,
             weights,
             isOneWay,
-            roundToNextTen(distanceFromSourceVertex.getValue(targetVertex) / speed)
+            getRoundedTicks(distanceFromSourceVertex.getValue(targetVertex))
         )
     }
 
@@ -247,7 +248,7 @@ object Dijkstra {
         val isOneWay: MutableList<Boolean> = mutableListOf()
         isOneWay.add(edge.isOneWay())
         isOneWay.addAll(pathFromTarget.isOneWay)
-        val oneWayPath = Path(path, weights, isOneWay, roundToNextTen(weights.sum()) / speed)
+        val oneWayPath = Path(path, weights, isOneWay, getRoundedTicks(weights.sum()))
 
 //        println("pathFromSource" + pathFromSource.vertexPath)
         if (!edge.isOneWay()) {
@@ -280,7 +281,7 @@ object Dijkstra {
                     newPath,
                     newWeights,
                     newIsOneWay,
-                    roundToNextTen(newWeights.sum()) / speed
+                    getRoundedTicks(newWeights.sum())
                 )
             }
         }
@@ -438,7 +439,21 @@ object Dijkstra {
         return path.reversed()
     }
 
+    private fun getRoundedTicks(distance: Int): Int {
+        val ticks = roundToNextTen(distance) / speed
+        return if (ticks == 0) {
+            THE_NUMBER_ONE
+        } else {
+            ticks
+        }
+    }
+
     private fun roundToNextTen(number: Int): Int {
-        return (number + num9) / speed * speed
+        val ticks = (number + num9) / speed * speed
+        return if (ticks == 0) {
+            THE_NUMBER_ONE
+        } else {
+            ticks
+        }
     }
 }

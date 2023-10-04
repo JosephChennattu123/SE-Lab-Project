@@ -166,7 +166,7 @@ internal class DijkstraTest {
         )
         val isOneWay2 = emptyList<Int>()
         assertEquals("Expected $isOneWay2, but got ${r2.isOneWay}", isOneWay2, r2.isOneWay)
-        val totalTicksToArrive2 = 0
+        val totalTicksToArrive2 = 1
         assertEquals(
             "Expected $totalTicksToArrive2, but got ${r2.totalTicksToArrive}",
             totalTicksToArrive2,
