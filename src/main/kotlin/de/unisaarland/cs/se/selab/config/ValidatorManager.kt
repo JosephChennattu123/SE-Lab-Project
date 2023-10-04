@@ -26,6 +26,8 @@ class ValidatorManager {
     private var controlCenter: ControlCenter? = null
     private var dotParser: DotParser? = null
     private var jsonParser: JsonParser? = null
+    private var basesMap: Map<Int, Base>? = null
+    private var vehiclesMap: Map<Int, Vehicle>? = null
 
     /**
      * The entrypoint for validation.
@@ -80,29 +82,19 @@ class ValidatorManager {
             Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, false)
             return null
         }
+
         Logger.logParsingValidationResult(jsonParser.emergenciesEventsFilePath, true)
 
-        val model = buildModel(maxTick) ?: return null
+        val model = buildModel(maxTick, basesMap as Map<Int, Base>, vehiclesMap as Map<Int, Vehicle>)
 
         controlCenter = ControlCenter(model)
         return controlCenter
     }
 
-    private fun buildModel(maxTick: Int?): Model? {
-        val basesList = bases as List<Base>
+    private fun buildModel(maxTick: Int?, basesMap: Map<Int, Base>, vehiclesMap: Map<Int, Vehicle>): Model {
         val emergenciesList = emergencies as List<Emergency>
         val eventsList = events as List<Event>
 
-        val basesMap = basesList.associateBy { it.baseId }
-        val vehiclesMap = (vehicles as List<Vehicle>).associateBy { it.vehicleID }
-
-        if (!addVehiclesToBases(basesList, vehiclesMap)) {
-            return null
-        }
-        val numVehiclesInBases = basesList.map { it.vehicles.size }
-        if (numVehiclesInBases.any { it == 0 }) {
-            return null
-        }
         val vehiclesToBasesMap = (vehicles as List<Vehicle>).associate { Pair(it.vehicleID, it.baseID) }
 
         val emergenciesMap = emergenciesList.associateBy { it.id }
@@ -157,7 +149,21 @@ class ValidatorManager {
     private fun validateVehicles(bases: List<Base>): Boolean {
         val vehicleValidator = VehicleValidator(jsonParser as JsonParser)
         this.vehicles = vehicleValidator.validate(bases)
-        return vehicles != null
+        if (vehicles == null) {
+            return false
+        }
+        val basesList = bases
+        basesMap = basesList.associateBy { it.baseId }
+        vehiclesMap = (vehicles as List<Vehicle>).associateBy { it.vehicleID }
+
+        if (!addVehiclesToBases(basesList, vehiclesMap as Map<Int, Vehicle>)) {
+            return false
+        }
+        val numVehiclesInBases = basesList.map { it.vehicles.size }
+        if (numVehiclesInBases.any { it == 0 }) {
+            return false
+        }
+        return true
     }
 
     /**
