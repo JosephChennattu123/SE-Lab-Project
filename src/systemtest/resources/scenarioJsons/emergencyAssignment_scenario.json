@@ -3,12 +3,12 @@
     {
       "id": 0,
       "type": "RUSH_HOUR",
-      "tick": 30,
-      "duration": 1,
+      "tick": 2,
+      "duration": 10,
       "roadTypes": [
         "MAIN_STREET"
       ],
-      "factor": 2
+      "factor": 10
     }
   ],
   "emergencyCalls": [
@@ -16,11 +16,11 @@
       "id": 0,
       "tick": 1,
       "village": "Saarbruecken",
-      "roadName": "Haldistrasse",
+      "roadName": "Kossmannstrasse",
       "emergencyType": "ACCIDENT",
       "severity": 1,
       "handleTime": 1,
-      "maxDuration": 3
+      "maxDuration": 6
     }
   ]
 }
