@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab.model
+package de.unisaarland.cs.se.selab.model.vehicle
 
 /**
  * Class for representing a path a vehicle has to travel to its destination.

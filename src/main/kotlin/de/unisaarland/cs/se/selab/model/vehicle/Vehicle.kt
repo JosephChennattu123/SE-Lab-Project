@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab.model
+package de.unisaarland.cs.se.selab.model.vehicle
 
 import de.unisaarland.cs.se.selab.util.Logger
 

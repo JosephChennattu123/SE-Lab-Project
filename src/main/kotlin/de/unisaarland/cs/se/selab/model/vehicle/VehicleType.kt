@@ -1,4 +1,6 @@
-package de.unisaarland.cs.se.selab.model
+package de.unisaarland.cs.se.selab.model.vehicle
+
+import de.unisaarland.cs.se.selab.model.BaseType
 
 /** enum class for Vehicle Type */
 enum class VehicleType {

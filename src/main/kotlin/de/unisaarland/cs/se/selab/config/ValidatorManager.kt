@@ -5,9 +5,9 @@ import de.unisaarland.cs.se.selab.controller.events.Event
 import de.unisaarland.cs.se.selab.model.Base
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.Model
-import de.unisaarland.cs.se.selab.model.Vehicle
-import de.unisaarland.cs.se.selab.model.VehicleType
 import de.unisaarland.cs.se.selab.model.map.Graph
+import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
 import de.unisaarland.cs.se.selab.util.Logger
 import org.everit.json.schema.ValidationException
 

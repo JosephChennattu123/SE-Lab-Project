@@ -2,9 +2,9 @@ package de.unisaarland.cs.se.selab.util
 
 import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.Location
-import de.unisaarland.cs.se.selab.model.Path
 import de.unisaarland.cs.se.selab.model.map.Graph
 import de.unisaarland.cs.se.selab.model.map.Vertex
+import de.unisaarland.cs.se.selab.model.vehicle.Path
 
 /**
  * Util class to calculate the shortest path on a graph using Dijkstra's algorithm.

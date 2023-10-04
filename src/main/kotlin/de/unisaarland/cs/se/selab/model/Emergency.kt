@@ -1,5 +1,6 @@
 package de.unisaarland.cs.se.selab.model
 
+import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
 import de.unisaarland.cs.se.selab.util.AssetManager
 
 /**

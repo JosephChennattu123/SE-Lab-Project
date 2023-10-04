@@ -1,11 +1,11 @@
 package de.unisaarland.cs.se.selab.config
 
-import de.unisaarland.cs.se.selab.model.Ambulance
 import de.unisaarland.cs.se.selab.model.Base
-import de.unisaarland.cs.se.selab.model.FireTruck
-import de.unisaarland.cs.se.selab.model.PoliceCar
-import de.unisaarland.cs.se.selab.model.Vehicle
-import de.unisaarland.cs.se.selab.model.VehicleType
+import de.unisaarland.cs.se.selab.model.vehicle.Ambulance
+import de.unisaarland.cs.se.selab.model.vehicle.FireTruck
+import de.unisaarland.cs.se.selab.model.vehicle.PoliceCar
+import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
 
 private const val WATER600 = 600
 private const val WATER1200 = 1200

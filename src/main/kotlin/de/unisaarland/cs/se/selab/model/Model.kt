@@ -2,6 +2,7 @@ package de.unisaarland.cs.se.selab.model
 
 import de.unisaarland.cs.se.selab.controller.events.Event
 import de.unisaarland.cs.se.selab.model.map.Graph
+import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
 
 /**@param graph
  * @param maxTick

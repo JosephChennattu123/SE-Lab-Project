@@ -3,9 +3,9 @@ package de.unisaarland.cs.se.selab.config
 import de.unisaarland.cs.se.selab.controller.events.Event
 import de.unisaarland.cs.se.selab.controller.events.EventFactory
 import de.unisaarland.cs.se.selab.controller.events.EventType
-import de.unisaarland.cs.se.selab.model.Vehicle
 import de.unisaarland.cs.se.selab.model.map.Graph
 import de.unisaarland.cs.se.selab.model.map.PrimaryType
+import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
 
 /**
  * Validates the events

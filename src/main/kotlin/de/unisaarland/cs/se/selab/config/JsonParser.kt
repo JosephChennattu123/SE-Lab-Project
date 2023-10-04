@@ -4,8 +4,8 @@ import de.unisaarland.cs.se.selab.controller.events.EventType
 import de.unisaarland.cs.se.selab.getSchema
 import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.EmergencyType
-import de.unisaarland.cs.se.selab.model.VehicleType
 import de.unisaarland.cs.se.selab.model.map.PrimaryType
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File

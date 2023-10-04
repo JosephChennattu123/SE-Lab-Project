@@ -5,9 +5,9 @@ import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.EmergencyStatus
 import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.Request
-import de.unisaarland.cs.se.selab.model.Vehicle
-import de.unisaarland.cs.se.selab.model.VehicleStatus
-import de.unisaarland.cs.se.selab.model.VehicleType
+import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleStatus
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
 import de.unisaarland.cs.se.selab.util.AssetManager
 import de.unisaarland.cs.se.selab.util.Dijkstra
 import de.unisaarland.cs.se.selab.util.Logger

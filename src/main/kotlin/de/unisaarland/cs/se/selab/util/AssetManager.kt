@@ -4,10 +4,10 @@ import de.unisaarland.cs.se.selab.model.Base
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.EmergencyRequirement
 import de.unisaarland.cs.se.selab.model.Model
-import de.unisaarland.cs.se.selab.model.Path
-import de.unisaarland.cs.se.selab.model.Vehicle
-import de.unisaarland.cs.se.selab.model.VehicleStatus
-import de.unisaarland.cs.se.selab.model.VehicleType
+import de.unisaarland.cs.se.selab.model.vehicle.Path
+import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleStatus
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
 
 /**
  * Returns requirements for emergencies and handles the allocation of assets to emergencies */

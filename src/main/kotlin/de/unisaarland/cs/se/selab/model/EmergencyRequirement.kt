@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.model
 
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
+
 /**
  * Type and number of asset required for the fulfillment of an Emergency */
 data class EmergencyRequirement(

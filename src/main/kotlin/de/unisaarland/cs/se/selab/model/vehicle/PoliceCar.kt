@@ -1,4 +1,4 @@
-package de.unisaarland.cs.se.selab.model
+package de.unisaarland.cs.se.selab.model.vehicle
 
 /**@param vehicleId
  * @param baseId

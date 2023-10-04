@@ -1,7 +1,7 @@
 package de.unisaarland.cs.se.selab.controller.phases
 
 import de.unisaarland.cs.se.selab.model.Model
-import de.unisaarland.cs.se.selab.model.VehicleStatus
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleStatus
 import de.unisaarland.cs.se.selab.util.Dijkstra
 import de.unisaarland.cs.se.selab.util.Logger
 

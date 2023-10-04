@@ -1,6 +1,6 @@
 package de.unisaarland.cs.se.selab.config
 
-import de.unisaarland.cs.se.selab.model.VehicleType
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
 
 const val BASE_ID = "baseId"
 const val VEHICLE_TYPE = "vehicleType"
