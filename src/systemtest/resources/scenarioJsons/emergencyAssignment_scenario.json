@@ -1,0 +1,26 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "RUSH_HOUR",
+      "tick": 30,
+      "duration": 1,
+      "roadTypes": [
+        "MAIN_STREET"
+      ],
+      "factor": 2
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Saarbruecken",
+      "roadName": "Haldistrasse",
+      "emergencyType": "ACCIDENT",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 3
+    }
+  ]
+}
