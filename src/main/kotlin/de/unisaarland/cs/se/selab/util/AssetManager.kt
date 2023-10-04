@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.util
 
 import de.unisaarland.cs.se.selab.model.Base
+import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.EmergencyRequirement
 import de.unisaarland.cs.se.selab.model.Model
@@ -410,7 +411,7 @@ object AssetManager {
             for (combination in combinationsOfIds) {
                 val subsetToCheck: List<Vehicle> =
                     idToVehicleMap.filter { combination.contains(it.key) }.values.toList()
-                if (checkIfVehiclesFulfillRequirements(mainBase, subsetToCheck, requirements)) {
+                if (checkIfVehiclesFulfillRequirements(subsetToCheck, requirements)) {
                     validCombinations.add(combination)
                 }
             }
@@ -449,7 +450,7 @@ object AssetManager {
                 !requirements
                     .none {
                         vehicle.vehicleType != it.vehicleType ||
-                            vehicle.staffCapacity > model.bases.getValue(vehicle.baseID).currentStaff
+                            !isThereEnoughStaffAtBase(model.bases.getValue(vehicle.baseID), vehicle)
                     }
             ) {
                 // collect vehicles that needed to be removed.
@@ -510,15 +511,11 @@ object AssetManager {
      * @param vehicles The list of vehicles to check.
      * */
     private fun checkIfVehiclesFulfillRequirements(
-        mainBase: Base,
         vehicles: List<Vehicle>,
         requirements: List<EmergencyRequirement>
     ): Boolean {
         var requirementFulfilled = true
         val requirementsCopy = requirements.map { it.copy() }.toMutableList()
-        if (!isThereEnoughStaffAtBase(mainBase, vehicles)) {
-            requirementFulfilled = false
-        }
         // check if every vehicle satisfies a requirement.
         for (vehicle in vehicles) {
             if (!tryToFulfillRequirements(vehicle, requirementsCopy)) {
@@ -624,8 +621,25 @@ object AssetManager {
         currentRequirements.removeAll(requirementsToRemove)
     }
 
-    private fun isThereEnoughStaffAtBase(base: Base, vehicles: List<Vehicle>): Boolean {
-        return base.currentStaff >= vehicles.sumOf { it.staffCapacity }
+    private fun isThereEnoughStaffAtBase(base: Base, vehicle: Vehicle): Boolean {
+        val dogsNeeded = if (vehicle.vehicleType == VehicleType.K9_POLICE_CAR) 1 else 0
+        val doctorsNeeded = if (vehicle.vehicleType == VehicleType.EMERGENCY_DOCTOR_CAR) 1 else 0
+        val staffNeeded = vehicle.staffCapacity
+        return when (base.baseType) {
+            BaseType.POLICE_STATION -> {
+                val dogs = base.dogs ?: error("dogs is null in Police Station")
+                base.currentStaff >= staffNeeded && dogs >= dogsNeeded
+            }
+
+            BaseType.HOSPITAL -> {
+                val doctors = base.doctors ?: error("doctors is null in Hospital")
+                base.currentStaff >= staffNeeded && doctors >= doctorsNeeded
+            }
+
+            BaseType.FIRE_STATION -> {
+                base.currentStaff >= staffNeeded
+            }
+        }
     }
 
     /**
