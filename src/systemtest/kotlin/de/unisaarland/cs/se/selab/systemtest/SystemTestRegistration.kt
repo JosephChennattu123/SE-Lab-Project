@@ -66,6 +66,7 @@ object SystemTestRegistration {
         manager.registerTest(EmergencyOnNonExistingRoad())
         manager.registerTest(EventOnNonExistingRoad())
         manager.registerTest(VehicleEventNoVehicle())
+        manager.registerTest(SimpleTest())
     }
 
     /**
