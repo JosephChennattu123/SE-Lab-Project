@@ -649,7 +649,7 @@ object AssetManager {
             sortedCombinations = sortedCombinations.filter { it.toList()[index] == smallest }
 
             index++
-            if (index > indexElements.size) {
+            if (index == sortedCombinations.first().size) {
                 break
             }
         }
