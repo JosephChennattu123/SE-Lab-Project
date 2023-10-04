@@ -36,7 +36,7 @@ class SuccessfulRequest : SystemTest() {
         assertNextLine(logTick(0))
 
         assertNextLine(logTick(1))
-        assertNextLine(logEmergencyAssigned(0, 0))
+        assertNextLine(logEmergencyAssigned(0, 1))
         assertNextLine(logAssetAllocated(0, 0, 1)) // motorcycle
         assertNextLine(logAssetAllocated(5, 0, 1)) // police car
         assertNextLine(logAssetAllocated(6, 0, 1)) // police car
