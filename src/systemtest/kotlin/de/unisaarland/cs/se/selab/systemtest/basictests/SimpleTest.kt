@@ -9,30 +9,30 @@ class SimpleTest : SystemTest() {
     override val map = "mapFiles/small_map.dot"
     override val assets = "assetsJsons/simple_assets.json"
     override val scenario = "scenarioJsons/small_scenario.json"
-    override val maxTicks = 5
+    override val maxTicks = 6
 
     override suspend fun run() {
         // everything is parsed and validated
-        assertNextLine(logParsingValidationResult("example_map_modified.dot", true))
-        assertNextLine(logParsingValidationResult("reroute_assets.json", true))
-        assertNextLine(logParsingValidationResult("reroute_scenario.json", true))
+        assertNextLine(logParsingValidationResult("small_map.dot", true))
+        assertNextLine(logParsingValidationResult("simple_assets.json", true))
+        assertNextLine(logParsingValidationResult("small_scenario.json", true))
         // The Simulation starts with tick 0
         assertNextLine(LOG_SIMULATION_START)
         assertNextLine(logTick(0))
-        assertNextLine(logEventStatus(0, true))
+        assertNextLine(logEventStatus(0, true)) //  traffic jam event triggered on 2->3
         assertNextLine(logTick(1))
-        assertNextLine(logEmergencyHandlingStart(0))
-        assertNextLine(logEmergencyAssigned(0, 0))
-        assertNextLine(logAssetAllocated(0, 0, 2))
+        assertNextLine(logEmergencyHandlingStart(0)) // emergency starts at tick 1
+        assertNextLine(logEmergencyAssigned(0, 0)) // assign the emergency
+        assertNextLine(logAssetAllocated(0, 0, 2)) // the ambulance takes 2 ticks to arrive
         assertNextLine(logTick(2))
         assertNextLine(logTick(3))
-        assertNextLine(logAssetArrived(0, 3))
-        assertNextLine(logEmergencyHandlingStart(0))
+        assertNextLine(logAssetArrived(0, 3)) // ambulance arrives after 2 ticks
+        assertNextLine(logEmergencyHandlingStart(0)) // emergency can start as the ambulance arrived
         assertNextLine(logTick(4))
-        assertNextLine(logEmergencyResult(0, success = true))
+        assertNextLine(logEmergencyResult(0, success = true)) // emergency takes 1 tick to finish
         assertNextLine(logTick(5))
-        assertNextLine(logEventStatus(0, false))
-
+        assertNextLine(logEventStatus(0, false)) // event ends after
+        assertNextLine(logTick(6))
         // The Simulation should end
         assertNextLine(LOG_SIMULATION_ENDED)
         // Statistics

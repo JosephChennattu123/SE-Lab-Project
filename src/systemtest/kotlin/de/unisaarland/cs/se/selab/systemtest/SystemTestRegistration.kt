@@ -4,6 +4,7 @@ package de.unisaarland.cs.se.selab.systemtest
 import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
 import de.unisaarland.cs.se.selab.systemtest.basictests.FireEmergencyTest
 import de.unisaarland.cs.se.selab.systemtest.basictests.OneEmergency
+import de.unisaarland.cs.se.selab.systemtest.basictests.SimpleTest
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 import de.unisaarland.cs.se.selab.systemtest.validation.BaseWithNoVertex
 import de.unisaarland.cs.se.selab.systemtest.validation.EmergencyDoctorWithLadder
@@ -45,6 +46,7 @@ object SystemTestRegistration {
         manager.registerTest(ExampleTest())
         manager.registerTest(OneEmergency())
         manager.registerTest(FireEmergencyTest())
+        manager.registerTest(SimpleTest())
         manager.registerTest(BaseWithNoVertex())
         manager.registerTest(EmergencyDoctorWithLadder())
         manager.registerTest(FireStationWithAmbulance())
