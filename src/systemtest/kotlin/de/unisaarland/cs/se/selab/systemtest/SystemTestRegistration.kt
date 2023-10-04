@@ -9,6 +9,7 @@ import de.unisaarland.cs.se.selab.systemtest.basictests.SimpleTest
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 import de.unisaarland.cs.se.selab.systemtest.simulation.requesting.SuccessfulRequest
 import de.unisaarland.cs.se.selab.systemtest.simulation.smallSimulation.SimpleSimulation
+import de.unisaarland.cs.se.selab.systemtest.simulation.smallSimulation.UnderStaffedAndFail
 import de.unisaarland.cs.se.selab.systemtest.validation.BaseWithNoVertex
 import de.unisaarland.cs.se.selab.systemtest.validation.EmergencyDoctorWithLadder
 import de.unisaarland.cs.se.selab.systemtest.validation.EmergencyOnNonExistingRoad
@@ -72,6 +73,7 @@ object SystemTestRegistration {
         manager.registerTest(SimpleSimulation())
         manager.registerTest(SuccessfulRequest())
         manager.registerTest(SimpleMapEmergencyTimeout())
+        manager.registerTest(UnderStaffedAndFail())
     }
 
     /**
