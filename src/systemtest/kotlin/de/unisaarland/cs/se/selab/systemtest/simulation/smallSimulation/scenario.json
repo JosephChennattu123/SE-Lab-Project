@@ -29,7 +29,7 @@
       "emergencyType": "FIRE",
       "severity": 2,
       "handleTime": 1,
-      "maxDuration": 5
+      "maxDuration": 3
     },
     {
       "id": 2,

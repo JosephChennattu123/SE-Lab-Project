@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.systemtest.simulation.smallSimulation
 
 import de.unisaarland.cs.se.selab.systemtest.InitialisationLogging
+import de.unisaarland.cs.se.selab.systemtest.LOG_SIMULATION_ENDED
 import de.unisaarland.cs.se.selab.systemtest.LOG_SIMULATION_START
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 import de.unisaarland.cs.se.selab.systemtest.logAssetAllocated
@@ -10,6 +11,11 @@ import de.unisaarland.cs.se.selab.systemtest.logEmergencyAssigned
 import de.unisaarland.cs.se.selab.systemtest.logEmergencyHandlingStart
 import de.unisaarland.cs.se.selab.systemtest.logEmergencyResult
 import de.unisaarland.cs.se.selab.systemtest.logEventStatus
+import de.unisaarland.cs.se.selab.systemtest.logNumberOfFailedEmergencies
+import de.unisaarland.cs.se.selab.systemtest.logNumberOfOngoingEmergencies
+import de.unisaarland.cs.se.selab.systemtest.logNumberOfReceivedEmergencies
+import de.unisaarland.cs.se.selab.systemtest.logNumberOfReroutedAssets
+import de.unisaarland.cs.se.selab.systemtest.logNumberOfResolvedEmergencies
 import de.unisaarland.cs.se.selab.systemtest.logRequest
 import de.unisaarland.cs.se.selab.systemtest.logRequestFailed
 import de.unisaarland.cs.se.selab.systemtest.logTick
@@ -44,24 +50,24 @@ class SimpleSimulation : SystemTest() {
         // location : two_three
         assertNextLine(logEmergencyAssigned(0, 0))
         // path is 0->1->2
-        assertNextLine(logAssetAllocated(0, 0, 3))
-        assertNextLine(logAssetAllocated(1, 0, 3))
+        assertNextLine(logAssetAllocated(0, 0, 3)) // water truck
+        assertNextLine(logAssetAllocated(1, 0, 3)) // water truck
 
         // medical 1 emergency (id = 2) is triggered.
         assertNextLine(logTick(2))
         // location : zero_one
         assertNextLine(logEmergencyAssigned(2, 2))
         // path is
-        assertNextLine(logAssetAllocated(3, 2, 2))
+        assertNextLine(logAssetAllocated(3, 2, 2)) // ambulance
 
         // fire 2 emergency (id = 1) is triggered.
         assertNextLine(logTick(3))
         // location: zero_three
         assertNextLine(logEmergencyAssigned(1, 0))
-        assertNextLine(logAssetReallocated(0, 1))
+        assertNextLine(logAssetReallocated(0, 1)) // first water truck
         assertNextLine(logRequest(0, 2, 1))
         // path is 3.
-        assertNextLine(logAssetAllocated(4, 1, 1))
+        assertNextLine(logAssetAllocated(4, 1, 1)) // second ambulance
         assertNextLine(logRequestFailed(2))
 
         assertNextLine(logTick(4))
@@ -71,12 +77,19 @@ class SimpleSimulation : SystemTest() {
         assertNextLine(logAssetArrived(3, 1))
         assertNextLine(logAssetArrived(4, 3))
         assertNextLine(logEmergencyHandlingStart(2))
-        assertNextLine(logEventStatus(0, true))
+        assertNextLine(logEventStatus(0, true)) // on road 1->2
 
         assertNextLine(logTick(5))
         assertNextLine(logEmergencyResult(0, false))
+        assertNextLine(logEmergencyResult(1, false))
         assertNextLine(logEmergencyResult(2, true))
+        assertNextLine(LOG_SIMULATION_ENDED)
 
-        assertNextLine(logTick(6))
+        // Statistics
+        assertNextLine(logNumberOfReroutedAssets(0))
+        assertNextLine(logNumberOfReceivedEmergencies(3))
+        assertNextLine(logNumberOfOngoingEmergencies(0))
+        assertNextLine(logNumberOfFailedEmergencies(2))
+        assertNextLine(logNumberOfResolvedEmergencies(1))
     }
 }
