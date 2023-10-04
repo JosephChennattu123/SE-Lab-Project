@@ -41,7 +41,7 @@ object Logger {
         val output: String = if (success) {
             "Initialization Info: $filename successfully parsed and validated"
         } else {
-            "Initialization Info: $filename successfully parsed and validated"
+            "Initialization Info: $filename invalid"
         }
         printLog(output)
     }
