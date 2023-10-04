@@ -1,0 +1,25 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "TRAFFIC_JAM",
+      "tick": 0,
+      "duration": 5,
+      "factor": 2,
+      "source": 2,
+      "target": 3
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "",
+      "roadName": "Fastlane",
+      "emergencyType": "MEDICAL",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 3
+    }
+  ]
+}
