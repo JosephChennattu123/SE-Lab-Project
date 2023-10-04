@@ -50,6 +50,8 @@ class OneEmergency : SystemTest() {
         assertNextLine(logTick(3))
         assertNextLine(logEmergencyResult(0, true))
         assertNextLine(logTick(4))
+        assertNextLine(logAssetArrived(18, 2))
+        assertNextLine(logAssetArrived(22, 2))
         // The Simulation should end
         assertNextLine(LOG_SIMULATION_ENDED)
         // Statistics
