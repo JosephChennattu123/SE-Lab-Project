@@ -22,7 +22,7 @@ class SuccessfulRequest : SystemTest() {
         "fullAssets/requesting/assets.json"
     override val map =
         "fullAssets/requesting/map.dot"
-    override val maxTicks = 1
+    override val maxTicks = 15
     override val name = "SuccessfulRequest"
     override val scenario =
         "fullAssets/requesting/scenario.json"

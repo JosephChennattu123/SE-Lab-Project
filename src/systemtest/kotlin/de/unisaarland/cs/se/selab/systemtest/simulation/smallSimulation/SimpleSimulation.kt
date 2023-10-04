@@ -32,7 +32,7 @@ class SimpleSimulation : SystemTest() {
         "fullAssets/simpleSimulation/assets.json"
     override val map =
         "fullAssets/simpleSimulation/map.dot"
-    override val maxTicks = 1
+    override val maxTicks = 15
     override val name = "SimpleSimulation"
     override val scenario =
         "fullAssets/simpleSimulation/scenario.json"
