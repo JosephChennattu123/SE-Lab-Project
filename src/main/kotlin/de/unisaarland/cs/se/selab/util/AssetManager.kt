@@ -397,7 +397,7 @@ object AssetManager {
     ) {
         val vehicleIds = vehicles.map { it.vehicleID }
         val idToVehicleMap = vehicles.associateBy { it.vehicleID }
-        for (size in requirements.size downTo 1) {
+        for (size in getAmountOfRequiredVehicles(requirements, mainBase) downTo 1) {
             val combinationsOfIds = computeCombinations(vehicleIds, size)
             val validCombinations =
                 mutableListOf<List<Int>>() // combinations that fulfill the requirements
@@ -419,6 +419,11 @@ object AssetManager {
                 break
             }
         }
+    }
+
+    private fun getAmountOfRequiredVehicles(requirements: MutableList<EmergencyRequirement>, base: Base): Int {
+        val requirementsForBaseType = requirements.filter { VehicleType.getBaseType(it.vehicleType) == base.baseType }
+        return requirementsForBaseType.sumOf { it.numberOfVehicles }
     }
 
     /**
@@ -649,7 +654,7 @@ object AssetManager {
             sortedCombinations = sortedCombinations.filter { it.toList()[index] == smallest }
 
             index++
-            if (index > indexElements.size) {
+            if (index == sortedCombinations.first().size) {
                 break
             }
         }

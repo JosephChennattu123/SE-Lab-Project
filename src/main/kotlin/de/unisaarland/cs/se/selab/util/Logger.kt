@@ -65,7 +65,7 @@ object Logger {
      * @param baseId the id of the base
      */
     fun logEmergencyAssigned(emergencyId: Int, baseId: Int) {
-        printLog("Emergency Assignment $emergencyId assigned to $baseId")
+        printLog("Emergency Assignment: $emergencyId assigned to $baseId")
     }
 
     /**
@@ -84,7 +84,7 @@ object Logger {
      * @param emergencyId the id of the new emergency
      */
     fun logAssetReallocated(assetId: Int, emergencyId: Int) {
-        printLog("Asset Reallocation: $assetId reallocated to $emergencyId")
+        printLog("Asset Reallocation: $assetId reallocated to $emergencyId.")
         // numReroutedAssets += 1
     }
 
@@ -94,14 +94,14 @@ object Logger {
      * @param emergencyId the id of the emergency
      */
     fun logRequest(requestId: Int, targetBaseId: Int, emergencyId: Int) {
-        printLog("Asset Request: $requestId sent to $targetBaseId for $emergencyId")
+        printLog("Asset Request: $requestId sent to $targetBaseId for $emergencyId.")
     }
 
     /**
      * @param emergencyId the id of the emergency
      */
     fun logRequestFailed(emergencyId: Int) {
-        printLog("Request Failed: $emergencyId failed")
+        printLog("Request Failed: $emergencyId failed.")
     }
 
     /**
@@ -109,14 +109,14 @@ object Logger {
      * @param vertexId the id of the vertex
      */
     fun logAssetArrived(assetId: Int, vertexId: Int) {
-        printLog("Asset Arrival: $assetId arrived at $vertexId")
+        printLog("Asset Arrival: $assetId arrived at $vertexId.")
     }
 
     /**
      * @param emergencyId the id of the emergency
      */
     fun logEmergencyHandlingStart(emergencyId: Int) {
-        printLog("Emergency Handling Start: $emergencyId handling started")
+        printLog("Emergency Handling Start: $emergencyId handling started.")
     }
 
     /**
@@ -126,10 +126,10 @@ object Logger {
      */
     fun logEmergencyResult(emergencyId: Int, success: Boolean) {
         if (success) {
-            printLog("Emergency Resolved: $emergencyId resolved")
+            printLog("Emergency Resolved: $emergencyId resolved.")
             numResolvedEmergency += 1
         } else {
-            printLog("Emergency Failed: $emergencyId failed")
+            printLog("Emergency Failed: $emergencyId failed.")
             numFailedEmergencies += 1
         }
     }
@@ -140,9 +140,9 @@ object Logger {
      */
     fun logEventStatus(eventId: Int, triggered: Boolean) {
         if (triggered) {
-            printLog("Event Triggered: $eventId triggered")
+            printLog("Event Triggered: $eventId triggered.")
         } else {
-            printLog("Event Ended: $eventId ended")
+            printLog("Event Ended: $eventId ended.")
         }
     }
 

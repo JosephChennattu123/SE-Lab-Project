@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.model
 
+import de.unisaarland.cs.se.selab.util.AssetManager
+
 /**
  * Emergencies have to be assigned to bases and handled by vehicles, they can fail or resolve
  * @param id ID of the emergency
@@ -28,6 +30,18 @@ class Emergency(
     val assignedVehicleIDs: MutableList<Int> = mutableListOf()
     val availableVehicleIDs: MutableList<Int> = mutableListOf()
     var mainBaseID: Int? = null
+
+    init {
+        baseRequirements = getRequirements()
+        currentRequirements.addAll(getRequirements().toMutableList())
+    }
+
+    private fun getRequirements() = when (type) {
+        EmergencyType.FIRE -> AssetManager.getFireRequirements(severity)
+        EmergencyType.ACCIDENT -> AssetManager.getAccidentRequirements(severity)
+        EmergencyType.CRIME -> AssetManager.getCrimeRequirements(severity)
+        EmergencyType.MEDICAL -> AssetManager.getMedicalRequirements(severity)
+    }
 
     /**
      * assigns a Vehicle to this emergency
