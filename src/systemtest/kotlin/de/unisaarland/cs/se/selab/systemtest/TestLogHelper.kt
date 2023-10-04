@@ -34,7 +34,7 @@ fun logTick(tick: Int): String {
  * @param baseId the id of the base
  */
 fun logEmergencyAssigned(emergencyId: Int, baseId: Int): String {
-    return "Emergency Assignment $emergencyId assigned to $baseId"
+    return "Emergency Assignment: $emergencyId assigned to $baseId"
 }
 
 /**
