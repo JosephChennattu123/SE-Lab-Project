@@ -39,15 +39,14 @@ class RequestProcessing {
             // get the list of vehicleIds belonging to the base and then get the list of concrete
             // vehicles from the model
             val vehiclesId = (base as Base).vehicles
-            var vehicles = model.getVehiclesByIds(vehiclesId)
-
             // filter out the vehicles that are not in base by checking the status
-            vehicles = vehicles.filter { it.status == VehicleStatus.AT_BASE }
+            val vehicles = model.getVehiclesByIds(vehiclesId)
+                .filter { it.status == VehicleStatus.AT_BASE } as MutableList
 
             // pass the list of vehicle together with the model and emergency
             // to the allocateAssetsToEmergency() method of the AssetManager
             if (reqEmergency != null) {
-                AssetManager.allocateAssetsToEmergency(model, reqEmergency, vehicles)
+                AssetManager.allocateAssetsToEmergency(model, reqEmergency, vehicles, false)
             }
 
             // check if the emergency requirements have been fulfilled by calling isFulfilled on the emergency

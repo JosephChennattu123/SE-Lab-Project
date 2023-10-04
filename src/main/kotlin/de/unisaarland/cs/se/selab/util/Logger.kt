@@ -75,8 +75,7 @@ object Logger {
      */
     fun logAssetAllocated(assetId: Int, emergencyId: Int, arrivesInt: Int) {
         printLog(
-            "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt\n" +
-                "ticks to arrive."
+            "Asset Allocation: $assetId allocated to $emergencyId; $arrivesInt ticks to arrive."
         )
     }
 

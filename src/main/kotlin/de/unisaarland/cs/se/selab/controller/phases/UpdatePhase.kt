@@ -113,9 +113,10 @@ class UpdatePhase {
     private fun setReturnPath(vehicle: Vehicle, model: Model) {
         assert(model.getBaseById(vehicle.baseID) != null)
         val base = model.getBaseById(vehicle.baseID) as Base
+        val vehiclesOldDestination = vehicle.getDestination() ?: error("destination is null")
         val path = Dijkstra.getShortestPathFromVertexToVertex( // calculate path back to base for vehicle
             model.graph,
-            vehicle.positionTracker.path.vertexPath[vehicle.positionTracker.currentVertexIndex],
+            vehiclesOldDestination,
             base.vertexID,
             vehicle.height
         )
