@@ -6,6 +6,7 @@ import de.unisaarland.cs.se.selab.systemtest.basictests.FireEmergencyTest
 import de.unisaarland.cs.se.selab.systemtest.basictests.OneEmergency
 import de.unisaarland.cs.se.selab.systemtest.basictests.SimpleTest
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
+import de.unisaarland.cs.se.selab.systemtest.simulation.smallSimulation.SimpleSimulation
 import de.unisaarland.cs.se.selab.systemtest.validation.BaseWithNoVertex
 import de.unisaarland.cs.se.selab.systemtest.validation.EmergencyDoctorWithLadder
 import de.unisaarland.cs.se.selab.systemtest.validation.EmergencyOnNonExistingRoad
@@ -66,7 +67,7 @@ object SystemTestRegistration {
         manager.registerTest(EmergencyOnNonExistingRoad())
         manager.registerTest(EventOnNonExistingRoad())
         manager.registerTest(VehicleEventNoVehicle())
-        manager.registerTest(SimpleTest())
+        manager.registerTest(SimpleSimulation())
     }
 
     /**
