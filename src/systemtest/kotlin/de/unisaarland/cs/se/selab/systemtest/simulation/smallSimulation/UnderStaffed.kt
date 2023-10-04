@@ -42,7 +42,7 @@ class UnderStaffedAndFail :
         assertNextLine(logParsingValidationResult(this.assetsFileName, true))
         assertNextLine(logParsingValidationResult(this.scenario, true))
 
-        //
+        // Simulation starts
         assertNextLine(LOG_SIMULATION_START)
         assertNextLine(logTick(0))
 
@@ -86,9 +86,9 @@ class UnderStaffedAndFail :
         // Statistics
         assertNextLine(logNumberOfReroutedAssets(0))
         assertNextLine(logNumberOfReceivedEmergencies(4))
-        assertNextLine(logNumberOfOngoingEmergencies(2)) // MEDICAL SEVERITY 1
-        assertNextLine(logNumberOfFailedEmergencies(1))
-        assertNextLine(logNumberOfResolvedEmergencies(1))
+        assertNextLine(logNumberOfOngoingEmergencies(2)) // MEDICAL SEVERITY 1 and 2
+        assertNextLine(logNumberOfFailedEmergencies(1)) // ACCIDENT
+        assertNextLine(logNumberOfResolvedEmergencies(1)) // FIRE
         // end of file is reached
         assertEnd()
     }
