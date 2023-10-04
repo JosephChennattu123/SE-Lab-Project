@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.systemtest.InitialisationLogging
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
 const val VALID_ASSETS = "broken/assets/ThreeBasesThreeVehicles.json"
+const val ASSETS = "ThreeBasesThreeVehicles.json"
 
 class MixedEvents : SystemTest() {
     override val assets = VALID_ASSETS
@@ -14,7 +15,7 @@ class MixedEvents : SystemTest() {
 
     override suspend fun run() {
         assertNextLine(InitialisationLogging.logSuccess(MAP_NAME))
-        assertNextLine(InitialisationLogging.logSuccess(VALID_ASSETS))
+        assertNextLine(InitialisationLogging.logSuccess(ASSETS))
         assertNextLine(InitialisationLogging.logFailed("mixedEvents.json"))
         assertEnd()
     }
@@ -29,7 +30,7 @@ class EmergencyOnNonExistingRoad : SystemTest() {
 
     override suspend fun run() {
         assertNextLine(InitialisationLogging.logSuccess(MAP_NAME))
-        assertNextLine(InitialisationLogging.logSuccess(VALID_ASSETS))
+        assertNextLine(InitialisationLogging.logSuccess(ASSETS))
         assertNextLine(InitialisationLogging.logFailed("emergencyOnNonExistentRoad.json"))
         assertEnd()
     }
@@ -44,7 +45,7 @@ class EventOnNonExistingRoad : SystemTest() {
 
     override suspend fun run() {
         assertNextLine(InitialisationLogging.logSuccess(MAP_NAME))
-        assertNextLine(InitialisationLogging.logSuccess(VALID_ASSETS))
+        assertNextLine(InitialisationLogging.logSuccess(ASSETS))
         assertNextLine(InitialisationLogging.logFailed("eventOnNonExistingRoad.json"))
         assertEnd()
     }
@@ -59,7 +60,7 @@ class VehicleEventNoVehicle : SystemTest() {
 
     override suspend fun run() {
         assertNextLine(InitialisationLogging.logSuccess(MAP_NAME))
-        assertNextLine(InitialisationLogging.logSuccess(VALID_ASSETS))
+        assertNextLine(InitialisationLogging.logSuccess(ASSETS))
         assertNextLine(InitialisationLogging.logFailed("vehicleEventOnNonExistingVehicle.json"))
         assertEnd()
     }
