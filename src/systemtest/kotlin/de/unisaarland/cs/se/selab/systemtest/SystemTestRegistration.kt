@@ -121,6 +121,6 @@ object SystemTestRegistration {
      * If all tests of this section pass: Runs them on the simulation-phase mutants
      */
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
-        manager
+        manager.registerTest(OneEmergency())
     }
 }
