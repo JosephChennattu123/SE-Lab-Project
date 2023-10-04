@@ -50,8 +50,8 @@ class SimpleSimulation : SystemTest() {
         // location : two_three
         assertNextLine(logEmergencyAssigned(0, 0))
         // path is 0->1->2
-        assertNextLine(logAssetAllocated(0, 0, 2)) // water truck
-        assertNextLine(logAssetAllocated(1, 0, 2)) // water truck
+        assertNextLine(logAssetAllocated(0, 0, 3)) // water truck
+        assertNextLine(logAssetAllocated(1, 0, 3)) // water truck
 
         // medical 1 emergency (id = 2) is triggered.
         assertNextLine(logTick(2))
