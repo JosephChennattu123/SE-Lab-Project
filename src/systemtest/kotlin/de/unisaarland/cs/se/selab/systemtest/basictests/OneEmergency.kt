@@ -41,8 +41,8 @@ class OneEmergency : SystemTest() {
         assertNextLine(logTick(1))
         assertNextLine(logEmergencyAssigned(0, 0))
         // allocate asset 18 & 22 (height 2), no reallocate, no request
-        assertNextLine(logAssetAllocated(18, 0, 0))
-        assertNextLine(logAssetAllocated(22, 0, 0))
+        assertNextLine(logAssetAllocated(18, 0, 1))
+        assertNextLine(logAssetAllocated(22, 0, 1))
         assertNextLine(logTick(2))
         assertNextLine(logAssetArrived(18, 2))
         assertNextLine(logAssetArrived(22, 2))
