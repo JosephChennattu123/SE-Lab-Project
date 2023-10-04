@@ -55,7 +55,6 @@ fun main(args: Array<String>) {
     if (controlCenter != null) {
         controlCenter.simulate()
     } else {
-        // error("controlCenter is null")
         return
     }
 

@@ -1,0 +1,23 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "VEHICLE_UNAVAILABLE",
+      "tick": 0,
+      "duration": 1,
+      "vehicleID": 0
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "Post_Office_Street",
+      "emergencyType": "MEDICAL",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 2
+    }
+  ]
+}

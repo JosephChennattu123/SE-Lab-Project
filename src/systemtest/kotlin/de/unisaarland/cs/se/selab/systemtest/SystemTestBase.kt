@@ -16,14 +16,14 @@ abstract class SystemTestBase(
     override val name: String,
     mapFolder: String,
     val mapFileName: String,
-    assestsFolder: String,
+    assetsFolder: String,
     val assetsFileName: String,
     scenarioFolder: String,
     val scenarioFile: String,
     tick: Int = 1
 ) : SystemTest() {
     override val map: String = mapFolder + mapFileName
-    override val assets: String = assestsFolder + assetsFileName
+    override val assets: String = assetsFolder + assetsFileName
     override val scenario: String = scenarioFolder + scenarioFile
     override val maxTicks: Int = tick
 }

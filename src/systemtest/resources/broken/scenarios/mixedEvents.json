@@ -1,0 +1,131 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "RUSH_HOUR",
+      "tick": 1,
+      "duration": 1,
+      "factor": 1,
+      "oneWayStreet": false,
+      "vehicleID": 0,
+      "source": 0,
+      "target": 0,
+      "roadTypes": [
+        "MAIN_STREET",
+        "SIDE_STREET"
+      ]
+    },
+    {
+      "id": 1,
+      "type": "TRAFFIC_JAM",
+      "tick": 1,
+      "duration": 1,
+      "factor": 1,
+      "oneWayStreet": false,
+      "source": 0,
+      "vehicleID": 0,
+      "roadTypes": [
+        "MAIN_STREET",
+        "SIDE_STREET"
+      ],
+      "target": 0
+    },
+    {
+      "id": 2,
+      "type": "CONSTRUCTION_SITE",
+      "tick": 1,
+      "duration": 1,
+      "factor": 1,
+      "oneWayStreet": false,
+      "vehicleID": 0,
+      "source": 0,
+      "target": 0,
+      "roadTypes": [
+        "MAIN_STREET",
+        "SIDE_STREET"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "ROAD_CLOSURE",
+      "tick": 1,
+      "duration": 1,
+      "factor": 1,
+      "vehicleID": 0,
+      "oneWayStreet": false,
+      "source": 0,
+      "target": 0,
+      "roadTypes": [
+        "MAIN_STREET",
+        "SIDE_STREET"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "VEHICLE_UNAVAILABLE",
+      "tick": 1,
+      "factor": 1,
+      "duration": 1,
+      "source": 0,
+      "oneWayStreet": false,
+      "target": 0,
+      "vehicleID": 0,
+      "roadTypes": [
+        "MAIN_STREET",
+        "SIDE_STREET"
+      ]
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "Post_Office_Street",
+      "emergencyType": "MEDICAL",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 2
+    },
+    {
+      "id": 1,
+      "tick": 10,
+      "village": "Berlin",
+      "roadName": "Post_Office_Street",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 2
+    },
+    {
+      "id": 2,
+      "tick": 15,
+      "village": "Berlin",
+      "roadName": "Post_Office_Street",
+      "emergencyType": "ACCIDENT",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 2
+    },
+    {
+      "id": 3,
+      "tick": 20,
+      "village": "Berlin",
+      "roadName": "Post_Office_Street",
+      "emergencyType": "CRIME",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 2
+    },
+    {
+      "id": 4,
+      "tick": 30,
+      "village": "Berlin",
+      "roadName": "Post_Office_Street",
+      "emergencyType": "MEDICAL",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 2
+    }
+  ]
+}
