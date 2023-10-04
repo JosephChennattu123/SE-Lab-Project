@@ -14,14 +14,14 @@ class PositionTracker {
     fun updatePosition() {
         var distance = SPEED
         while (!destinationReached() && distance != 0) {
-            distance =
-                path?.edgeWeights?.get(currentVertexIndex as Int)?.minus(positionOnEdge as Int + distance) as Int
+            val edgeWeights = (path as Path).edgeWeights
+            distance = edgeWeights[currentVertexIndex as Int].minus(positionOnEdge as Int + distance)
             if (distance < 0) {
                 positionOnEdge = 0
                 currentVertexIndex = currentVertexIndex?.plus(1)
                 distance *= -1
             } else {
-                positionOnEdge = path?.edgeWeights?.get(currentVertexIndex as Int) as Int - distance
+                positionOnEdge = edgeWeights[currentVertexIndex as Int] - distance
                 distance = 0
             }
         }
