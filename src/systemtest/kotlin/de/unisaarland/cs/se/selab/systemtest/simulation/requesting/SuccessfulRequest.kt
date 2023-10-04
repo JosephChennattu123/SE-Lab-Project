@@ -19,13 +19,13 @@ import de.unisaarland.cs.se.selab.systemtest.logTick
 
 class SuccessfulRequest : SystemTest() {
     override val assets =
-        "src/systemtest/kotlin/de/unisaarland/cs/se/selab/systemtest/simulation/requesting/assets.json"
+        "fullAssets/requesting/assets.json"
     override val map =
-        "src/systemtest/kotlin/de/unisaarland/cs/se/selab/systemtest/simulation/requesting/map.dot"
+        "fullAssets/requesting/map.dot"
     override val maxTicks = 1
     override val name = "SuccessfulRequest"
     override val scenario =
-        "src/systemtest/kotlin/de/unisaarland/cs/se/selab/systemtest/simulation/requesting/scenario.json"
+        "fullAssets/requesting/scenario.json"
 
     override suspend fun run() {
         assertNextLine(InitialisationLogging.logSuccess("map.dot"))

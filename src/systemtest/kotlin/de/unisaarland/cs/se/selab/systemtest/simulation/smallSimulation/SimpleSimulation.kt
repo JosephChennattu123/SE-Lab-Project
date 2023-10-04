@@ -29,13 +29,13 @@ import de.unisaarland.cs.se.selab.systemtest.logTick
 
 class SimpleSimulation : SystemTest() {
     override val assets =
-        "simpleSimulation/assets.json"
+        "fullAssets/simpleSimulation/assets.json"
     override val map =
-        "simpleSimulation/map.dot"
+        "fullAssets/simpleSimulation/map.dot"
     override val maxTicks = 1
     override val name = "SimpleSimulation"
     override val scenario =
-        "simpleSimulation/scenario.json"
+        "fullAssets/simpleSimulation/scenario.json"
 
     override suspend fun run() {
         assertNextLine(InitialisationLogging.logSuccess("map.dot"))
