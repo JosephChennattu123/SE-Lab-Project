@@ -1,0 +1,25 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "TRAFFIC_JAM",
+      "tick": 40,
+      "duration": 2,
+      "factor": 4,
+      "source": 1,
+      "target": 2
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "two_three",
+      "emergencyType": "CRIME",
+      "severity": 3,
+      "handleTime": 1,
+      "maxDuration": 5
+    }
+  ]
+}
