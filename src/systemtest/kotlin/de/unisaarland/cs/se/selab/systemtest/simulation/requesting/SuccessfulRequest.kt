@@ -23,7 +23,7 @@ class SuccessfulRequest : SystemTest() {
     override val map =
         "src/systemtest/kotlin/de/unisaarland/cs/se/selab/systemtest/simulation/requesting/map.dot"
     override val maxTicks = 1
-    override val name = "SimpleSimulation"
+    override val name = "SuccessfulRequest"
     override val scenario =
         "src/systemtest/kotlin/de/unisaarland/cs/se/selab/systemtest/simulation/requesting/scenario.json"
 
