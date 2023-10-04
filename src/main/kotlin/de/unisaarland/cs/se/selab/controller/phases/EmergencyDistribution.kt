@@ -27,7 +27,7 @@ class EmergencyDistribution {
      */
     fun execute(model: Model) {
         // Get emergencies for the current tick.
-        val currentEmergencies = model.getCurrentEmergencies()
+        val currentEmergencies = model.getEmergenciesOfCurrentTick()
 
         // Get the graph from the model.
         val graph = model.graph

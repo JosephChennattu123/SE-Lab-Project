@@ -33,7 +33,7 @@ class PositionTracker {
     fun assignPath(newPath: Path): Boolean {
         if (path == null) {
             path = newPath
-            currentVertexIndex = newPath.vertexPath[0]
+            currentVertexIndex = 0
             positionOnEdge = 0
             return true
         }
@@ -46,7 +46,7 @@ class PositionTracker {
             val newSumOfWeights = newPath.edgeWeights.sum()
             val currentPath = path?.vertexPath ?: error("path is null")
             path = newPath
-            currentVertexIndex = newPath.vertexPath[0]
+            currentVertexIndex = 0
             positionOnEdge = 0
             return oldSumOfWeights == newSumOfWeights && areEdgesTheSame(currentPath, newPath.vertexPath)
         }

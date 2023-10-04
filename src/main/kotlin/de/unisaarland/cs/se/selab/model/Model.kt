@@ -51,7 +51,7 @@ class Model(
     /** returns list of started Emergencies. To people implementing/testing Emergency Distribution
      *  please use this function to fetch the
      * emergency started in this tick*/
-    fun getCurrentEmergencies(): List<Emergency> {
+    fun getEmergenciesOfCurrentTick(): List<Emergency> {
         val listOfStartedEmergencies: List<Int> = tickToEmergencyId[currentTick].orEmpty()
         return listOfStartedEmergencies.mapNotNull { emergencies[it] }
     }
