@@ -5,7 +5,7 @@ import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
 const val VALID_MAP = "broken/maps/simpleValidMap.dot"
 const val MAP_NAME = "simpleValidMap.dot"
-const val VALID_SCENARIO = "broken/maps/ThreeBasesThreeVehicles.dot"
+const val VALID_SCENARIO = "broken/scenarios/OneEventOneEmergency.json"
 
 class BaseWithNoVertex : SystemTest() {
     override val assets = "broken/assets/baseWithNoVertex.json"
