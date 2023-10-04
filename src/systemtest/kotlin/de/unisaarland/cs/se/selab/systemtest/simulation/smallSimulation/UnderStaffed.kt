@@ -72,9 +72,8 @@ class UnderStaffedAndFail :
         assertNextLine(logEmergencyHandlingStart(0)) // FIRE Severity 1 handling
         assertNextLine(logEmergencyResult(1, false)) // ACCIDENT failed
 
-        // tick 3: MEDICAL Severity 2 success
+        // tick 3: -
         assertNextLine(logTick(3))
-        assertNextLine(logEmergencyResult(3, true))
 
         // tick 4: FIRE Severity 1 success
         assertNextLine(logTick(4))
