@@ -1,0 +1,20 @@
+{
+    "bases": [
+        {
+            "id": 0,
+            "baseType": "HOSPITAL",
+            "location": 1,
+            "staff": 10,
+            "doctors": 2
+        }
+    ],
+    "vehicles": [
+        {
+            "id": 0,
+            "baseID": 0,
+            "vehicleType": "AMBULANCE",
+            "vehicleHeight": 1,
+            "staffCapacity": 2
+        }
+    ]
+}

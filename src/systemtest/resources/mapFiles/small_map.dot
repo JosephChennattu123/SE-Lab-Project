@@ -1,0 +1,11 @@
+digraph G {
+    1;
+    2;
+    3;
+    4;
+
+    1 -> 2 [village=Saarland; name=Motorway; heightLimit=10; weight=5; primaryType=countyRoad; secondaryType=None;];
+    2 -> 3 [village=Saarland; name=Countryroad; heightLimit=10; weight=3; primaryType=countyRoad; secondaryType=oneWayStreet;];
+    3 -> 4 [village=Saarland; name=Fastlane; heightLimit=10; weight=2; primaryType=countyRoad; secondaryType=oneWayStreet;];
+    3 -> 1 [village=Saarland; name=Backlane; heightLimit=10; weight=2; primaryType=countyRoad; secondaryType=oneWayStreet;];
+}
