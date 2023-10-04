@@ -181,11 +181,32 @@ object Dijkstra {
                 edge.targetVertex.vertexId,
                 height
             )
-        return if (pathToEdgeSource.totalTicksToArrive < pathToEdgeTarget.totalTicksToArrive) {
-            pathToEdgeSource
-        } else {
-            pathToEdgeTarget
+        if (pathToEdgeSource.getTotalDistance() < pathToEdgeTarget.getTotalDistance()) {
+            return pathToEdgeSource
+        } else if (pathToEdgeSource.getTotalDistance() > pathToEdgeTarget.getTotalDistance()) {
+            return pathToEdgeTarget
         }
+        return getLexSmallerPath(pathToEdgeSource, pathToEdgeTarget)
+    }
+
+    private fun getLexSmallerPath(pathToEdgeSource: Path, pathToEdgeTarget: Path): Path {
+        val pathWithLessVertices: Path?
+        val otherPath: Path?
+        if (pathToEdgeSource.vertexPath.count() < pathToEdgeTarget.vertexPath.count()) {
+            pathWithLessVertices = pathToEdgeSource
+            otherPath = pathToEdgeTarget
+        } else {
+            pathWithLessVertices = pathToEdgeTarget
+            otherPath = pathToEdgeSource
+        }
+        for (id in 0 until pathWithLessVertices.vertexPath.size) {
+            if (pathWithLessVertices.vertexPath[id] < otherPath.vertexPath[id]) {
+                return pathWithLessVertices
+            } else if (pathWithLessVertices.vertexPath[id] > otherPath.vertexPath[id]) {
+                return otherPath
+            }
+        }
+        return pathWithLessVertices
     }
 
     /**
@@ -370,12 +391,10 @@ object Dijkstra {
             if (height != null && edge.properties.height < height) {
                 continue
             }
-
             var newDistance = distancesFromSource.getValue(vertex.vertexId)
             if (newDistance != Int.MAX_VALUE) {
                 newDistance += edge.getWeight()
             }
-
             // vertex.getEdges(reverse) can guarantee this direction of edge exit
             val newVertexId =
                 if (vertex.vertexId != edge.sourceVertex.vertexId) {
@@ -392,6 +411,9 @@ object Dijkstra {
 //            )
 
             if (newDistance < oldDistance) {
+                distancesFromSource[newVertexId] = newDistance
+                parentMap[newVertexId] = vertex.vertexId
+            } else if (newDistance == oldDistance && vertex.vertexId < parentMap.getValue(newVertexId)) {
                 distancesFromSource[newVertexId] = newDistance
                 parentMap[newVertexId] = vertex.vertexId
             }
