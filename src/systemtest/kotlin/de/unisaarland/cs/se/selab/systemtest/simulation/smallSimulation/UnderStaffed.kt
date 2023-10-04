@@ -40,7 +40,7 @@ class UnderStaffedAndFail :
         // Parsing and Validation successful
         assertNextLine(logParsingValidationResult(this.mapFileName, true))
         assertNextLine(logParsingValidationResult(this.assetsFileName, true))
-        assertNextLine(logParsingValidationResult(this.scenario, true))
+        assertNextLine(logParsingValidationResult(this.scenarioFile, true))
 
         // Simulation starts
         assertNextLine(LOG_SIMULATION_START)
