@@ -14,7 +14,7 @@ class Request private constructor(
     var processedBases: Set<Int>
 ) {
     companion object {
-        private var currentRequestId = 0
+        private var currentRequestId = 1
 
         /**
          * Create a new request
