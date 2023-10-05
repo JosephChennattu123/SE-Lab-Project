@@ -17,7 +17,6 @@ import de.unisaarland.cs.se.selab.systemtest.logNumberOfReceivedEmergencies
 import de.unisaarland.cs.se.selab.systemtest.logNumberOfReroutedAssets
 import de.unisaarland.cs.se.selab.systemtest.logNumberOfResolvedEmergencies
 import de.unisaarland.cs.se.selab.systemtest.logRequest
-import de.unisaarland.cs.se.selab.systemtest.logRequestFailed
 import de.unisaarland.cs.se.selab.systemtest.logTick
 
 /**
@@ -65,18 +64,22 @@ class SimpleSimulation : SystemTest() {
         // location: zero_three
         assertNextLine(logEmergencyAssigned(1, 0))
         assertNextLine(logAssetReallocated(0, 1)) // first water truck
-        assertNextLine(logRequest(0, 2, 1))
+        assertNextLine(logAssetReallocated(1, 1)) // second water truck
+        assertNextLine(logRequest(0, 2, 1)) // request to hospital
         // path is 3.
         assertNextLine(logAssetAllocated(4, 1, 1)) // second ambulance
-        assertNextLine(logRequestFailed(2))
+        // assertNextLine(logRequestFailed(2)) // wrong
+
+        assertNextLine(logAssetArrived(0, 0))
+        assertNextLine(logAssetArrived(1, 0))
 
         assertNextLine(logTick(4))
-        assertNextLine(logRequest(0, 2, 2))
-        assertNextLine(logAssetArrived(0, 0))
-        assertNextLine(logAssetArrived(1, 2))
-        assertNextLine(logAssetArrived(3, 1))
+        // assertNextLine(logRequest(0, 2, 2)) // wrong
+        // assertNextLine(logAssetArrived(0, 0)) // wrong
+        // assertNextLine(logAssetArrived(1, 2)) // wrong
+        assertNextLine(logAssetArrived(3, 1)) // Police vertex
         assertNextLine(logAssetArrived(4, 3))
-        assertNextLine(logEmergencyHandlingStart(2))
+        assertNextLine(logEmergencyHandlingStart(2)) // Medical severity 1 id 2 CURRENT
         assertNextLine(logEventStatus(0, true)) // on road 1->2
 
         assertNextLine(logTick(5))
