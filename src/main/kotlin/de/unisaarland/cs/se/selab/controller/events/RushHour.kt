@@ -20,6 +20,18 @@ class RushHour(id: Int, start: Int, duration: Int, val roadTypes: List<PrimaryTy
 
     /**TODO(): add comment.*/
     override fun applyEffect(model: Model) {
+        if (!model.currentEvents.contains(id)) {
+            var checksIfRushHourIsListedSomewhere = 0
+            for (eventList in model.roadToPostponedEvents.values) {
+                if (eventList.contains(id)) {
+                    checksIfRushHourIsListedSomewhere++
+                }
+            }
+            if (checksIfRushHourIsListedSomewhere == 0) {
+                Logger.logEventStatus(id, true)
+                model.eventOccurred = true
+            }
+        }
         model.graph.getEdges().forEach { currentEdge ->
             if (roadTypes.contains(currentEdge.properties.roadType)) {
                 handleEventOnEdge(currentEdge, model)
@@ -43,11 +55,11 @@ class RushHour(id: Int, start: Int, duration: Int, val roadTypes: List<PrimaryTy
 
         if (id !in model.currentEvents) {
             model.currentEvents.add(id)
-            Logger.logEventStatus(id, true)
+            // Logger.logEventStatus(id, true)
         }
 
         model.roadToPostponedEvents[currentEdge.edgeId]?.let { postponedEventsList ->
-            if (postponedEventsList.isNotEmpty()) {
+            if (postponedEventsList.contains(id)) {
                 postponedEventsList.remove(id)
             }
         }
