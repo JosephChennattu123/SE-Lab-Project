@@ -87,6 +87,15 @@ abstract class Vehicle(
     }
 
     /**
+     * checks if vehicle can be reallocated if it is returning or on the way to emergency
+     * and is not unavailable and has some or null assets.
+     * */
+    fun canBeReallocated(): Boolean {
+        val isStatusCorrect = status == VehicleStatus.TO_EMERGENCY || status == VehicleStatus.RETURNING
+        return isStatusCorrect && !isUnavailable && (currentNumberOfAssets ?: 1) > 0
+    }
+
+    /**
      * Decrease busyTicks, if status is Busy
      * @return true: busyTicks == 0
      */
