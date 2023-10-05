@@ -181,6 +181,7 @@ class JsonParser(val assetsFilePath: String, val emergenciesEventsFilePath: Stri
             target,
         )
         eventInfo.vehicleId = vehicleID
+        eventInfo.infoMap[VEHICLE_ID] = vehicleID
         events.add(eventInfo)
     }
 

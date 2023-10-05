@@ -30,13 +30,14 @@ class EventInfo(
 ) : BasicInfo(id) {
     var vehicleId: Int? = null
 
-    override val infoMap: Map<String, Any?> =
-        mapOf(
+    override val infoMap: MutableMap<String, Any?> =
+        mutableMapOf(
             ID to id,
             TICK to tick,
             EVENT_TYPE to eventType,
             DURATION to duration,
             ROAD_TYPES to roadTypes,
+            VEHICLE_ID to vehicleId,
             FACTOR to factor,
             ONE_WAY_STREET to oneWayStreet,
             SOURCE to source,

@@ -13,7 +13,14 @@ import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
 class EventValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
 
     override val requiredProperties: List<String> = listOf(ID, EVENT_TYPE, TICK, DURATION)
-    override val optionalProperties: List<String> = listOf(FACTOR, ONE_WAY_STREET, SOURCE, TARGET, VEHICLE_ID)
+    override val optionalProperties: List<String> = listOf(
+        FACTOR,
+        ROAD_TYPES,
+        ONE_WAY_STREET,
+        SOURCE,
+        TARGET,
+        VEHICLE_ID
+    )
 
     /**
      * Validates the information for events and creates events.
