@@ -25,7 +25,7 @@ class UpdatePhase {
     fun execute(model: Model) {
         model.eventOccurred = false
         // TODO check all code, everything in this method might be wrong, it was used to fix detekt problems
-        processVehicles(model.getSortedVehicleList())
+        processVehicles(model.getSortedVehicleList(), model)
         processEmergencies(model.getAssignedEmergenciesObjects(), model) // TODO needs checking might be wrong
         processActiveEvents(model.getCurrentEventsObjects(), model.currentEvents)
         processPostponedEvents(model)
@@ -34,7 +34,7 @@ class UpdatePhase {
     /**
      * update the status for all vehicles
      */
-    private fun processVehicles(vehicles: List<Vehicle>) {
+    private fun processVehicles(vehicles: List<Vehicle>, model: Model) {
         for (vehicle in vehicles) {
             when (vehicle.status) {
                 VehicleStatus.BUSY -> {
@@ -47,6 +47,12 @@ class UpdatePhase {
 
                 VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
                     vehicle.driveUpdate()
+                    if (vehicle.status == VehicleStatus.WAITING) { // if a vehicle arrived at an emergency,
+                        // add it to the list of the emergency's available vehicles
+                        val emergencyID = vehicle.emergencyID as Int
+                        val emergency = model.getAssignedEmergencyById(emergencyID) as Emergency
+                        emergency.availableVehicleIDs.add(vehicle.vehicleID)
+                    }
                 }
 
                 else -> {}
@@ -66,7 +72,7 @@ class UpdatePhase {
             it.status == EmergencyStatus.BEING_HANDLED && it.handleTime == 0 && it.timeElapsed < it.maxDuration
         }.toList()
 
-        val ongoingEmergencies = emergencies.filter {
+        val fulfilledEmergencies = emergencies.filter {
             it.status == EmergencyStatus.ONGOING && it.isFulfilled() && it.timeElapsed < it.maxDuration
         }.toList()
 
@@ -74,7 +80,7 @@ class UpdatePhase {
             it.status == EmergencyStatus.WAITING_FOR_ASSETS && it.canStart() && it.timeElapsed < it.maxDuration
         }.toList()
 
-        ongoingEmergencies.forEach {
+        fulfilledEmergencies.forEach {
             it.changeStatus(EmergencyStatus.WAITING_FOR_ASSETS)
         }
 
