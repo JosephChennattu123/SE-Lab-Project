@@ -19,7 +19,7 @@
       "emergencyType": "MEDICAL",
       "severity": 1,
       "handleTime": 1,
-      "maxDuration": 3
+      "maxDuration": 10
     }
   ]
 }

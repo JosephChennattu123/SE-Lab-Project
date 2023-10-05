@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.config
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+
 /**
  * @param graphFilePath the path to the file containing the graph
  */
@@ -105,6 +107,9 @@ class DotParser(val graphFilePath: String) {
                         reader.moveBackToLastVertex(vertex)
                         break
                     } else {
+                        KotlinLogging.logger("dot parser").error {
+                            "error here"
+                        }
                         return false // illegal character
                     }
                 }
