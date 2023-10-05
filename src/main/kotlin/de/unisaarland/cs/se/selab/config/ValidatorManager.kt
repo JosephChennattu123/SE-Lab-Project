@@ -39,13 +39,11 @@ class ValidatorManager {
      * @return the ControlCenter-object
      * */
     fun validate(dotParser: DotParser, jsonParser: JsonParser, maxTick: Int?): ControlCenter? {
-        // TODO
         this.dotParser = dotParser
         this.jsonParser = jsonParser
 
         var fail = false
 
-        // dotParser.parse()
         if (!validateGraph()) {
             Logger.logParsingValidationResult(dotParser.graphFilePath, false)
             return null
@@ -174,7 +172,11 @@ class ValidatorManager {
     private fun validateGraph(): Boolean {
         val graphValidator = GraphValidator()
         this.graph = graphValidator.validate(dotParser as DotParser)
-        return graph != null
+        if (graph == null) {
+            Logger.outputLogger.error { "found an problem with the graph" }
+            return false
+        }
+        return true
     }
 
     /**
@@ -185,7 +187,11 @@ class ValidatorManager {
     private fun validateBases(graph: Graph): Boolean {
         val baseValidator = BaseValidator(jsonParser as JsonParser)
         this.bases = baseValidator.validate(graph)
-        return bases != null
+        if (bases == null) {
+            Logger.outputLogger.error { "found an problem with bases" }
+            return false
+        }
+        return true
     }
 
     /**
@@ -196,7 +202,11 @@ class ValidatorManager {
     private fun validateEmergencies(graph: Graph): Boolean {
         val emergencyValidator = EmergencyValidator(jsonParser as JsonParser)
         this.emergencies = emergencyValidator.validate(graph)
-        return emergencies != null
+        if (emergencies == null) {
+            Logger.outputLogger.error { "found an problem with the emergencies" }
+            return false
+        }
+        return true
     }
 
     /**
@@ -207,6 +217,10 @@ class ValidatorManager {
     private fun validateEvent(graph: Graph, vehicles: List<Vehicle>): Boolean {
         val eventValidator = EventValidator(jsonParser as JsonParser)
         this.events = eventValidator.validate(graph, vehicles)
-        return events != null
+        if (events == null) {
+            Logger.outputLogger.error { "found an problem with the events" }
+            return false
+        }
+        return true
     }
 }
