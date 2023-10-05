@@ -102,7 +102,7 @@ class Emergency(
      * @return if a vehicle can make it to an emergency in a given amount of ticks
      * @param ticks The amount of ticks to check against the remaining time to handle */
     fun canReachInTime(ticks: Int): Boolean {
-        return maxDuration - (timeElapsed + handleTime) > ticks
+        return maxDuration - (timeElapsed + handleTime) >= ticks
     }
 
     /**
