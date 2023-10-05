@@ -20,19 +20,23 @@ class VehicleEvent(val vehicleId: Int, id: Int, start: Int, override var duratio
         }
 
         val vehicleObject: Vehicle = model.getVehicleById(vehicleId) as Vehicle
+        if (model.vehicleToPostponedEvents[vehicleId] == null ||
+            !(model.vehicleToPostponedEvents[vehicleId] as MutableList).contains(model.getEventById(id))
+        ) {
+            Logger.logEventStatus(id, true)
+        }
         // applies effect if status of vehicle AT_BASE or else adds to list of postponed events
         if (vehicleObject.status == VehicleStatus.AT_BASE) {
             vehicleObject.status = VehicleStatus.UNAVAILABLE
             status = EventStatus.ACTIVE
             model.currentEvents.add(id)
             if (model.vehicleToPostponedEvents[vehicleId] != null &&
-                (model.vehicleToPostponedEvents[vehicleId] as MutableList).isNotEmpty()
+                (model.vehicleToPostponedEvents[vehicleId] as MutableList).contains(model.getEventById(id))
             ) {
                 (model.vehicleToPostponedEvents[vehicleId] as MutableList<Event>).remove(
                     model.getEventById(id) as Event
                 )
             }
-            Logger.logEventStatus(id, true)
             vehicleObject.isUnavailable = true
         } else {
             // case in which first postponed event for a vehicle
