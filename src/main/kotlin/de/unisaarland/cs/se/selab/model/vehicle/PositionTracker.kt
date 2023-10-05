@@ -16,7 +16,7 @@ class PositionTracker {
         while (!destinationReached() && distance != 0) {
             val edgeWeights = (path as Path).edgeWeights
             distance = edgeWeights[currentVertexIndex as Int].minus(positionOnEdge as Int + distance)
-            if (distance < 0) {
+            if (distance <= 0) {
                 positionOnEdge = 0
                 currentVertexIndex = currentVertexIndex?.plus(1)
                 distance *= -1
