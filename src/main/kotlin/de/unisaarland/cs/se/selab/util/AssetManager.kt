@@ -84,7 +84,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.EMERGENCY_DOCTOR_CAR,
                         1,
-                        1
+                        null
                     )
                 )
             }
@@ -151,7 +151,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.EMERGENCY_DOCTOR_CAR,
                         1,
-                        1
+                        null
                     )
                 )
             }
@@ -182,7 +182,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.K9_POLICE_CAR,
                         1,
-                        1
+                        null
                     ),
                     EmergencyRequirement(
                         VehicleType.AMBULANCE,
@@ -207,7 +207,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.K9_POLICE_CAR,
                         2,
-                        2
+                        null
                     ),
                     EmergencyRequirement(
                         VehicleType.AMBULANCE,
@@ -254,7 +254,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.EMERGENCY_DOCTOR_CAR,
                         1,
-                        1
+                        null
                     )
                 )
             }
