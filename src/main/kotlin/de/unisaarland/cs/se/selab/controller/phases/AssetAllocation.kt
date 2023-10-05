@@ -38,10 +38,10 @@ class AssetAllocation {
     }
 
     /**
-     * Sort Vehicles by id, and check if the status is AT_BASE
+     * Sort Vehicles by id
      * */
-    private fun sortAtBaseVehicles(vehicles: List<Vehicle>): MutableList<Vehicle> {
-        return vehicles.filter { it.status == VehicleStatus.AT_BASE }.sortedBy { it.vehicleID }.toMutableList()
+    private fun sortVehicles(vehicles: List<Vehicle>): MutableList<Vehicle> {
+        return vehicles.sortedBy { it.vehicleID }.toMutableList()
     }
 
     /**
@@ -68,6 +68,12 @@ class AssetAllocation {
                     }
             )
         }
+        vehiclesCanReroute.addAll(
+            model.getVehiclesByIds(mainBase.vehicles).sortedBy { it.vehicleID }.filter {
+                it.status == VehicleStatus.RETURNING &&
+                    it.canBeReallocated()
+            }
+        )
         // vehiclesCanReroute.addAll(vehicles.filter { it.status == VehicleStatus.RETURNING })
         return vehiclesCanReroute
     }
@@ -78,7 +84,7 @@ class AssetAllocation {
             emergency.mainBaseID
                 ?: throw IllegalArgumentException("Emergency should have mainBase!")
         ) ?: throw IllegalArgumentException("Wrong base ID!")
-        val vehicles = sortAtBaseVehicles(model.getVehiclesByIds(mainBase.vehicles))
+        val vehicles = sortVehicles(model.getVehiclesByIds(mainBase.vehicles))
 
         AssetManager.allocateAssetsToEmergency(model, emergency, vehicles, false)
         if (!emergency.isFulfilled()) {
