@@ -65,6 +65,7 @@ class ConstructionSite(
         currentEdge.activeEventId = null
         model.currentEvents.remove(id)
         status = EventStatus.FINISHED
+        model.eventOccurred = true
         Logger.logEventStatus(id, false)
     }
 }
