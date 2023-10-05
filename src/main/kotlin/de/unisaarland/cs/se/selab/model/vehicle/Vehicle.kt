@@ -60,7 +60,7 @@ abstract class Vehicle(
         ) {
             val curNum = currentNumberOfAssets as Int
             var remainingAmount = amount
-            if (amount > curNum) {
+            if (amount >= curNum) {
                 remainingAmount -= curNum
                 currentNumberOfAssets = 0
             } else {
