@@ -83,9 +83,9 @@ class SimpleSimulation : SystemTest() {
         assertNextLine(logEventStatus(0, true)) // on road 1->2
 
         assertNextLine(logTick(5))
+        assertNextLine(logEmergencyResult(2, true))
         assertNextLine(logEmergencyResult(0, false))
         assertNextLine(logEmergencyResult(1, false))
-        assertNextLine(logEmergencyResult(2, true))
         assertNextLine(LOG_SIMULATION_ENDED)
 
         // Statistics
