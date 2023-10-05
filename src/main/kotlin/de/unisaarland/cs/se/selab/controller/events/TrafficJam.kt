@@ -22,17 +22,22 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
     override fun applyEffect(model: Model) {
         require(source != null && target != null && factor != null) { "Source,Target or Factor should not be null" }
         val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int)
+        if (model.roadToPostponedEvents[currentEdge.edgeId] == null ||
+            !(model.roadToPostponedEvents[currentEdge.edgeId] as MutableList).contains(id)
+        ) {
+            Logger.logEventStatus(id, true)
+            model.eventOccurred = true
+        }
         if (currentEdge.activeEventId == null) {
             currentEdge.properties.factor = this.factor as Int
             currentEdge.activeEventId = id
             model.currentEvents.add(id)
+            status = EventStatus.ACTIVE
             if (model.roadToPostponedEvents[currentEdge.edgeId] != null &&
                 (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList).contains(id)
             ) {
                 (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList<Int>).remove(id)
-                model.currentEvents.add(id)
             }
-            Logger.logEventStatus(id, true)
         } else {
             status = EventStatus.SCHEDULED
             putInPostponeLists(model.roadToPostponedEvents, currentEdge)

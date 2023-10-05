@@ -7,7 +7,8 @@ import de.unisaarland.cs.se.selab.model.map.RoadProperties
 import de.unisaarland.cs.se.selab.model.map.SecondaryType
 import de.unisaarland.cs.se.selab.model.map.Vertex
 
-class SimpleGraphHelper {
+class
+SimpleGraphHelper {
     val simpleVertices: MutableMap<Int, Vertex> = creatSimpleVertices()
     val simpleGraph: Graph = creatSimpleGraph()
     val verticesForWithHeight: MutableMap<Int, Vertex> = creatSimpleVertices()

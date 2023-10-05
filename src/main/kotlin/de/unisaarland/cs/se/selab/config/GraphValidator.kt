@@ -395,6 +395,7 @@ class GraphValidator {
                 continue
             }
             if (!value.any { it.second == "mainStreet" }) {
+                Logger.outputLogger.error { "did not find a mainStreet in a village" }
                 return false
             }
         }
@@ -412,35 +413,32 @@ class GraphValidator {
         // val attributes = dotParserObj.parseAttributes(edgeStrings)
         // val primaryTypes = dotParserObj.parsePrimaryType(attributes)
         val primaryTypes = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_PRIMARY_TYPE)) }.toMap()
-        return primaryTypes.containsValue(LABEL_SIDE_STREET)
+        val v = primaryTypes.containsValue(LABEL_SIDE_STREET)
+        if (v) {
+            return true
+        }
+        Logger.outputLogger.error { "did not find a sideStreet on the map" }
+        return false
     }
 
     /**
-     * Checks that the weights of roads are positive and that
+     * Checks that the minimum weights of roads is 1 and that
      * the minimum road height is 1
      *
-     * @return true if all roads have positive weight
-     * @return true if no road exists with a
+     * @return true if all roads have positive weight and height
      */
     private fun validateRoadWeightHeight(): Boolean {
-        // val dotParserObj = dotParser as DotParser
-        // val edgeStrings = dotParserObj.parseEdges()
-        // val attributes = dotParserObj.parseAttributes(edgeStrings)
-        // val weights = dotParserObj.parseWeight(attributes)
-        // val roadHeights = dotParserObj.parseHeight(attributes)
-
-        val weights: Map<Int, Int>
-        val roadHeights: Map<Int, Int>
-        try {
-            weights = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_WEIGHT).toInt()) }.toMap()
-            roadHeights =
-                attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_HEIGHT_LIMIT).toInt()) }.toMap()
-        } catch (exception: NumberFormatException) {
+        val weightsEmpty = weights.filter { (_, value) -> value < 1 }.isEmpty()
+        val heightsEmpty = heights.filter { (_, value) -> value < 1 }.isEmpty()
+        if (!weightsEmpty) {
+            Logger.outputLogger.error { "found a non positive weight" }
             return false
         }
-
-        return weights.filter { (_, value) -> value <= 0 }.isEmpty() && roadHeights.filter { (_, value) -> value < 1 }
-            .isEmpty()
+        if (!heightsEmpty) {
+            Logger.outputLogger.error { "found a non positive height" }
+            return false
+        }
+        return true
     }
 
     /**
@@ -470,14 +468,16 @@ class GraphValidator {
      * Checks that no village name is equal to a county name
      */
     private fun validateVillageNameNotCountyName(): Boolean {
-        if (dotParser == null) {
-            return false
-        }
         val countyNames = getCountyOrVillageNames(true).toSet()
         val villageNames = getCountyOrVillageNames(false).toSet()
         return villageNames.intersect(countyNames).isEmpty()
     }
 
+    /**
+     * Returns the list containing all village names (non-countyRoad) or all county names
+     * @param county true if it should output county names else should output village names
+     * @return a list containing names
+     */
     private fun getCountyOrVillageNames(county: Boolean): List<String> {
         return if (county) {
             attributes.values
