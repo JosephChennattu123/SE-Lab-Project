@@ -30,6 +30,7 @@ class SimpleTestButEventEnds : SystemTest() {
         assertNextLine(logEmergencyHandlingStart(0)) // emergency can start as the ambulance arrived
         assertNextLine(logTick(4))
         assertNextLine(logTick(5))
+        // event not logging yet
         assertNextLine(logEventStatus(0, false)) // event ends after
         assertNextLine(logTick(6))
         assertNextLine(logEmergencyResult(0, success = true)) // emergency takes 4 ticks to finish
