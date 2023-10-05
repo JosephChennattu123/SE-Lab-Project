@@ -2,9 +2,6 @@ package de.unisaarland.cs.se.selab.systemtest.simulation.smallSimulation
 
 import de.unisaarland.cs.se.selab.systemtest.ASSETS_JSONS_FOLDER
 import de.unisaarland.cs.se.selab.systemtest.CONFLICTING_EMERGENCIES_SCENARIO
-import de.unisaarland.cs.se.selab.systemtest.EXAMPLE_ASSETS
-import de.unisaarland.cs.se.selab.systemtest.EXAMPLE_MAP
-import de.unisaarland.cs.se.selab.systemtest.EXAMPLE_SCENARIO
 import de.unisaarland.cs.se.selab.systemtest.LOG_SIMULATION_ENDED
 import de.unisaarland.cs.se.selab.systemtest.LOG_SIMULATION_START
 import de.unisaarland.cs.se.selab.systemtest.MAP_FILES_FOLDER
@@ -27,7 +24,7 @@ import de.unisaarland.cs.se.selab.systemtest.logTick
 
 class UnderStaffedAndFail :
     SystemTestBase(
-        "UnderStaffed",
+        "UnderStaffedAndFail",
         MAP_FILES_FOLDER,
         MINIMAL_MAP_LINE,
         ASSETS_JSONS_FOLDER,
@@ -91,19 +88,5 @@ class UnderStaffedAndFail :
         assertNextLine(logNumberOfResolvedEmergencies(1)) // FIRE
         // end of file is reached
         assertEnd()
-    }
-}
-
-class UnderStaffedTestB : SystemTestBase(
-    "UnderStaffed",
-    MAP_FILES_FOLDER,
-    EXAMPLE_MAP,
-    ASSETS_JSONS_FOLDER,
-    EXAMPLE_ASSETS,
-    SCENARIO_JSONS_FOLDER,
-    EXAMPLE_SCENARIO
-) {
-    override suspend fun run() {
-        TODO("Not yet implemented")
     }
 }
