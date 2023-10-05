@@ -47,8 +47,8 @@ class Emergency(
     /**
      * assigns a Vehicle to this emergency
      * @param v vehicle to be assigned */
-    fun addAsset(v: Vehicle) {
-        assignedVehicleIDs.add(v.vehicleID)
+    fun addAsset(vehicleId: Int) {
+        assignedVehicleIDs.add(vehicleId)
     }
 
     /**

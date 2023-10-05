@@ -15,8 +15,8 @@ import de.unisaarland.cs.se.selab.systemtest.logNumberOfResolvedEmergencies
 import de.unisaarland.cs.se.selab.systemtest.logParsingValidationResult
 import de.unisaarland.cs.se.selab.systemtest.logTick
 
-class SimpleMapEmergencyTimeout : SystemTest() {
-    override val name = "SimpleMapEmergencyTimeout"
+class SimpleMapEmergencyFailure : SystemTest() {
+    override val name = "SimpleMapEmergencyFailure"
 
     override val map = "mapFiles/small_map1.dot"
     override val assets = "assetsJsons/emergencyAssignment_assets.json"

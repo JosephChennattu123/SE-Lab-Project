@@ -49,7 +49,7 @@ class ControlCenter(val model: Model) {
         assetAllocation.execute(model)
         requestProcessing.execute(model)
         updatePhase.execute(model)
-        if (updatePhase.eventOccurred) reroute.execute(model)
+        if (model.eventOccurred) reroute.execute(model)
         model.incrementTick()
     }
 }

@@ -16,13 +16,14 @@ import de.unisaarland.cs.se.selab.util.Logger
  * In this phase the elements of the simulation get updated.
  */
 class UpdatePhase {
-    var eventOccurred: Boolean = false
+    // var eventOccurred: Boolean = false
 
     /**
      * begins the update phase processing
      * @param model the model
      */
     fun execute(model: Model) {
+        model.eventOccurred = false
         // TODO check all code, everything in this method might be wrong, it was used to fix detekt problems
         processVehicles(model.getSortedVehicleList())
         processEmergencies(model.getAssignedEmergenciesObjects(), model) // TODO needs checking might be wrong
