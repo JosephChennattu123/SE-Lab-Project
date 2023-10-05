@@ -57,17 +57,18 @@ class VehicleUnavailable : SystemTest() {
         assertNextLine(logTick(3))
         assertNextLine(logEmergencyResult(0, true))
         assertNextLine(logEmergencyResult(2, true))
+
+        // wrong from here on
         assertNextLine(logEventStatus(0, true))
-        assertNextLine(logEventStatus(1, true))
         assertNextLine(logAssetRerouted(3)) // all vehicles are rerouted.
 
         assertNextLine(logTick(4))
         assertNextLine(logEmergencyAssigned(1, 0)) // fire 1
         assertNextLine(logEmergencyAssigned(3, 2)) // med 2
 
-        assertNextLine(logAssetReallocated(1, 1)) // water truck 600
         assertNextLine(logAssetAllocated(4, 3, 1)) // ambulance already there
         assertNextLine(logAssetAllocated(5, 3, 1)) // emergency doctor car already there
+        assertNextLine(logAssetReallocated(1, 1)) // water truck 600
 
         assertNextLine(logTick(5))
         assertNextLine(logAssetArrived(0, 0)) // water truck 1200 needs to be refilled 2 ticks
@@ -75,27 +76,31 @@ class VehicleUnavailable : SystemTest() {
         assertNextLine(logAssetArrived(3, 3)) // ambulance needs to be unloaded (1 tick) and unavailable (1 tick)
         assertNextLine(logAssetArrived(4, 3)) // ambulance already there
         assertNextLine(logAssetArrived(5, 3)) // emergency doctor car already there
+        assertNextLine(logEventStatus(1, true))
 
         assertNextLine(logTick(6))
         assertNextLine(logTick(7))
         assertNextLine(logTick(8))
-        assertNextLine(logAssetArrived(0, 0))
-        assertNextLine(logAssetArrived(3, 0))
-        assertNextLine(logEmergencyHandlingStart(1))
-        assertNextLine(logEmergencyHandlingStart(3))
         assertNextLine(logEventStatus(0, false))
-
         assertNextLine(logTick(9))
+        assertNextLine(logTick(10))
+        assertNextLine(logAssetAllocated(0, 1, 1))
+        assertNextLine(logTick(11))
+        assertNextLine(logAssetArrived(0, 0))
+        assertNextLine(logEmergencyHandlingStart(1))
+        assertNextLine(logTick(12))
         assertNextLine(logEmergencyResult(1, true))
-        assertNextLine(logEmergencyResult(3, true))
-
+        assertNextLine(logTick(13))
+        assertNextLine(logAssetArrived(0, 0))
+        assertNextLine(logAssetArrived(1, 1))
+        assertNextLine(logEmergencyResult(3, false))
         assertNextLine(LOG_SIMULATION_ENDED)
 
         // Statistics
         assertNextLine(logNumberOfReroutedAssets(3))
         assertNextLine(logNumberOfReceivedEmergencies(4))
         assertNextLine(logNumberOfOngoingEmergencies(0))
-        assertNextLine(logNumberOfFailedEmergencies(0))
-        assertNextLine(logNumberOfResolvedEmergencies(4))
+        assertNextLine(logNumberOfFailedEmergencies(1))
+        assertNextLine(logNumberOfResolvedEmergencies(3))
     }
 }
