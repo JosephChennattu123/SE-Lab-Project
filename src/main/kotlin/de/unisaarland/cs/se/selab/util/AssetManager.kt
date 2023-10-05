@@ -390,6 +390,7 @@ object AssetManager {
                 }
             }
             emergency.addAsset(vehicle.vehicleID)
+            vehicle.emergencyID = emergency.id
         }
         // remove fulfilled requirements from the emergency.
         removedFulfilledRequirements(emergency)
