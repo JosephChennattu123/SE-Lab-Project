@@ -21,7 +21,7 @@ class SimpleMapEmergencyTimeout : SystemTest() {
     override val map = "mapFiles/small_map1.dot"
     override val assets = "assetsJsons/emergencyAssignment_assets.json"
     override val scenario = "scenarioJsons/emergencyAssignment_scenario.json"
-    override val maxTicks = 3
+    override val maxTicks = 30
 
     /**
      * Emergency gets assigned, vehicle begins driving, then event prolongs drive time so much that
@@ -33,15 +33,17 @@ class SimpleMapEmergencyTimeout : SystemTest() {
         assertNextLine(logParsingValidationResult("emergencyAssignment_scenario.json", true))
 
         assertNextLine(LOG_SIMULATION_START)
-        assertNextLine(logTick(1))
+        assertNextLine(logTick(0))
 
         assertNextLine(logEmergencyAssigned(0, 0))
 
         assertNextLine(logAssetAllocated(0, 0, 1))
 
-        assertNextLine(logTick(2))
+        assertNextLine(logTick(1))
 
         assertNextLine(logEventStatus(0, true))
+
+        assertNextLine(logTick(2))
 
         assertNextLine(logTick(3))
 
@@ -50,8 +52,6 @@ class SimpleMapEmergencyTimeout : SystemTest() {
         assertNextLine(logTick(5))
 
         assertNextLine(logTick(6))
-
-        assertNextLine(logTick(7))
 
         assertNextLine(logEmergencyResult(0, false))
 
