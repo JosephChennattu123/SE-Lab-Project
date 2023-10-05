@@ -66,6 +66,7 @@ class RoadClosure(id: Int, start: Int, duration: Int, sourceId: Int, targetId: I
             currentEdge2.closed = false
         }
         model.currentEvents.remove(id)
+        model.eventOccurred = true
         Logger.logEventStatus(id, false)
     }
 }
