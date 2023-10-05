@@ -78,21 +78,23 @@ class Emergency(
             .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.HOSPITAL }
         val fireVehicles = model.getVehiclesByIds(availableVehicleIDs) // List of all fire vehicles
             .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.FIRE_STATION }
-        var criminalReq: Int = baseRequirements.first { it.vehicleType == VehicleType.POLICE_CAR }.amountOfAsset ?: 0
+        val criminalReq: EmergencyRequirement? = baseRequirements.find { it.vehicleType == VehicleType.POLICE_CAR }
+        var criminalReqAmount: Int = if (criminalReq == null) 0 else criminalReq.amountOfAsset ?: 0
         // finds the assetAmount of the requirement that corresponds to police vehicles
-        var patientReq: Int = baseRequirements.first { it.vehicleType == VehicleType.AMBULANCE }.amountOfAsset ?: 0
+        val patientReq: EmergencyRequirement? = baseRequirements.find { it.vehicleType == VehicleType.AMBULANCE }
+        var patientReqAmount: Int = if (patientReq == null) 0 else patientReq.amountOfAsset ?: 0
         // finds the assetAmount of the requirement that corresponds to ambulances
-        var waterReq: Int =
-            baseRequirements.first { it.vehicleType == VehicleType.FIRE_TRUCK_WATER }.amountOfAsset ?: 0
+        val waterReq: EmergencyRequirement? = baseRequirements.find { it.vehicleType == VehicleType.FIRE_TRUCK_WATER }
+        var waterReqAmount: Int = if (waterReq == null) 0 else waterReq.amountOfAsset ?: 0
         // finds the assetAmount of the requirement that corresponds to firetrucks
         policeVehicles.forEach {
-            criminalReq = it.handleEmergency(criminalReq)
+            criminalReqAmount = it.handleEmergency(criminalReqAmount)
         }
         hospitalVehicles.forEach {
-            patientReq = it.handleEmergency(patientReq)
+            patientReqAmount = it.handleEmergency(patientReqAmount)
         }
         fireVehicles.forEach {
-            waterReq = it.handleEmergency(waterReq)
+            waterReqAmount = it.handleEmergency(waterReqAmount)
         }
     }
 
