@@ -239,7 +239,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.AMBULANCE,
                         1,
-                        0
+                        1
                     )
                 )
             }
@@ -302,6 +302,8 @@ object AssetManager {
         // find vehicles that cannot reach the emergency in time.
         val vehiclesThatCannotReachInTime = mutableListOf<Vehicle>()
         val vehicleIdToPath: MutableMap<Int, Path> = mutableMapOf()
+        val matchWithReturning = if (reallocate) VehicleStatus.RETURNING else VehicleStatus.NONE
+        val matchWithToEmergency = if (reallocate) VehicleStatus.TO_EMERGENCY else VehicleStatus.NONE
         for (vehicle in vehicles) {
             when (vehicle.status) {
                 // If vehicle is currently at base, calculate drive from vertex to edge.
@@ -321,7 +323,7 @@ object AssetManager {
                 }
 
                 // if vehicle is currently on the road, calculate drive time from edge to edge.
-                VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
+                matchWithReturning, matchWithToEmergency -> {
                     val currentVertex =
                         vehicle.getCurrentVertexID() ?: error("current vertex is null")
                     val nextVertex = vehicle.getNextVertexID() ?: error("next vertex is null")
@@ -343,7 +345,8 @@ object AssetManager {
                     }
                 }
 
-                else -> {}
+                // if we do not match any status we mark the vehicle to be removed.
+                else -> { vehiclesThatCannotReachInTime.add(vehicle) }
             }
         }
         // remove vehicles that cannot reach the emergency in time.
@@ -375,7 +378,10 @@ object AssetManager {
                 // remove vehicles that are already assigned to an emergency.
                 val emergencyOfReallocatedVehicle = model
                     .getAssignedEmergencyById(vehicle.emergencyID as Int) as Emergency
-                removeVehicleFromEmergency(emergencyOfReallocatedVehicle, vehicle, model)
+                if (vehicle.status == VehicleStatus.TO_EMERGENCY) {
+                    removeVehicleFromEmergency(emergencyOfReallocatedVehicle, vehicle, model)
+                }
+                vehicle.status = VehicleStatus.TO_EMERGENCY
                 Logger.logAssetReallocated(vehicle.vehicleID, emergency.id)
             } else {
                 Logger.logAssetAllocated(
@@ -564,7 +570,10 @@ object AssetManager {
                 it.vehicleType == vehicle.vehicleType
         }
         // iterate over unfulfilled requirements of the given vehicle's type.
-        while (!requirementFulfilled && requirementsIndex < requirements.size) {
+        if (fittingRequirements.isEmpty()) {
+            return false
+        }
+        while (!requirementFulfilled && requirementsIndex < fittingRequirements.size) {
             val requiredType = fittingRequirements[requirementsIndex].vehicleType
             val requiredAmount = fittingRequirements[requirementsIndex].amountOfAsset
             if (requiredType == VehicleType.FIRE_TRUCK_LADDER) {
@@ -574,7 +583,7 @@ object AssetManager {
             } else if (requiredAmount == null) {
                 requirementFulfilled = true
                 fittingRequirements[requirementsIndex].numberOfVehicles--
-            } else {
+            } else if (vehicle.currentNumberOfAssets as Int > 0) {
                 requirementFulfilled = true
                 fittingRequirements[requirementsIndex].amountOfAsset =
                     requiredAmount - vehicle.currentNumberOfAssets as Int
