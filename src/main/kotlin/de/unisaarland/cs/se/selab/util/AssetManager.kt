@@ -321,9 +321,11 @@ object AssetManager {
 
                 // if vehicle is currently on the road, calculate drive time from edge to edge.
                 VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
-                    val currentVertex = vehicle.getCurrentVertexID() ?: error("current vertex is null")
+                    val currentVertex =
+                        vehicle.getCurrentVertexID() ?: error("current vertex is null")
                     val nextVertex = vehicle.getNextVertexID() ?: error("next vertex is null")
-                    val distanceOnEdge = vehicle.getDistanceOnEdge() ?: error("distance on edge is null")
+                    val distanceOnEdge =
+                        vehicle.getDistanceOnEdge() ?: error("distance on edge is null")
                     vehicle.getDistanceOnEdge()
                     val newPath = Dijkstra.getShortestPathFromEdgeToEdge(
                         model.graph,
@@ -386,6 +388,7 @@ object AssetManager {
                     vehicle.status = VehicleStatus.TO_EMERGENCY
                 }
             }
+            emergency.addAsset(vehicle.vehicleID)
         }
         // remove fulfilled requirements from the emergency.
         removedFulfilledRequirements(emergency)
@@ -427,8 +430,12 @@ object AssetManager {
         }
     }
 
-    private fun getAmountOfRequiredVehicles(requirements: MutableList<EmergencyRequirement>, base: Base): Int {
-        val requirementsForBaseType = requirements.filter { VehicleType.getBaseType(it.vehicleType) == base.baseType }
+    private fun getAmountOfRequiredVehicles(
+        requirements: MutableList<EmergencyRequirement>,
+        base: Base
+    ): Int {
+        val requirementsForBaseType =
+            requirements.filter { VehicleType.getBaseType(it.vehicleType) == base.baseType }
         return requirementsForBaseType.sumOf { it.numberOfVehicles }
     }
 
