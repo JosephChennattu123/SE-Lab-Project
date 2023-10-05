@@ -78,12 +78,12 @@ class Emergency(
             .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.HOSPITAL }
         val fireVehicles = model.getVehiclesByIds(availableVehicleIDs) // List of all fire vehicles
             .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.FIRE_STATION }
-        var criminalReq: Int = currentRequirements.first { it.vehicleType == VehicleType.POLICE_CAR }.amountOfAsset ?: 0
+        var criminalReq: Int = baseRequirements.first { it.vehicleType == VehicleType.POLICE_CAR }.amountOfAsset ?: 0
         // finds the assetAmount of the requirement that corresponds to police vehicles
-        var patientReq: Int = currentRequirements.first { it.vehicleType == VehicleType.AMBULANCE }.amountOfAsset ?: 0
+        var patientReq: Int = baseRequirements.first { it.vehicleType == VehicleType.AMBULANCE }.amountOfAsset ?: 0
         // finds the assetAmount of the requirement that corresponds to ambulances
         var waterReq: Int =
-            currentRequirements.first { it.vehicleType == VehicleType.FIRE_TRUCK_WATER }.amountOfAsset ?: 0
+            baseRequirements.first { it.vehicleType == VehicleType.FIRE_TRUCK_WATER }.amountOfAsset ?: 0
         // finds the assetAmount of the requirement that corresponds to firetrucks
         policeVehicles.forEach {
             criminalReq = it.handleEmergency(criminalReq)
