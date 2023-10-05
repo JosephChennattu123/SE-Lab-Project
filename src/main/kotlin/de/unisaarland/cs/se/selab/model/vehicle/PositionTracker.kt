@@ -48,7 +48,7 @@ class PositionTracker {
             path = newPath
             currentVertexIndex = 0
             positionOnEdge = 0
-            return oldSumOfWeights == newSumOfWeights && areEdgesTheSame(currentPath, newPath.vertexPath)
+            return oldSumOfWeights != newSumOfWeights || !areEdgesTheSame(currentPath, newPath.vertexPath)
         }
     }
 
