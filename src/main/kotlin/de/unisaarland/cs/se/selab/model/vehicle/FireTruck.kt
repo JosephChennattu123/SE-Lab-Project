@@ -34,22 +34,6 @@ class FireTruck(
         return false
     }
 
-    /**
-     * In the case of Water_Firetrucks decreases the amount of water
-     * by amount and returns the amount - waterLevel.
-     * Otherwise, returns 0.
-     * */
-    override fun handleEmergency(amount: Int): Int {
-        status = VehicleStatus.HANDLING
-        if (vehicleType == VehicleType.FIRE_TRUCK_WATER) {
-            val water = currentNumberOfAssets ?: error("currentNumberOfAssets is null")
-            val remainingAmount = amount - water
-            currentNumberOfAssets = if (water <= amount) 0 else water - amount
-            return remainingAmount
-        }
-        return 0
-    }
-
     /** resets vehicle assets possessed to zero */
     override fun resetAfterBusy() {
         currentNumberOfAssets = maxAssetCapacity

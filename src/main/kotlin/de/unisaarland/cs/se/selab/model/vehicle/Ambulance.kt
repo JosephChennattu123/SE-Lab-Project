@@ -32,16 +32,6 @@ class Ambulance(
         return false
     }
 
-/** decreases number of free spaces by one and returns the amount - 1.*/
-    override fun handleEmergency(amount: Int): Int {
-        status = VehicleStatus.HANDLING
-        if (currentNumberOfAssets != null && currentNumberOfAssets == 1) {
-            currentNumberOfAssets?.minus(1)
-            return amount - 1
-        }
-        return amount
-    }
-
     /** resets vehicle assets possessed to starting state. */
     override fun resetAfterBusy() {
         currentNumberOfAssets = maxAssetCapacity
