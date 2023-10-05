@@ -456,10 +456,10 @@ object AssetManager {
             // check if the vehicle type does not match the requirement type
             // or if the base does not have enough staff to send the vehicle.
             if (vehicle.isUnavailable ||
-                !requirements
+                requirements
                     .none {
-                        vehicle.vehicleType != it.vehicleType ||
-                            !isThereEnoughStaffAtBase(model.bases.getValue(vehicle.baseID), vehicle)
+                        vehicle.vehicleType == it.vehicleType &&
+                            isThereEnoughStaffAtBase(model.bases.getValue(vehicle.baseID), vehicle)
                     }
             ) {
                 // collect vehicles that needed to be removed.
