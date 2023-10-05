@@ -55,18 +55,18 @@ class GraphValidator {
         // val primaryTypes = dotParser.parsePrimaryType(attributes)
         // val secondaryTypes = dotParser.parseSecondaryType(attributes)
 
-        val edgeRange = 1..attributes.size
+        val edgeRange = 0 until attributes.size
         val edgeIds = edgeRange.toList()
 
         val allEdges: MutableMap<Int, Connection> = mutableMapOf()
         edgeIds.associateWithTo(allEdges) {
             val (source, target) = sourceTarget.getValue(it)
-            val weight = weights.getValue(it - 1)
-            val height = heights.getValue(it - 1)
-            val primaryType = primaryTypes.getValue(it - 1)
-            val secondaryType = secondaryTypes.getValue(it - 1)
-            val villageName = attributes.getValue(it - 1).getValue(LABEL_VILLAGE)
-            val roadName = attributes.getValue(it - 1).getValue(LABEL_ROAD_NAME)
+            val weight = weights.getValue(it)
+            val height = heights.getValue(it)
+            val primaryType = primaryTypes.getValue(it)
+            val secondaryType = secondaryTypes.getValue(it)
+            val villageName = attributes.getValue(it).getValue(LABEL_VILLAGE)
+            val roadName = attributes.getValue(it).getValue(LABEL_ROAD_NAME)
             Connection(
                 source,
                 target,
@@ -318,66 +318,21 @@ class GraphValidator {
      * @return true if vertices only have edges with a single village names each or are countyRoads
      */
     private fun validateVertexConnectedToSingleVillage(): Boolean {
-        val villageLabelsOfEdges = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_VILLAGE)) }.toMap()
+        val villageNamesOfEdges = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_VILLAGE)) }.toMap()
 
-        val vertexIdToEdges: MutableMap<Int, Pair<List<Int>, List<Int>>> = mutableMapOf()
-        // val primaryTypes = dotParserObj.parsePrimaryType(attributes)
-        vertexIds.associateWithTo(vertexIdToEdges) {
-            val outEdges = sourceTarget.filter { (_, value) -> value.first == it }.keys.toList()
-            val inEdges = sourceTarget.filter { (_, value) -> value.second == it }.keys.toList()
-            Pair(outEdges, inEdges)
-        }
-        for ((_, value) in vertexIdToEdges) {
-            var vertexVillage: String? = null
-
-            val outgoingEdgesIds = value.first
-            val incomingEdgesIds = value.second
-
-            val outgoingEdges =
-                outgoingEdgesIds.filter {
-                    primaryTypes.getValue(it - 1) == PrimaryType.COUNTY
-                }
-            val incomingEdges =
-                incomingEdgesIds.filter { primaryTypes.getValue(it - 1) == PrimaryType.COUNTY }
-
-            outgoingEdges.forEach { outEdge ->
-                val newVillageName = villageLabelsOfEdges[outEdge] ?: return false
-                if (getCountyOrVillageNames(false).contains(newVillageName)) {
-                    vertexVillage = vertexVillage ?: newVillageName
-                }
-                if (!checkValidConnectedEdge(primaryTypes, outEdge, vertexVillage, newVillageName)) return false
-            }
-            incomingEdges.forEach { inEdge ->
-                val newVillageName = villageLabelsOfEdges[inEdge] ?: return false
-                if (getCountyOrVillageNames(false).contains(newVillageName)) {
-                    vertexVillage = vertexVillage ?: newVillageName
-                }
-                if (!checkValidConnectedEdge(primaryTypes, inEdge, vertexVillage, newVillageName)) return false
+        val vertexIdToEdges: MutableMap<Int, MutableList<Int>> = mutableMapOf()
+        sourceTarget.forEach { (key, pair) ->
+            vertexIdToEdges.computeIfAbsent(pair.first) { mutableListOf() }.add(key)
+            if (secondaryTypes.getValue(key) != SecondaryType.ONE_WAY) {
+                vertexIdToEdges.computeIfAbsent(pair.second) { mutableListOf() }.add(key)
             }
         }
-        return true
-    }
-
-    /**
-     * @param primaryTypes
-     * @param edge
-     * @param vertexVillage current name of village
-     * @param newVillageName new name of village
-     * @return false if newVillage is a different village but the road is not a countyRoad
-     */
-    private fun checkValidConnectedEdge(
-        primaryTypes: Map<Int, PrimaryType>,
-        edge: Int,
-        vertexVillage: String?,
-        newVillageName: String
-    ): Boolean {
-        val primaryType = primaryTypes[edge]
-        if (vertexVillage != null && vertexVillage != newVillageName && primaryType != PrimaryType.COUNTY) {
-            Logger.outputLogger.error {
-                "found a edge to a village that is not the same as " +
-                    "the first village connected to the vertex"
+        vertexIdToEdges.forEach { (_, edgeIds) ->
+            val nonCountyEdges = edgeIds.filter { primaryTypes.getValue(it) != PrimaryType.COUNTY }
+            val villageNames = nonCountyEdges.map { villageNamesOfEdges[it] }
+            if (villageNames.toSet().size > 1) {
+                return false
             }
-            return false
         }
         return true
     }

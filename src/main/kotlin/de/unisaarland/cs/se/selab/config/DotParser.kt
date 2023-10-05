@@ -144,11 +144,11 @@ class DotParser(val graphFilePath: String) {
                 '[' -> {
                     reader.increaseIndexToNextNonWhiteSpaceChar()
                     parseAttributes(count)
-                    count++
                 }
 
                 ';' -> {
                     edgeIdToSourceTarget[count] = Pair(source, target)
+                    count++
                 }
 
                 else -> {
