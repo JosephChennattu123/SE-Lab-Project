@@ -20,6 +20,7 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
         val jsonParserObj = jsonParser as JsonParser
         val baseInfos = jsonParserObj.parseBases()
 
+        val baseIds: MutableList<Int> = mutableListOf()
         baseInfos.forEach { baseInfo ->
             val mandatoryFields = when (baseInfo.baseType) {
                 BaseType.FIRE_STATION -> emptyList()
@@ -32,11 +33,12 @@ class BaseValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
             if (validateSpecialNumbers(baseInfo)) return null
             if (!validateStaffBounds(baseInfo) || !validateVerticesExist(baseInfo, graph)) return null
             if (!validateAtMostOneBaseOnEachVertex(baseInfo, graph)) return null
+            baseIds.add(baseInfo.id)
         }
         val basesList =
             baseInfos.map { Base(it.id, it.baseType, it.locationVertex, it.staff, it.doctors, it.dogs) }.toList()
         val allBaseTypesExist = checkAllBaseTypesExist(basesList)
-        return if (allBaseTypesExist) basesList else null
+        return if (allBaseTypesExist && baseIds.toSet().toList().sorted() == baseIds.sorted()) basesList else null
     }
 
     private fun validateSpecialNumbers(baseInfo: BaseInfo): Boolean {
