@@ -69,7 +69,7 @@ abstract class Vehicle(
             }
             return remainingAmount
         }
-        return 0
+        return amount
     }
 
     /** sets new a new path. returns true if new path has to be set and false if not */
