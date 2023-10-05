@@ -19,6 +19,7 @@ class Reroute {
         val drivingVehicles = model.getSortedVehicleList().filter {
             it.status == VehicleStatus.TO_EMERGENCY || it.status == VehicleStatus.RETURNING
         }
+        var numberOfReroutedVehicles = 0
         for (vehicle in drivingVehicles) {
             val currentVertex = vehicle.getCurrentVertexID() ?: error("currentVertex is null")
             val nextVertex = vehicle.getNextVertexID() ?: error("nextVertex is null")
@@ -35,8 +36,12 @@ class Reroute {
                         )
                 )
             ) {
-                Logger.logAssetRerouted(vehicle.vehicleID)
+                // Logger.logAssetRerouted(vehicle.vehicleID)
+                numberOfReroutedVehicles++
             }
+        }
+        if (numberOfReroutedVehicles > 0) {
+            Logger.logAssetRerouted(numberOfReroutedVehicles)
         }
     }
 }
