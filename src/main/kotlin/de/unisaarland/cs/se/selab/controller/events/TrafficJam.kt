@@ -54,6 +54,7 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
         currentEdge.activeEventId = null
         model.currentEvents.remove(id)
         status = EventStatus.FINISHED
+        model.eventOccurred = true
         Logger.logEventStatus(id, false)
     }
 }

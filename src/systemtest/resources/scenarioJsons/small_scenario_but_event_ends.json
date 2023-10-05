@@ -18,7 +18,7 @@
       "roadName": "Fastlane",
       "emergencyType": "MEDICAL",
       "severity": 1,
-      "handleTime": 1,
+      "handleTime": 3,
       "maxDuration": 10
     }
   ]

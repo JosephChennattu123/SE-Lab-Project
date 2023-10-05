@@ -97,7 +97,7 @@
     {
       "id": 4,
       "baseID": 5,
-      "vehicleType": "Ambulance",
+      "vehicleType": "AMBULANCE",
       "vehicleHeight": 2,
       "staffCapacity": 5
 
@@ -105,7 +105,7 @@
     {
       "id": 5,
       "baseID": 5,
-      "vehicleType": "Ambulance",
+      "vehicleType": "AMBULANCE",
       "vehicleHeight": 2,
       "staffCapacity": 5
 
@@ -145,7 +145,7 @@
     {
       "id": 10,
       "baseID": 0,
-      "vehicleType": "FIRE_TRUCK_TRANSPORTER",
+      "vehicleType": "FIREFIGHTER_TRANSPORTER",
       "vehicleHeight": 4,
       "staffCapacity": 5
 
@@ -153,7 +153,7 @@
     {
       "id": 11,
       "baseID": 0,
-      "vehicleType": "FIRE_TRUCK_TRANSPORTER",
+      "vehicleType": "FIREFIGHTER_TRANSPORTER",
       "vehicleHeight": 4,
       "staffCapacity": 5
 

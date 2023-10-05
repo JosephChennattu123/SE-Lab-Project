@@ -49,8 +49,8 @@ class SuccessfulRequest : SystemTest() {
         assertNextLine(logAssetAllocated(19, 0, 1)) // police car
 
         // send request
-        assertNextLine(logRequest(0, 0, 0))
-        assertNextLine(logRequest(1, 2, 0))
+        assertNextLine(logRequest(1, 0, 0))
+        assertNextLine(logRequest(2, 2, 0))
 
         // request processing.
         assertNextLine(logAssetAllocated(2, 0, 2)) // firetruck

@@ -65,7 +65,7 @@ class SimpleSimulation : SystemTest() {
         assertNextLine(logEmergencyAssigned(1, 0))
         assertNextLine(logAssetReallocated(0, 1)) // first water truck
         assertNextLine(logAssetReallocated(1, 1)) // second water truck
-        assertNextLine(logRequest(0, 2, 1)) // request to hospital
+        assertNextLine(logRequest(1, 2, 1)) // request to hospital
         // path is 3.
         assertNextLine(logAssetAllocated(4, 1, 1)) // second ambulance
         // assertNextLine(logRequestFailed(2)) // wrong

@@ -3,19 +3,19 @@ package de.unisaarland.cs.se.selab.systemtest.basictests
 import de.unisaarland.cs.se.selab.systemtest.*
 import de.unisaarland.cs.se.selab.systemtest.api.SystemTest
 
-class SimpleTest : SystemTest() {
-    override val name = "SimpleTest"
+class SimpleTestButEventEnds : SystemTest() {
+    override val name = "SimpleTestButEventEnds"
 
     override val map = "mapFiles/small_map.dot"
     override val assets = "assetsJsons/simple_assets.json"
-    override val scenario = "scenarioJsons/small_scenario.json"
-    override val maxTicks = 6
+    override val scenario = "scenarioJsons/small_scenario_but_event_ends.json"
+    override val maxTicks = 10
 
     override suspend fun run() {
         // everything is parsed and validated
         assertNextLine(logParsingValidationResult("small_map.dot", true))
         assertNextLine(logParsingValidationResult("simple_assets.json", true))
-        assertNextLine(logParsingValidationResult("small_scenario.json", true))
+        assertNextLine(logParsingValidationResult("small_scenario_but_event_ends.json", true))
         // The Simulation starts with tick 0
         assertNextLine(LOG_SIMULATION_START)
         assertNextLine(logTick(0))
@@ -29,8 +29,11 @@ class SimpleTest : SystemTest() {
         assertNextLine(logAssetArrived(0, 3)) // ambulance arrives after 2 ticks
         assertNextLine(logEmergencyHandlingStart(0)) // emergency can start as the ambulance arrived
         assertNextLine(logTick(4))
-        assertNextLine(logEmergencyResult(0, success = true)) // emergency takes 1 tick to finish
-
+        assertNextLine(logTick(5))
+        // event not logging yet
+        assertNextLine(logEventStatus(0, false)) // event ends after
+        assertNextLine(logTick(6))
+        assertNextLine(logEmergencyResult(0, success = true)) // emergency takes 4 ticks to finish
         // The Simulation should end
         assertNextLine(LOG_SIMULATION_ENDED)
         // Statistics
