@@ -1,6 +1,5 @@
 package de.unisaarland.cs.se.selab.model
 
-import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
 import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
 import de.unisaarland.cs.se.selab.util.AssetManager
 
@@ -54,9 +53,9 @@ class Emergency(
 
     /**
      * adds a Vehicle to the emergency's list of arrived vehicles
-     * @param v vehicle to be added*/
-    fun assetArrived(v: Vehicle) {
-        availableVehicleIDs.add(v.vehicleID)
+     * @param id ID of vehicle to be added*/
+    fun addArrivedVehicleId(id: Int) {
+        availableVehicleIDs.add(id)
     }
 
     /**
