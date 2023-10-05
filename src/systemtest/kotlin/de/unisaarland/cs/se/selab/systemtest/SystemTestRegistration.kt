@@ -123,5 +123,6 @@ object SystemTestRegistration {
      */
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
         manager.registerTest(OneEmergency())
+        manager.registerTest(SimpleSimulation())
     }
 }
