@@ -80,23 +80,11 @@ class PositionTracker {
         if (path1.size != path2.size) {
             return false
         }
-
-        val edges1 = mutableListOf<Pair<Int, Int>>()
-        val edges2 = mutableListOf<Pair<Int, Int>>()
         for (i in path1.indices) {
-            edges1.add(Pair(path1[i], path1[i + 1]))
-        }
-        for (i in path2.indices) {
-            edges2.add(Pair(path2[i], path2[i + 1]))
-        }
-
-        for (edge in edges1) {
-            val edgeReversed = Pair(edge.second, edge.first)
-            if (!edges2.contains(edge) || !edges2.contains(edgeReversed)) {
+            if (path1[i] != path2[i]) {
                 return false
             }
         }
-
         return true
     }
 }

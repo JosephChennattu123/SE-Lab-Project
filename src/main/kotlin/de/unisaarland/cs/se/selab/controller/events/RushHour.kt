@@ -78,6 +78,7 @@ class RushHour(id: Int, start: Int, duration: Int, val roadTypes: List<PrimaryTy
                     model.currentEvents.remove(id)
                     status = EventStatus.FINISHED
                     (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList<Int>).remove(id)
+                    model.eventOccurred = true
                     Logger.logEventStatus(id, false)
                 }
             }
