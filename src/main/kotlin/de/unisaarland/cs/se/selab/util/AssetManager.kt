@@ -4,6 +4,7 @@ import de.unisaarland.cs.se.selab.model.Base
 import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.Emergency
 import de.unisaarland.cs.se.selab.model.EmergencyRequirement
+import de.unisaarland.cs.se.selab.model.EmergencyStatus
 import de.unisaarland.cs.se.selab.model.Model
 import de.unisaarland.cs.se.selab.model.vehicle.Path
 import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
@@ -389,6 +390,7 @@ object AssetManager {
                 }
             }
             emergency.addAsset(vehicle.vehicleID)
+            vehicle.emergencyID = emergency.id
         }
         // remove fulfilled requirements from the emergency.
         removedFulfilledRequirements(emergency)
@@ -482,6 +484,9 @@ object AssetManager {
         emergency.assignedVehicleIDs.remove(vehicleToBeReallocated.vehicleID)
         val remainingVehicles = model
             .getVehiclesByIds(emergency.assignedVehicleIDs)
+
+        // update status of emergency
+        emergency.status = EmergencyStatus.ONGOING
 
         // reset the current requirements of the emergency.
         emergency.currentRequirements.clear()

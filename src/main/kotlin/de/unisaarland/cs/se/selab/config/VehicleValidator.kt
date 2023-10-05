@@ -69,10 +69,10 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
                         it.vehicleType,
                         it.vehicleHeight,
                         it.staffCapacity,
-                        it.criminalCapacity ?: 0
+                        it.criminalCapacity
                     )
 
-                VehicleType.AMBULANCE, VehicleType.EMERGENCY_DOCTOR_CAR ->
+                VehicleType.AMBULANCE ->
                     Ambulance(
                         it.id,
                         it.baseId,
@@ -82,16 +82,40 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
                         1
                     )
 
-                VehicleType.FIRE_TRUCK_LADDER, VehicleType.FIRE_TRUCK_WATER,
-                VehicleType.FIRE_TRUCK_TECHNICAL, VehicleType.FIREFIGHTER_TRANSPORTER ->
+                VehicleType.EMERGENCY_DOCTOR_CAR ->
+                    Ambulance(
+                        it.id,
+                        it.baseId,
+                        it.vehicleType,
+                        it.vehicleHeight,
+                        it.staffCapacity,
+                        null
+                    )
+
+                VehicleType.FIRE_TRUCK_LADDER, VehicleType.FIRE_TRUCK_WATER ->
                     FireTruck(
                         it.id,
                         it.baseId,
                         it.vehicleType,
                         it.vehicleHeight,
                         it.staffCapacity,
-                        it.waterCapacity ?: 0
+                        if (it.vehicleType == VehicleType.FIRE_TRUCK_LADDER) {
+                            it.ladderLength
+                        } else {
+                            it.waterCapacity
+                        }
                     )
+
+                VehicleType.FIRE_TRUCK_TECHNICAL, VehicleType.FIREFIGHTER_TRANSPORTER -> {
+                    FireTruck(
+                        it.id,
+                        it.baseId,
+                        it.vehicleType,
+                        it.vehicleHeight,
+                        it.staffCapacity,
+                        null
+                    )
+                }
             }
         }.toList()
     }

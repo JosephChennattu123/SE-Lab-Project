@@ -12,7 +12,7 @@ class PoliceCar(
     vehicleType: VehicleType,
     height: Int,
     staffCapacity: Int,
-    maxAssetCapacity: Int
+    maxAssetCapacity: Int?
 ) : Vehicle(
     vehicleId,
     baseId,
@@ -34,18 +34,6 @@ class PoliceCar(
             }
         }
         return false
-    }
-
-    /**returns whatever still needs to be fulfilled inside the emergency */
-    override fun handleEmergency(amount: Int): Int {
-        status = VehicleStatus.HANDLING
-        if (vehicleType == VehicleType.POLICE_CAR) {
-            val criminalSpaces = currentNumberOfAssets ?: error("police car criminal capacity is null")
-            val remainingAmount = amount - criminalSpaces
-            currentNumberOfAssets = if (criminalSpaces <= amount) 0 else criminalSpaces - amount
-            return remainingAmount
-        }
-        return 0
     }
 
     /** resets vehicle assets possessed to zero */

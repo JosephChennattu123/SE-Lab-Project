@@ -31,17 +31,23 @@ class ConstructionSite(
     override fun applyEffect(model: Model) {
         require(source != null && target != null) { "Source and Target must not be null" }
         val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int)
+        if (model.roadToPostponedEvents[currentEdge.edgeId] == null ||
+            !(model.roadToPostponedEvents[currentEdge.edgeId] as MutableList).contains(id)
+        ) {
+            Logger.logEventStatus(id, true)
+            model.eventOccurred = true
+        }
         if (currentEdge.activeEventId == null) {
             currentEdge.properties.factor = this.factor as Int
             currentEdge.activeEventId = id
             currentEdge.closed = oneway
             model.currentEvents.add(id)
+            status = EventStatus.ACTIVE
             if (model.roadToPostponedEvents[currentEdge.edgeId] != null &&
                 (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList).contains(id)
             ) {
                 (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList<Int>).remove(id)
             }
-            Logger.logEventStatus(id, true)
         } else {
             status = EventStatus.SCHEDULED
             putInPostponeLists(model.roadToPostponedEvents, currentEdge)

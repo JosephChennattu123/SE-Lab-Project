@@ -1,6 +1,6 @@
 package de.unisaarland.cs.se.selab.model
 
-import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
+import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
 import de.unisaarland.cs.se.selab.util.AssetManager
 
 /**
@@ -53,9 +53,9 @@ class Emergency(
 
     /**
      * adds a Vehicle to the emergency's list of arrived vehicles
-     * @param v vehicle to be added*/
-    fun assetArrived(v: Vehicle) {
-        availableVehicleIDs.add(v.vehicleID)
+     * @param id ID of vehicle to be added*/
+    fun addArrivedVehicleId(id: Int) {
+        availableVehicleIDs.add(id)
     }
 
     /**
@@ -69,30 +69,31 @@ class Emergency(
     /**
      * Updates the number of available assets for each vehicle after emergency starts being handled */
     fun handle(model: Model) {
-        model
         availableVehicleIDs.sort()
-//        val policeVehicles = model.getVehiclesByIds(availableVehicleIDs) // List of all police vehicles
-//            .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.POLICE_STATION }
-//        val hospitalVehicles = model.getVehiclesByIds(availableVehicleIDs)
-//            // List of all hospital vehicles
-//            .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.HOSPITAL }
-//        val fireVehicles = model.getVehiclesByIds(availableVehicleIDs) // List of all fire vehicles
-//            .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.FIRE_STATION }
-//        var criminalReq: Int = currentRequirements.first { it.assetType == AssetType.CRIMINAL }.amountOfAsset ?: 0
-//        // finds the assetAmount of the requirement that corresponds to police vehicles
-//        var patientReq: Int = currentRequirements.first { it.assetType == AssetType.PATIENT }.amountOfAsset ?: 0
-//        // finds the assetAmount of the requirement that corresponds to ambulances
-//        var waterReq: Int = currentRequirements.first { it.assetType == AssetType.WATER }.amountOfAsset ?: 0
-//        // finds the assetAmount of the requirement that corresponds to firetrucks
-//        policeVehicles.forEach {
-//            criminalReq = it.handleEmergency(criminalReq)
-//        }
-//        hospitalVehicles.forEach {
-//            patientReq = it.handleEmergency(patientReq)
-//        }
-//        fireVehicles.forEach {
-//            waterReq = it.handleEmergency(waterReq)
-//        }
+
+        val policeVehicles = model.getVehiclesByIds(availableVehicleIDs) // List of all police vehicles
+            .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.POLICE_STATION }
+        val hospitalVehicles = model.getVehiclesByIds(availableVehicleIDs)
+            // List of all hospital vehicles
+            .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.HOSPITAL }
+        val fireVehicles = model.getVehiclesByIds(availableVehicleIDs) // List of all fire vehicles
+            .filter { VehicleType.getBaseType(it.vehicleType) == BaseType.FIRE_STATION }
+        var criminalReq: Int = baseRequirements.first { it.vehicleType == VehicleType.POLICE_CAR }.amountOfAsset ?: 0
+        // finds the assetAmount of the requirement that corresponds to police vehicles
+        var patientReq: Int = baseRequirements.first { it.vehicleType == VehicleType.AMBULANCE }.amountOfAsset ?: 0
+        // finds the assetAmount of the requirement that corresponds to ambulances
+        var waterReq: Int =
+            baseRequirements.first { it.vehicleType == VehicleType.FIRE_TRUCK_WATER }.amountOfAsset ?: 0
+        // finds the assetAmount of the requirement that corresponds to firetrucks
+        policeVehicles.forEach {
+            criminalReq = it.handleEmergency(criminalReq)
+        }
+        hospitalVehicles.forEach {
+            patientReq = it.handleEmergency(patientReq)
+        }
+        fireVehicles.forEach {
+            waterReq = it.handleEmergency(waterReq)
+        }
     }
 
     /**

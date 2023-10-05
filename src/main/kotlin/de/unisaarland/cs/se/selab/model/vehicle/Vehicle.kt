@@ -53,7 +53,24 @@ abstract class Vehicle(
      * used to handle emergencies and returns the amount of "criminals"/"water" that still needs to
      * be handled
      */
-    abstract fun handleEmergency(amount: Int): Int
+    fun handleEmergency(amount: Int): Int {
+        status = VehicleStatus.HANDLING
+        if (vehicleType == VehicleType.FIRE_TRUCK_WATER || vehicleType == VehicleType.AMBULANCE ||
+            vehicleType == VehicleType.POLICE_CAR
+        ) {
+            val curNum = currentNumberOfAssets as Int
+            var remainingAmount = amount
+            if (amount > curNum) {
+                remainingAmount -= curNum
+                currentNumberOfAssets = 0
+            } else {
+                currentNumberOfAssets = curNum - amount
+                remainingAmount = 0
+            }
+            return remainingAmount
+        }
+        return amount
+    }
 
     /** sets new a new path. returns true if new path has to be set and false if not */
     fun setNewPath(path: Path): Boolean {

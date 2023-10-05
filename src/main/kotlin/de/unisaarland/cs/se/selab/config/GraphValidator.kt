@@ -5,6 +5,7 @@ import de.unisaarland.cs.se.selab.model.map.PrimaryType
 import de.unisaarland.cs.se.selab.model.map.RoadProperties
 import de.unisaarland.cs.se.selab.model.map.SecondaryType
 import de.unisaarland.cs.se.selab.model.map.Vertex
+import de.unisaarland.cs.se.selab.util.Logger
 import kotlin.NumberFormatException
 
 // private const val COUNTY_ROAD = "countyRoad"
@@ -92,6 +93,7 @@ class GraphValidator {
         val validSyntax = dotParserObj.parse()
 
         if (!validSyntax) {
+            Logger.outputLogger.error { "Graph has invalid syntax" }
             return false
         }
 
@@ -100,6 +102,7 @@ class GraphValidator {
             val vertexIdsList = dotParserObj.vertices.map { it.toInt() }
             val ret = validateVertexIds(vertexIdsList)
             if (!ret) {
+                Logger.outputLogger.error { "vertex ids are invalid" }
                 return false
             }
             dotParserObj.edgeIdToSourceTarget.forEach { (key, pair) ->
@@ -112,12 +115,14 @@ class GraphValidator {
 
             val returnedPair = getPrimaryAndSecondaryTypes()
             if (returnedPair == null) {
+                Logger.outputLogger.error { "Was not able to convert String to PrimaryType/SecondaryType" }
                 exceptionOccurred = true
             } else {
                 primaryTypes = returnedPair.first
                 secondaryTypes = returnedPair.second
             }
         } catch (exception: NumberFormatException) {
+            Logger.outputLogger.error { "Was not able to convert String to In" }
             exceptionOccurred = true
         }
         if (exceptionOccurred) {
@@ -141,6 +146,7 @@ class GraphValidator {
         for (i in functions) {
             val returnValue = i()
             if (!returnValue) {
+                Logger.outputLogger.error { "${i.name} failed" }
                 return false
             }
         }
@@ -228,6 +234,7 @@ class GraphValidator {
     private fun validateNoSelfLoops(): Boolean {
         for (id in this.vertexIds) {
             if (sourceTarget.containsValue(Pair(id, id))) {
+                Logger.outputLogger.error { "found a self loop" }
                 return false
             }
         }
@@ -244,6 +251,7 @@ class GraphValidator {
             val v1 = sourceTarget.values.count { (first, second) -> pair.first == first && pair.second == second }
             val v2 = sourceTarget.values.count { (first, second) -> pair.second == first && pair.first == second }
             if (v1 + v2 > 1) {
+                Logger.outputLogger.error { "found more a duplicate connection" }
                 return false
             }
         }
@@ -293,6 +301,7 @@ class GraphValidator {
                     val primaryType = primaryTypes.getValue(edgeId)
                     villageRoadNamesWithPrimaryType.add(Pair(nextRoadName, primaryType))
                 } else {
+                    Logger.outputLogger.error { "!roadNamesInVillage.contains(nextRoadName) failed" }
                     return false
                 }
             }
@@ -306,10 +315,10 @@ class GraphValidator {
      * Checks that all vertices only have direct connections to edges
      * of the same village or are countyRoads
      *
-     * @return true if vertices only have edges with valid village names or countyRoads
+     * @return true if vertices only have edges with a single village names each or are countyRoads
      */
     private fun validateVertexConnectedToSingleVillage(): Boolean {
-        val villageNames = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_VILLAGE)) }.toMap()
+        val villageLabelsOfEdges = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_VILLAGE)) }.toMap()
 
         val vertexIdToEdges: MutableMap<Int, Pair<List<Int>, List<Int>>> = mutableMapOf()
         // val primaryTypes = dotParserObj.parsePrimaryType(attributes)
@@ -331,15 +340,19 @@ class GraphValidator {
             val incomingEdges =
                 incomingEdgesIds.filter { primaryTypes.getValue(it - 1) == PrimaryType.COUNTY }
 
-            for (outEdge: Int in outgoingEdges) {
-                val newVillageName = villageNames[outEdge] ?: return false
-                vertexVillage = vertexVillage ?: newVillageName
-                if (checkValidConnectedEdge(primaryTypes, outEdge, vertexVillage, newVillageName)) return false
+            outgoingEdges.forEach { outEdge ->
+                val newVillageName = villageLabelsOfEdges[outEdge] ?: return false
+                if (getCountyOrVillageNames(false).contains(newVillageName)) {
+                    vertexVillage = vertexVillage ?: newVillageName
+                }
+                if (!checkValidConnectedEdge(primaryTypes, outEdge, vertexVillage, newVillageName)) return false
             }
-            for (inEdge: Int in incomingEdges) {
-                val newVillageName = villageNames[inEdge] ?: return false
-                vertexVillage = vertexVillage ?: newVillageName
-                if (checkValidConnectedEdge(primaryTypes, inEdge, vertexVillage, newVillageName)) return false
+            incomingEdges.forEach { inEdge ->
+                val newVillageName = villageLabelsOfEdges[inEdge] ?: return false
+                if (getCountyOrVillageNames(false).contains(newVillageName)) {
+                    vertexVillage = vertexVillage ?: newVillageName
+                }
+                if (!checkValidConnectedEdge(primaryTypes, inEdge, vertexVillage, newVillageName)) return false
             }
         }
         return true
@@ -350,8 +363,8 @@ class GraphValidator {
      * @param edge
      * @param vertexVillage current name of village
      * @param newVillageName new name of village
+     * @return false if newVillage is a different village but the road is not a countyRoad
      */
-
     private fun checkValidConnectedEdge(
         primaryTypes: Map<Int, PrimaryType>,
         edge: Int,
@@ -359,10 +372,14 @@ class GraphValidator {
         newVillageName: String
     ): Boolean {
         val primaryType = primaryTypes[edge]
-        if (vertexVillage != newVillageName && primaryType != PrimaryType.COUNTY) {
-            return true
+        if (vertexVillage != null && vertexVillage != newVillageName && primaryType != PrimaryType.COUNTY) {
+            Logger.outputLogger.error {
+                "found a edge to a village that is not the same as " +
+                    "the first village connected to the vertex"
+            }
+            return false
         }
-        return false
+        return true
     }
 
     /**
@@ -378,6 +395,7 @@ class GraphValidator {
                 continue
             }
             if (!value.any { it.second == "mainStreet" }) {
+                Logger.outputLogger.error { "did not find a mainStreet in a village" }
                 return false
             }
         }
@@ -395,35 +413,32 @@ class GraphValidator {
         // val attributes = dotParserObj.parseAttributes(edgeStrings)
         // val primaryTypes = dotParserObj.parsePrimaryType(attributes)
         val primaryTypes = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_PRIMARY_TYPE)) }.toMap()
-        return primaryTypes.containsValue(LABEL_SIDE_STREET)
+        val v = primaryTypes.containsValue(LABEL_SIDE_STREET)
+        if (v) {
+            return true
+        }
+        Logger.outputLogger.error { "did not find a sideStreet on the map" }
+        return false
     }
 
     /**
-     * Checks that the weights of roads are positive and that
+     * Checks that the minimum weights of roads is 1 and that
      * the minimum road height is 1
      *
-     * @return true if all roads have positive weight
-     * @return true if no road exists with a
+     * @return true if all roads have positive weight and height
      */
     private fun validateRoadWeightHeight(): Boolean {
-        // val dotParserObj = dotParser as DotParser
-        // val edgeStrings = dotParserObj.parseEdges()
-        // val attributes = dotParserObj.parseAttributes(edgeStrings)
-        // val weights = dotParserObj.parseWeight(attributes)
-        // val roadHeights = dotParserObj.parseHeight(attributes)
-
-        val weights: Map<Int, Int>
-        val roadHeights: Map<Int, Int>
-        try {
-            weights = attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_WEIGHT).toInt()) }.toMap()
-            roadHeights =
-                attributes.map { (key, value) -> Pair(key, value.getValue(LABEL_HEIGHT_LIMIT).toInt()) }.toMap()
-        } catch (exception: NumberFormatException) {
+        val weightsEmpty = weights.filter { (_, value) -> value < 1 }.isEmpty()
+        val heightsEmpty = heights.filter { (_, value) -> value < 1 }.isEmpty()
+        if (!weightsEmpty) {
+            Logger.outputLogger.error { "found a non positive weight" }
             return false
         }
-
-        return weights.filter { (_, value) -> value <= 0 }.isEmpty() && roadHeights.filter { (_, value) -> value < 1 }
-            .isEmpty()
+        if (!heightsEmpty) {
+            Logger.outputLogger.error { "found a non positive height" }
+            return false
+        }
+        return true
     }
 
     /**
@@ -453,14 +468,16 @@ class GraphValidator {
      * Checks that no village name is equal to a county name
      */
     private fun validateVillageNameNotCountyName(): Boolean {
-        if (dotParser == null) {
-            return false
-        }
         val countyNames = getCountyOrVillageNames(true).toSet()
         val villageNames = getCountyOrVillageNames(false).toSet()
         return villageNames.intersect(countyNames).isEmpty()
     }
 
+    /**
+     * Returns the list containing all village names (non-countyRoad) or all county names
+     * @param county true if it should output county names else should output village names
+     * @return a list containing names
+     */
     private fun getCountyOrVillageNames(county: Boolean): List<String> {
         return if (county) {
             attributes.values
