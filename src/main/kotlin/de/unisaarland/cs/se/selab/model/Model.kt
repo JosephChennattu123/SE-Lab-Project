@@ -28,6 +28,7 @@ class Model(
     val roadToPostponedEvents: MutableMap<Int, MutableList<Int>> = mutableMapOf()
     val vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
     val requests: MutableList<Request> = mutableListOf()
+    var eventOccurred: Boolean = false
 
     /** returns emergency object with respect to its id */
     fun getAssignedEmergencyById(emId: Int): Emergency? {
