@@ -12,7 +12,7 @@ class PoliceCar(
     vehicleType: VehicleType,
     height: Int,
     staffCapacity: Int,
-    maxAssetCapacity: Int
+    maxAssetCapacity: Int?
 ) : Vehicle(
     vehicleId,
     baseId,
