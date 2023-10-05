@@ -1,0 +1,56 @@
+{
+    "events": [
+        {
+            "id": 0,
+            "type": "RUSH_HOUR",
+            "tick": 20,
+            "duration": 1,
+            "factor": 1,
+            "roadTypes": [
+                "MAIN_STREET"
+            ]
+        }
+    ],
+    "emergencyCalls": [
+        {
+            "id": 0,
+            "tick": 1,
+            "village": "Dorf_In_Der_Wand",
+            "roadName": "Fir_Way",
+            "emergencyType": "FIRE",
+            "severity": 1,
+            "handleTime": 2,
+            "maxDuration": 10
+        },
+        {
+            "id": 1,
+            "tick": 1,
+            "village": "Dorf_In_Der_Wand",
+            "roadName": "Fir_Way",
+            "emergencyType": "ACCIDENT",
+            "severity": 1,
+            "handleTime": 1,
+            "maxDuration": 2
+        },
+        {
+            "id": 2,
+            "tick": 1,
+            "village": "Dorf_In_Der_Wand",
+            "roadName": "Fir_Way",
+            "emergencyType": "MEDICAL",
+            "severity": 1,
+            "handleTime": 2,
+            "maxDuration": 10
+        },
+        {
+            "id": 3,
+            "tick": 1,
+            "village": "Dorf_In_Der_Wand",
+            "roadName": "Old_Village_Street",
+            "emergencyType": "MEDICAL",
+            "severity": 2,
+            "handleTime": 1,
+            "maxDuration": 10
+        }
+    ]
+}

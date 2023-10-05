@@ -1,0 +1,8 @@
+digraph G {
+	0;
+	1;
+	2;
+
+	0 -> 1 [village=Dorf_In_Der_Wand; name=Old_Village_Street; heightLimit=10; weight=10; primaryType=mainStreet; secondaryType=none;];
+	1 -> 2 [village=Dorf_In_Der_Wand; name=Fir_Way; heightLimit=10; weight=10; primaryType=sideStreet; secondaryType=none;];
+}
