@@ -92,7 +92,7 @@ class VehicleUnavailable : SystemTest() {
         assertNextLine(logEmergencyResult(1, true))
         assertNextLine(logTick(13))
         assertNextLine(logAssetArrived(0, 0))
-        assertNextLine(logAssetArrived(1, 1))
+        assertNextLine(logAssetArrived(1, 0))
         assertNextLine(logEmergencyResult(3, false))
         assertNextLine(LOG_SIMULATION_ENDED)
 
