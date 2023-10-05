@@ -4,7 +4,7 @@ package de.unisaarland.cs.se.selab.systemtest
 import de.unisaarland.cs.se.selab.systemtest.basictests.ExampleTest
 import de.unisaarland.cs.se.selab.systemtest.basictests.FireEmergencyTest
 import de.unisaarland.cs.se.selab.systemtest.basictests.OneEmergency
-import de.unisaarland.cs.se.selab.systemtest.basictests.SimpleMapEmergencyTimeout
+import de.unisaarland.cs.se.selab.systemtest.basictests.SimpleMapEmergencyFailure
 import de.unisaarland.cs.se.selab.systemtest.basictests.SimpleTest
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 import de.unisaarland.cs.se.selab.systemtest.simulation.events.VehicleUnavailable
@@ -73,7 +73,7 @@ object SystemTestRegistration {
         manager.registerTest(VehicleEventNoVehicle())
         manager.registerTest(SimpleSimulation())
         manager.registerTest(SuccessfulRequest())
-        manager.registerTest(SimpleMapEmergencyTimeout())
+        manager.registerTest(SimpleMapEmergencyFailure())
         manager.registerTest(UnderStaffedAndFail())
         manager.registerTest(VehicleUnavailable())
     }
