@@ -32,22 +32,22 @@ class EmergencyDistribution {
         // Get the graph from the model.
         val graph = model.graph
 
-        for (e in currentEmergencies) {
+        for (emergency in currentEmergencies) {
             // Iterate over emergencies and get the nearest base using one of the Dijkstra methods.
             var nearestBaseVertexId: Int? = null
-            val loc = e.location
+            val loc = emergency.location
             val edge = model.graph.getEdge(loc)
             val activeEvent = edge.activeEventId?.let { model.getEventById(it) }
             if (activeEvent != null) {
                 handleActiveRoadClosureEvent(activeEvent, edge, model)
             }
-            if (e.type == EmergencyType.CRIME) {
+            if (emergency.type == EmergencyType.CRIME) {
                 nearestBaseVertexId = Dijkstra.getNearestBaseVertexIdToEdge(graph, loc, BaseType.POLICE_STATION)
             }
-            if (e.type == EmergencyType.ACCIDENT || e.type == EmergencyType.FIRE) {
+            if (emergency.type == EmergencyType.ACCIDENT || emergency.type == EmergencyType.FIRE) {
                 nearestBaseVertexId = Dijkstra.getNearestBaseVertexIdToEdge(graph, loc, BaseType.FIRE_STATION)
             }
-            if (e.type == EmergencyType.MEDICAL) {
+            if (emergency.type == EmergencyType.MEDICAL) {
                 nearestBaseVertexId = Dijkstra.getNearestBaseVertexIdToEdge(graph, loc, BaseType.HOSPITAL)
             }
 
@@ -56,14 +56,14 @@ class EmergencyDistribution {
                 error("a base should exist at this stage")
             }
             val baseId = model.graph.vertices.getValue(nearestBaseVertexId).baseId
-            model.getBaseById(baseId as Int)?.addEmergency(e.id)
-            e.mainBaseID = baseId
+            model.getBaseById(baseId as Int)?.addEmergency(emergency.id)
+            emergency.mainBaseID = baseId
 
             // Add the emergency to the list of active emergencies in the model.
-            model.addToAssignedEmergencies(e.id)
+            model.addToAssignedEmergencies(emergency.id)
 
             // Log the assignment.
-            Logger.logEmergencyAssigned(e.id, baseId)
+            Logger.logEmergencyAssigned(emergency.id, baseId)
         }
     }
 
