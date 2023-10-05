@@ -53,12 +53,9 @@ class Emergency(
 
     /**
      * adds a Vehicle to the emergency's list of arrived vehicles
-     * @param v vehicle to be added*/
+     * @param id ID of vehicle to be added*/
     fun addArrivedVehicleId(id: Int) {
         availableVehicleIDs.add(id)
-        if (assignedVehicleIDs.size == availableVehicleIDs.size) {
-            status = EmergencyStatus.WAITING_FOR_ASSETS
-        }
     }
 
     /**

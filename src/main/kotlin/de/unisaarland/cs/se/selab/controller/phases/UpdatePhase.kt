@@ -51,7 +51,7 @@ class UpdatePhase {
                         // add it to the list of the emergency's available vehicles
                         val emergencyID = vehicle.emergencyID as Int
                         val emergency = model.getAssignedEmergencyById(emergencyID) as Emergency
-                        emergency.availableVehicleIDs.add(vehicle.vehicleID)
+                        emergency.addArrivedVehicleId(vehicle.vehicleID)
                     }
                 }
 
