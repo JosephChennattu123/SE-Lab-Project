@@ -44,6 +44,7 @@ object SystemTestRegistration {
      * If all tests of this section pass: -
      */
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
+        manager.registerTest(TestReroute())
         manager.registerTest(ExampleTest())
         manager.registerTest(OneEmergency())
         manager.registerTest(FireEmergencyTest())
