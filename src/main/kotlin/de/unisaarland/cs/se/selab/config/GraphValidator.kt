@@ -126,8 +126,8 @@ class GraphValidator {
 
         val functions = listOf(
             ::validateEdgeConnectsExistingVertices,
-            ::validateVerticesConnected,
             ::validateNoSelfLoops,
+            ::validateVerticesConnected,
             ::validateNoDuplicateConnections,
             ::validateVillageNameNotCountyName,
             ::validateRoadNamesUniqueInVillage,
