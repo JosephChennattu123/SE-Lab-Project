@@ -11,10 +11,10 @@ import de.unisaarland.cs.se.selab.util.AssetManager
 import de.unisaarland.cs.se.selab.util.Dijkstra
 
 /**
-* The `RequestProcessing` class manages the request processing phase of a simulation.
-* It processes current requests in the simulation model and attempts to allocate the required assets
-* for each emergency request.
-*/
+ * The `RequestProcessing` class manages the request processing phase of a simulation.
+ * It processes current requests in the simulation model and attempts to allocate the required assets
+ * for each emergency request.
+ */
 class RequestProcessing {
 
     /**
@@ -87,7 +87,7 @@ class RequestProcessing {
             val newRequest = Request.createNewRequest(base.baseId, reqEmergency.id, nextNearestBase, mutableSet)
 
             // add the request at the end to the list of the request we are currently iterating over
-            model.requests.add(newRequest.requestId, newRequest)
+            model.requests.add(newRequest)
         }
     }
 }
