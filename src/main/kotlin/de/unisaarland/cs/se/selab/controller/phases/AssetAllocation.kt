@@ -118,12 +118,7 @@ class AssetAllocation {
                 mainBase.vertexID,
                 baseType,
                 setOf(mainBase.vertexID)
-            )?.let {
-                baseNeedRequest.add(
-                    model.graph.vertices[it]?.baseId
-                        ?: throw IllegalArgumentException("This vertex must have base!")
-                )
-            }
+            )?.let { baseNeedRequest.add(it) }
         }
 
         if (baseNeedRequest.isNotEmpty()) {
@@ -138,7 +133,8 @@ class AssetAllocation {
                 model.addRequest(requestNew)
                 Logger.logRequest(
                     requestNew.requestId,
-                    it,
+                    model.graph.vertices[it]?.baseId
+                        ?: throw IllegalArgumentException("This vertex must have base!"),
                     emergency.id
                 )
             }
