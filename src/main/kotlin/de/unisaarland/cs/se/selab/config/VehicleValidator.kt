@@ -6,6 +6,7 @@ import de.unisaarland.cs.se.selab.model.vehicle.FireTruck
 import de.unisaarland.cs.se.selab.model.vehicle.PoliceCar
 import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
 import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
+import de.unisaarland.cs.se.selab.util.Logger
 
 private const val WATER600 = 600
 private const val WATER1200 = 1200
@@ -34,6 +35,8 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
         val jsonParserObj = jsonParser as JsonParser
         val vehicleInfos = jsonParserObj.parseVehicles()
 
+        val vehicleIds: MutableList<Int> = mutableListOf()
+
         vehicleInfos.forEach { vehicleInfo ->
             val mandatoryFields = when (vehicleInfo.vehicleType) {
                 VehicleType.AMBULANCE, VehicleType.EMERGENCY_DOCTOR_CAR -> emptyList()
@@ -55,6 +58,12 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
             if (validateBaseExists(vehicleInfo, bases)) {
                 validateBasesNessesaryStaff(vehicleInfo, bases)
             }
+            vehicleIds.add(vehicleInfo.id)
+        }
+
+        if (vehicleIds.toSet().toList().sorted() != vehicleIds.sorted()) {
+            Logger.outputLogger.error { "vehicle ids are not unique" }
+            return null
         }
         return buildVehicles(vehicleInfos)
     }
