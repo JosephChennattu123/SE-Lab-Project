@@ -92,9 +92,9 @@ class Model(
 
     /** @return list of all current events */
     fun getCurrentEventsObjects(): List<Event> {
-        val idsOfCurrentEmergencies = tickToEmergencyId[currentTick].orEmpty()
-        if (idsOfCurrentEmergencies.isNotEmpty()) {
-            return events.values.filter { it.id in idsOfCurrentEmergencies }
+        val idsOfCurrentEvents = tickToEventId[currentTick].orEmpty()
+        if (idsOfCurrentEvents.isNotEmpty()) {
+            return events.values.filter { it.id in idsOfCurrentEvents }
         }
         return emptyList()
     }
