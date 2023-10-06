@@ -41,7 +41,7 @@ class ConstructionSite(
             currentEdge.properties.factor = this.factor as Int
             currentEdge.activeEventId = id
             currentEdge.closed = oneway
-            model.currentEvents.add(id)
+            // model.triggeredEventIds.add(id)
             status = EventStatus.ACTIVE
             if (model.roadToPostponedEvents[currentEdge.edgeId] != null &&
                 (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList).contains(id)
@@ -63,7 +63,7 @@ class ConstructionSite(
         currentEdge.properties.factor = BASE_FACTOR
         currentEdge.closed = false
         currentEdge.activeEventId = null
-        model.currentEvents.remove(id)
+        // model.triggeredEventIds.remove(id)
         status = EventStatus.FINISHED
         model.eventOccurred = true
         Logger.logEventStatus(id, false)

@@ -31,7 +31,6 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
         if (currentEdge.activeEventId == null) {
             currentEdge.properties.factor = this.factor as Int
             currentEdge.activeEventId = id
-            model.currentEvents.add(id)
             status = EventStatus.ACTIVE
             if (model.roadToPostponedEvents[currentEdge.edgeId] != null &&
                 (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList).contains(id)
@@ -52,7 +51,6 @@ class TrafficJam(id: Int, start: Int, duration: Int, sourceId: Int, targetId: In
         val currentEdge: Edge = model.graph.getEdge(source as Int, target as Int)
         currentEdge.properties.factor = BASE_FACTOR
         currentEdge.activeEventId = null
-        model.currentEvents.remove(id)
         status = EventStatus.FINISHED
         model.eventOccurred = true
         Logger.logEventStatus(id, false)
