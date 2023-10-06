@@ -49,14 +49,15 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
             if (!validateSpecificProperties(vehicleInfo, optionalProperties, mandatoryFields) ||
                 !validateAssetCapacity(vehicleInfo)
             ) {
+                Logger.outputLogger.error { "vehicle has invalid specific properties or asset capacity is invalid" }
                 return null
             }
 
             if (!validateStaffBounds(vehicleInfo) || !validateHeightBounds(vehicleInfo)) {
                 return null
             }
-            if (validateBaseExists(vehicleInfo, bases)) {
-                validateBasesNessesaryStaff(vehicleInfo, bases)
+            if (!checkBaseRequirements(vehicleInfo, bases)) {
+                return null
             }
             vehicleIds.add(vehicleInfo.id)
         }
@@ -66,6 +67,20 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
             return null
         }
         return buildVehicles(vehicleInfos)
+    }
+
+    private fun checkBaseRequirements(vehicleInfo: VehicleInfo, bases: List<Base>): Boolean {
+        if (validateBaseExists(vehicleInfo, bases)) {
+            val returnValue = validateBasesNessesaryStaff(vehicleInfo, bases)
+            if (!returnValue) {
+                Logger.outputLogger.error { "base of this vehicle can not support the staff requirements" }
+                return false
+            }
+        } else {
+            Logger.outputLogger.error { "base of vehicle does not exist" }
+            return false
+        }
+        return true
     }
 
     private fun buildVehicles(vehicleInfos: List<VehicleInfo>): List<Vehicle> {
@@ -133,7 +148,7 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      * Checks the asset capacity is the right amount
      */
     private fun validateAssetCapacity(vehicleInfo: VehicleInfo): Boolean {
-        return when (vehicleInfo.vehicleType) {
+        val returnValue = when (vehicleInfo.vehicleType) {
             VehicleType.AMBULANCE -> true
             VehicleType.EMERGENCY_DOCTOR_CAR -> true
             VehicleType.FIRE_TRUCK_WATER -> vehicleInfo.waterCapacity as Int in listOf(
@@ -149,6 +164,11 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
             VehicleType.K9_POLICE_CAR -> true
             VehicleType.POLICE_MOTOR_CYCLE -> true
         }
+        if (returnValue) {
+            return true
+        }
+        Logger.outputLogger.error { "vehicle has invalid asset capacity" }
+        return false
     }
 
     /**
@@ -157,7 +177,12 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      * @return true if staff bounds where matched
      */
     private fun validateStaffBounds(vehicleInfo: VehicleInfo): Boolean {
-        return vehicleInfo.staffCapacity in 1..STAFFMAXIMUM
+        val returnValue = vehicleInfo.staffCapacity in 1..STAFFMAXIMUM
+        if (returnValue) {
+            return true
+        }
+        Logger.outputLogger.error { "vehicle has invalid staff amount" }
+        return false
     }
 
     /**
@@ -166,7 +191,12 @@ class VehicleValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
      * @return true if height bounds where matched
      */
     private fun validateHeightBounds(vehicleInfo: VehicleInfo): Boolean {
-        return vehicleInfo.vehicleHeight in 1..VEHICLEMAXHEIGHT
+        val returnValue = vehicleInfo.vehicleHeight in 1..VEHICLEMAXHEIGHT
+        if (returnValue) {
+            return true
+        }
+        Logger.outputLogger.error { "vehicle has invalid height" }
+        return false
     }
 
     /**

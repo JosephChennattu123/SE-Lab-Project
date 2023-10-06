@@ -1,5 +1,7 @@
 package de.unisaarland.cs.se.selab.config
 
+import de.unisaarland.cs.se.selab.util.Logger
+
 /**
  * The basic class for the Validators (not graph)
  * */
@@ -41,8 +43,16 @@ abstract class BasicValidator(jsonParser: JsonParser) {
                 if (basicInfo.infoMap[field] != null) {
                     continue
                 }
+                Logger.outputLogger.error {
+                    "required specific field '$field' was null. " +
+                        "optional fields: $optionalFields, specificFields: $specificFields"
+                }
                 return false
             } else if (field !in specificFields && basicInfo.infoMap[field] != null) {
+                Logger.outputLogger.error {
+                    "Invalid specific property: '$field' invalid. " +
+                        "optional fields: $optionalFields, specificFields: $specificFields"
+                }
                 return false
             }
         }

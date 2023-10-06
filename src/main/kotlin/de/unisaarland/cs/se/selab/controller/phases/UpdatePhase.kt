@@ -66,19 +66,21 @@ class UpdatePhase {
         }
         val failingEmergencies = emergencies.filter {
             it.timeElapsed >= it.maxDuration
-        }.toList()
+        }.toList().sortedBy { it.id }
 
         val resolvableEmergencies = emergencies.filter {
             it.status == EmergencyStatus.BEING_HANDLED && it.handleTime == 0 && it.timeElapsed < it.maxDuration
-        }.toList()
+        }.toList().sortedBy { it.id }
 
         val fulfilledEmergencies = emergencies.filter {
-            it.status == EmergencyStatus.ONGOING && it.isFulfilled() && it.timeElapsed < it.maxDuration
+            it.status == EmergencyStatus.ONGOING && it.isFulfilled() && !it.canStart() &&
+                it.timeElapsed < it.maxDuration
         }.toList()
 
         val handleableEmergencies = emergencies.filter {
-            it.status == EmergencyStatus.WAITING_FOR_ASSETS && it.canStart() && it.timeElapsed < it.maxDuration
-        }.toList()
+            (it.status == EmergencyStatus.WAITING_FOR_ASSETS || it.status == EmergencyStatus.ONGOING) &&
+                it.canStart() && it.timeElapsed < it.maxDuration
+        }.toList().sortedBy { it.id }
 
         fulfilledEmergencies.forEach {
             it.changeStatus(EmergencyStatus.WAITING_FOR_ASSETS)
