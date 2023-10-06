@@ -10,6 +10,7 @@ import de.unisaarland.cs.se.selab.model.vehicle.Path
 import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
 import de.unisaarland.cs.se.selab.model.vehicle.VehicleStatus
 import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
+import de.unisaarland.cs.se.selab.util.PowerSetCalculator.computeCombinations
 
 /**
  * Returns requirements for emergencies and handles the allocation of assets to emergencies */
@@ -302,8 +303,6 @@ object AssetManager {
         // find vehicles that cannot reach the emergency in time.
         val vehiclesThatCannotReachInTime = mutableListOf<Vehicle>()
         val vehicleIdToPath: MutableMap<Int, Path> = mutableMapOf()
-        val matchWithReturning = if (reallocate) VehicleStatus.RETURNING else VehicleStatus.NONE
-        val matchWithToEmergency = if (reallocate) VehicleStatus.TO_EMERGENCY else VehicleStatus.NONE
         for (vehicle in vehicles) {
             when (vehicle.status) {
                 // If vehicle is currently at base, calculate drive from vertex to edge.
@@ -323,7 +322,7 @@ object AssetManager {
                 }
 
                 // if vehicle is currently on the road, calculate drive time from edge to edge.
-                matchWithReturning, matchWithToEmergency -> {
+                matchReturningOrToEmergency(reallocate, vehicle.status) -> {
                     val currentVertex =
                         vehicle.getCurrentVertexID() ?: error("current vertex is null")
                     val nextVertex = vehicle.getNextVertexID() ?: error("next vertex is null")
@@ -362,6 +361,19 @@ object AssetManager {
 
         // assign.
         assignVehiclesAndLog(model, emergency, vehicles, vehicleIdToPath, reallocate)
+    }
+
+    private fun matchReturningOrToEmergency(
+        reallocation: Boolean,
+        status: VehicleStatus
+    ): VehicleStatus {
+        return if (reallocation && status
+            in listOf(VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY)
+        ) {
+            status
+        } else {
+            VehicleStatus.NONE
+        }
     }
 
     private fun assignVehiclesAndLog(
@@ -706,8 +718,16 @@ object AssetManager {
         // return the smallest
         return sortedCombinations.first().toMutableList()
     }
+}
 
-    private fun computeCombinations(ids: List<Int>, size: Int): List<List<Int>> {
+/**
+ * object used to claculate power set of certain size.
+ * */
+object PowerSetCalculator {
+    /**
+     * computes the power set of a given size.
+     * */
+    fun computeCombinations(ids: List<Int>, size: Int): List<List<Int>> {
         if (size == 0) {
             return listOf(emptyList())
         }
