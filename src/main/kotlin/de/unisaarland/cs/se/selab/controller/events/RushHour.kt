@@ -15,7 +15,6 @@ import de.unisaarland.cs.se.selab.util.Logger
 class RushHour(id: Int, start: Int, duration: Int, val roadTypes: List<PrimaryType>, factor: Int) :
     RoadEvent(id, EventType.RUSH_HOUR, start, duration) {
     private var appliedOnRoad = false
-
     init {
         this.factor = factor
     }
@@ -75,15 +74,11 @@ class RushHour(id: Int, start: Int, duration: Int, val roadTypes: List<PrimaryTy
                 ) {
                     currentEdge.properties.factor = BASE_FACTOR
                     currentEdge.activeEventId = null
-                }
-                if (model.roadToPostponedEvents[currentEdge.edgeId] != null &&
-                    (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList<Int>).contains(id)
-                ) {
                     (model.roadToPostponedEvents[currentEdge.edgeId] as MutableList<Int>).remove(id)
+                    model.eventOccurred = true
                 }
             }
         }
-        model.eventOccurred = true
         status = EventStatus.FINISHED
         Logger.logEventStatus(id, false)
     }
