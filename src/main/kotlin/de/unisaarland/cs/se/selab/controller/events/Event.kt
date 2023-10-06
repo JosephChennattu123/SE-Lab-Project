@@ -33,7 +33,7 @@ abstract class Event(val id: Int, val eventType: EventType, val start: Int, open
             roadToPostponedEvents[currentEdge.edgeId] = newEventMutableList
         }
         // case in which new event is added to a pre-existing list of Events
-        else {
+        else if (!roadToPostponedEvents.getValue(currentEdge.edgeId).contains(id)) {
             val roadEventMutableList: MutableList<Int> = roadToPostponedEvents[currentEdge.edgeId]
                 as MutableList<Int>
             roadEventMutableList.add(id)

@@ -27,7 +27,7 @@ class UpdatePhase {
         // TODO check all code, everything in this method might be wrong, it was used to fix detekt problems
         processVehicles(model.getSortedVehicleList(), model)
         processEmergencies(model.getAssignedEmergenciesObjects(), model) // TODO needs checking might be wrong
-        processActiveEvents(model.getCurrentEventsObjects(), model.currentEvents)
+        processActiveEvents(model.getCurrentActiveEvents(), model)
         processPostponedEvents(model)
     }
 
@@ -132,24 +132,18 @@ class UpdatePhase {
 
     private fun processActiveEvents(
         activeEvents: List<Event>,
-        activeEventIds: MutableList<Int>
+        model: Model
     ) {
         for (event in activeEvents) {
             event.decrementTimer()
             if (event.duration == 0) {
-                activeEventIds.remove(event.id)
                 event.status = EventStatus.FINISHED
+                event.removeEffect(model)
             }
         }
     }
 
     private fun processPostponedEvents(model: Model) {
-        val eventsToTrigger: List<Int>? = model.tickToEventId[model.currentTick]
-        if (eventsToTrigger != null) {
-            for (eventToBeCheckedAndAdded in model.getEventsByIds(eventsToTrigger.sorted())) {
-                eventToBeCheckedAndAdded.applyEffect(model)
-            }
-        }
         // road event
         for (listRoadEventsPostponed in model.roadToPostponedEvents.toSortedMap().values) {
             for (roadEventPostponed in listRoadEventsPostponed.distinct().sorted()) { // sorts to pick lowest id first
@@ -161,6 +155,12 @@ class UpdatePhase {
             for (vehicleEventsPostponed in listVehicleEventsPostponed.sortedBy { it.id }) { // sorts to pick lowest
                 // id first
                 vehicleEventsPostponed.applyEffect(model)
+            }
+        }
+        val eventsToTrigger: List<Int>? = model.tickToEventId[model.currentTick]
+        if (eventsToTrigger != null) {
+            for (eventToBeCheckedAndAdded in model.getEventsByIds(eventsToTrigger.sorted())) {
+                eventToBeCheckedAndAdded.applyEffect(model)
             }
         }
     }

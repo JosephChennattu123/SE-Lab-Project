@@ -20,43 +20,35 @@ class VehicleEvent(val vehicleId: Int, id: Int, start: Int, override var duratio
         }
 
         val vehicleObject: Vehicle = model.getVehicleById(vehicleId) as Vehicle
-        if (model.vehicleToPostponedEvents[vehicleId] == null ||
-            !(model.vehicleToPostponedEvents[vehicleId] as MutableList).contains(model.getEventById(id))
-        ) {
-            Logger.logEventStatus(id, true)
-        }
-        // applies effect if status of vehicle AT_BASE or else adds to list of postponed events
-        if (vehicleObject.status == VehicleStatus.AT_BASE) {
-            vehicleObject.status = VehicleStatus.UNAVAILABLE
+        if (canBeTriggered(model)) {
             status = EventStatus.ACTIVE
-            model.currentEvents.add(id)
-            if (model.vehicleToPostponedEvents[vehicleId] != null &&
-                (model.vehicleToPostponedEvents[vehicleId] as MutableList).contains(model.getEventById(id))
-            ) {
+            vehicleObject.status = VehicleStatus.UNAVAILABLE
+            vehicleObject.isUnavailable = true
+            Logger.logEventStatus(id, true)
+            // removed from postponed if already scheduled.
+            if (status == EventStatus.SCHEDULED) {
                 (model.vehicleToPostponedEvents[vehicleId] as MutableList<Event>).remove(
                     model.getEventById(id) as Event
                 )
             }
-            vehicleObject.isUnavailable = true
-        } else {
-            // case in which first postponed event for a vehicle
+        } else if (status == EventStatus.NOT_SCHEDULED) {
+            status = EventStatus.SCHEDULED
             if (model.vehicleToPostponedEvents[vehicleId] == null) {
                 val newEventMutableList: MutableList<Event> = mutableListOf()
                 val event = model.getEventById(id) as Event
                 newEventMutableList.add(event)
                 model.vehicleToPostponedEvents[vehicleId] = newEventMutableList
-                status = EventStatus.SCHEDULED
+                return
             }
-            // case in which new event is added to a pre-existing list of Events
-            else {
-                val vehicleEventMutableList: MutableList<Event> = model.vehicleToPostponedEvents[vehicleId]
-                    as MutableList<Event>
-                vehicleEventMutableList.add(model.getEventById(id) as Event)
-                // apparently not necessary model.vehicleToPostponedEvents[vehicleId] = VehicleEventMutableList
-            }
+            model.vehicleToPostponedEvents[vehicleId]?.add(model.getEventById(id) as Event)
         }
     }
 
+    private fun canBeTriggered(model: Model): Boolean {
+        val otherEventPresent = model.getVehicleById(vehicleId)?.activeEventID != null
+        val isAtBase = model.getVehicleById(vehicleId)?.status == VehicleStatus.AT_BASE
+        return !otherEventPresent && isAtBase
+    }
     override fun decrementTimer() {
         duration--
     }
@@ -67,7 +59,6 @@ class VehicleEvent(val vehicleId: Int, id: Int, start: Int, override var duratio
             vehicleObject.status = VehicleStatus.AT_BASE
             vehicleObject.isUnavailable = false
             status = EventStatus.FINISHED
-            model.currentEvents.remove(id)
             model.eventOccurred = true
             Logger.logEventStatus(id, false)
         }

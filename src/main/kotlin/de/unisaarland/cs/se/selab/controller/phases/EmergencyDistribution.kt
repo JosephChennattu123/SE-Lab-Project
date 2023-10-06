@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.controller.phases
 
 import de.unisaarland.cs.se.selab.controller.events.Event
+import de.unisaarland.cs.se.selab.controller.events.EventStatus
 import de.unisaarland.cs.se.selab.controller.events.EventType
 import de.unisaarland.cs.se.selab.model.BaseType
 import de.unisaarland.cs.se.selab.model.EmergencyType
@@ -27,7 +28,7 @@ class EmergencyDistribution {
      */
     fun execute(model: Model) {
         // Get emergencies for the current tick.
-        val currentEmergencies = model.getEmergenciesOfCurrentTick()
+        val currentEmergencies = model.getEmergenciesOfCurrentTick().sortedBy { it.id }
 
         // Get the graph from the model.
         val graph = model.graph
@@ -68,12 +69,12 @@ class EmergencyDistribution {
     }
 
     /**used to solve the issue for road Closure on a road to assign emergency */
-    fun handleActiveRoadClosureEvent(activeEvent: Event, edge: Edge, model: Model) {
+    private fun handleActiveRoadClosureEvent(activeEvent: Event, edge: Edge, model: Model) {
         if (activeEvent.eventType == EventType.ROAD_CLOSURE) {
             model.roadToPostponedEvents[edge.edgeId]?.let { postponedEventsList ->
                 if (postponedEventsList.isNotEmpty()) {
                     postponedEventsList.add(edge.activeEventId as Int)
-                    model.currentEvents.remove(edge.edgeId)
+                    activeEvent.status = EventStatus.SCHEDULED
                     edge.activeEventId = null
                 }
             }

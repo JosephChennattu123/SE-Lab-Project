@@ -59,10 +59,14 @@ class PositionTracker {
 
     /** returns the id of the next vertex that will be reached */
     fun getNextVertex(): Int? {
-        return path?.vertexPath?.get(currentVertexIndex as Int + 1)
+        return if (currentVertexIndex == path?.vertexPath?.size?.minus(1)) {
+            getDestination()
+        } else {
+            path?.vertexPath?.get(currentVertexIndex as Int + 1)
+        }
     }
 
-    /** @returns true if destination vertex is reached */
+    /** @return true if destination vertex is reached */
     fun destinationReached(): Boolean {
         return path?.vertexPath?.last() == path?.vertexPath?.get(currentVertexIndex as Int)
     }

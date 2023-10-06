@@ -38,7 +38,7 @@ class RoadClosure(id: Int, start: Int, duration: Int, sourceId: Int, targetId: I
                 currentEdge2.closed = true
             }
 
-            model.currentEvents.add(id)
+            // model.triggeredEventIds.add(id)
             if (model.roadToPostponedEvents[currentEdge1.edgeId] != null &&
                 (model.roadToPostponedEvents[currentEdge1.edgeId] as MutableList).contains(id)
             ) {
@@ -65,7 +65,7 @@ class RoadClosure(id: Int, start: Int, duration: Int, sourceId: Int, targetId: I
         if (currentEdge2 != null) {
             currentEdge2.closed = false
         }
-        model.currentEvents.remove(id)
+        // model.triggeredEventIds.remove(id)
         model.eventOccurred = true
         Logger.logEventStatus(id, false)
     }

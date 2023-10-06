@@ -14,7 +14,7 @@ digraph Saarland {
     13;
     14;
     15;
-    10 -> 11 [village=Saarland; name=Countryroad; heightLimit=2; weight = 39; primaryType=countyRoad; secondaryType=tunnel;];
+    10 -> 11 [village=Saarland; name=Countryroad; heightLimit=10; weight = 39; primaryType=countyRoad; secondaryType=none;];
     5 -> 6 [village=Saarland; name=Motorway; heightLimit=10; weight = 16; primaryType=countyRoad; secondaryType=none;];
     15 -> 1 [village=Saarland; name=Fastlane; heightLimit=10; weight = 29; primaryType=countyRoad; secondaryType=none;];
 

@@ -1,6 +1,7 @@
 package de.unisaarland.cs.se.selab.model
 
 import de.unisaarland.cs.se.selab.controller.events.Event
+import de.unisaarland.cs.se.selab.controller.events.EventStatus
 import de.unisaarland.cs.se.selab.model.map.Graph
 import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
 
@@ -24,7 +25,6 @@ class Model(
     var currentTick: Int = 0
     val assignedEmergencies: MutableList<Int> = mutableListOf()
     val finishedEmergencies: MutableList<Int> = mutableListOf()
-    val currentEvents: MutableList<Int> = mutableListOf()
     val roadToPostponedEvents: MutableMap<Int, MutableList<Int>> = mutableMapOf()
     val vehicleToPostponedEvents: MutableMap<Int, MutableList<Event>> = mutableMapOf()
     val requests: MutableList<Request> = mutableListOf()
@@ -90,13 +90,11 @@ class Model(
         return vIds.mapNotNull { vehicles[it] }
     }
 
-    /** @return list of all current events */
-    fun getCurrentEventsObjects(): List<Event> {
-        val idsOfCurrentEmergencies = tickToEmergencyId[currentTick].orEmpty()
-        if (idsOfCurrentEmergencies.isNotEmpty()) {
-            return events.values.filter { it.id in idsOfCurrentEmergencies }
-        }
-        return emptyList()
+    /**
+     * returns a list of all current active events
+     * */
+    fun getCurrentActiveEvents(): List<Event> {
+        return events.values.filter { it.status == EventStatus.ACTIVE }
     }
 
     /** @returns all events */
