@@ -28,12 +28,11 @@ class RequestProcessing {
 
     fun execute(model: Model) {
         // Iterate over each request.
-        val requestsToBeHandled = model.requests
-        var currentRequestIndex = 0
-        while (requestsToBeHandled.isNotEmpty()) {
-            val req = requestsToBeHandled[currentRequestIndex]
+
+        for (req in model.requests) {
             // For each request, retrieve the emergencyId, baseId, and their corresponding
             // concrete objects from the model.
+
             val reqEmergency = model.getAssignedEmergencyById(req.emergencyId)
             val base = model.getBaseById(req.mainBaseId)
 
@@ -54,7 +53,6 @@ class RequestProcessing {
             if (reqEmergency != null && !reqEmergency.isFulfilled()) {
                 checkEmergencyRequirements(model, reqEmergency, req, base)
             }
-            currentRequestIndex++
         }
     }
 
