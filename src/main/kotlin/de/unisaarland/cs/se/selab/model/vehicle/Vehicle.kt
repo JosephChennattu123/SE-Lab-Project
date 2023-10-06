@@ -37,7 +37,7 @@ abstract class Vehicle(
             } else {
                 error("destinationVertexID is null")
             }
-            status = if (destinationVertexID == baseID) {
+            status = if (status == VehicleStatus.RETURNING) {
                 if (setBusy()) {
                     VehicleStatus.BUSY
                 } else {
