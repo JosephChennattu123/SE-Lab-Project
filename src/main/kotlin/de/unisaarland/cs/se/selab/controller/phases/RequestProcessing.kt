@@ -59,9 +59,9 @@ class RequestProcessing {
     private fun checkEmergencyRequirements(model: Model, reqEmergency: Emergency, req: Request, base: Base) {
         // get the set of already processed bases from the request
         // and  add the baseId of the base that we tried to send assets from
-        val mutableSet = mutableSetOf<Int>()
-        mutableSet.addAll(req.processedBases)
-        mutableSet.add(base.baseId)
+        val excludedBases = mutableSetOf<Int>()
+        excludedBases.addAll(req.processedBases)
+        excludedBases.add(base.vertexID)
         // req.processesBases = mutableSet
 
         // find the next nearest base using the appropriate dijkstra method with the same baseType
@@ -71,20 +71,20 @@ class RequestProcessing {
                 model.graph,
                 base.vertexID,
                 BaseType.POLICE_STATION,
-                mutableSet
+                excludedBases
             )
         }
         if (reqEmergency.type == EmergencyType.FIRE) {
             nextNearestBase =
-                Dijkstra.getNextNearestBase(model.graph, base.vertexID, BaseType.FIRE_STATION, mutableSet)
+                Dijkstra.getNextNearestBase(model.graph, base.vertexID, BaseType.FIRE_STATION, excludedBases)
         }
         if (reqEmergency.type == EmergencyType.MEDICAL || reqEmergency.type == EmergencyType.ACCIDENT) {
             nextNearestBase =
-                Dijkstra.getNextNearestBase(model.graph, base.vertexID, BaseType.HOSPITAL, mutableSet)
+                Dijkstra.getNextNearestBase(model.graph, base.vertexID, BaseType.HOSPITAL, excludedBases)
         }
         if (nextNearestBase != null) {
             // create a new request
-            val newRequest = Request.createNewRequest(base.baseId, reqEmergency.id, nextNearestBase, mutableSet)
+            val newRequest = Request.createNewRequest(base.baseId, reqEmergency.id, nextNearestBase, excludedBases)
 
             // add the request at the end to the list of the request we are currently iterating over
             model.requests.add(newRequest)
