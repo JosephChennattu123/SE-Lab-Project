@@ -411,10 +411,12 @@ object Dijkstra {
 //                    ": newDistance $newDistance, oldDistance $oldDistance"
 //            )
 
-            if (newDistance < oldDistance ||
-                !parentMap.contains(vertex.vertexId) ||
-                (newDistance == oldDistance && vertex.vertexId < parentMap.getValue(vertex.vertexId))
-            ) {
+            val isNewShorter = newDistance < oldDistance
+            val isNotInParentMap = !parentMap.contains(vertex.vertexId)
+            val isSameDistanceButSmallerId =
+                newDistance == oldDistance && vertex.vertexId < parentMap.getValue(vertex.vertexId)
+
+            if (isNewShorter || isNotInParentMap || isSameDistanceButSmallerId) {
                 distancesFromSource[newVertexId] = newDistance
                 parentMap[newVertexId] = vertex.vertexId
             }
