@@ -49,13 +49,13 @@ class SuccessfulRequest : SystemTest() {
         assertNextLine(logAssetAllocated(19, 0, 1)) // police car
 
         // send request
-        assertNextLine(logRequest(1, 0, 0))
-        assertNextLine(logRequest(2, 2, 0))
+        assertNextLine(logRequest(1, 0, 0)) // fire
+        assertNextLine(logRequest(2, 2, 0)) // hospital
 
         // request processing.
         assertNextLine(logAssetAllocated(2, 0, 2)) // firetruck
         assertNextLine(logAssetAllocated(1, 0, 1)) // ambulance
-        assertNextLine(logAssetAllocated(3, 0, 1)) // ambulance
+        assertNextLine(logAssetAllocated(16, 0, 1)) // ambulance
 
         assertNextLine(logTick(2))
         assertNextLine(logAssetArrived(0, 2)) // motorcycle
