@@ -34,7 +34,7 @@ class RequestProcessing {
             // concrete objects from the model.
 
             val reqEmergency = model.getAssignedEmergencyById(req.emergencyId)
-            val base = model.getBaseById(req.mainBaseId)
+            val base = model.getBaseById(req.targetBaseId)
 
             // get the list of vehicleIds belonging to the base and then get the list of concrete
             // vehicles from the model
