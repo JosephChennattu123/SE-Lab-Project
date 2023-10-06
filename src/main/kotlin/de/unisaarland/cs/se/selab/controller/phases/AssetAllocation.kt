@@ -52,7 +52,6 @@ class AssetAllocation {
     private fun getVehiclesCanReroute(
         emergency: Emergency,
         mainBase: Base,
-        vehicles: List<Vehicle>,
         model: Model
     ): MutableList<Vehicle> {
         val vehiclesCanReroute = mutableListOf<Vehicle>()
@@ -82,8 +81,8 @@ class AssetAllocation {
         if (emergency.status != EmergencyStatus.ONGOING) return
         val mainBase = model.getBaseById(
             emergency.mainBaseID
-                ?: throw IllegalArgumentException("Emergency should have mainBase!")
-        ) ?: throw IllegalArgumentException("Wrong base ID!")
+                ?: error("Emergency should have mainBase!")
+        ) ?: error("Wrong base ID!")
         val vehicles =
             sortVehicles(model.getVehiclesByIds(mainBase.vehicles))
                 .filter { it.status == VehicleStatus.AT_BASE }
@@ -91,18 +90,17 @@ class AssetAllocation {
 
         AssetManager.allocateAssetsToEmergency(model, emergency, vehicles, false)
         if (!emergency.isFulfilled()) {
-            reallocateAssets(model, emergency, mainBase, vehicles)
+            reallocateAssets(model, emergency, mainBase)
         }
     }
 
     private fun reallocateAssets(
         model: Model,
         emergency: Emergency,
-        mainBase: Base,
-        vehicles: List<Vehicle>
+        mainBase: Base
     ) {
         val reallocatableVehicles =
-            getVehiclesCanReroute(emergency, mainBase, vehicles, model)
+            getVehiclesCanReroute(emergency, mainBase, model)
         AssetManager.allocateAssetsToEmergency(model, emergency, reallocatableVehicles, true)
         // if allocate & reallocate not failed, then change this canRequest
         if (emergency.assignedVehicleIDs.isNotEmpty()) emergency.canRequest = true
@@ -112,7 +110,7 @@ class AssetAllocation {
     }
 
     private fun creatRequest(model: Model, emergency: Emergency, mainBase: Base) {
-        val baseVertexIdsNeedRequest: MutableList<Int> = mutableListOf()
+        val baseNeedRequest: MutableList<Int> = mutableListOf()
         val baseTypesNeeded = emergency.currentRequirements
             .map { VehicleType.getBaseType(it.vehicleType) }.toSet()
         for (baseType in baseTypesNeeded) {
@@ -121,14 +119,17 @@ class AssetAllocation {
                 mainBase.vertexID,
                 baseType,
                 setOf(mainBase.vertexID)
-            )?.let { baseVertexIdsNeedRequest.add(it) }
+            )?.let {
+                baseNeedRequest.add(
+                    model.graph.vertices[it]?.baseId
+                        ?: error("This vertex must have base!")
+                )
+            }
         }
 
-        if (baseVertexIdsNeedRequest.isNotEmpty()) {
-            baseVertexIdsNeedRequest.sort()
-            val baseIds =
-                model.bases.values.filter { base -> base.vertexID in baseVertexIdsNeedRequest }.map { it.baseId }
-            baseIds.forEach {
+        if (baseNeedRequest.isNotEmpty()) {
+            baseNeedRequest.sort()
+            baseNeedRequest.forEach {
                 val requestNew = Request.createNewRequest(
                     mainBase.baseId,
                     emergency.id,
