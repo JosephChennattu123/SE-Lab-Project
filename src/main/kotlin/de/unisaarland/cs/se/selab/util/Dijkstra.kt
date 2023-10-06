@@ -50,6 +50,7 @@ object Dijkstra {
      * Finds the nearest base relative to the Main base which has not been visited yed.
      * @param sourceVertex the vertex id of the vertex.
      * @param baseType the type of the required base.
+     * @param requestedBases the set of base vertices that have already been visited.
      * @return the vertex id of the nearest base.
      * */
     fun getNextNearestBase(
@@ -58,7 +59,6 @@ object Dijkstra {
         baseType: BaseType,
         requestedBases: Set<Int>
     ): Int? {
-        assert(requestedBases.contains(sourceVertex)) { "requestedBases must contain the sourceVertex" }
         val nearestBases = findNearestBases(graph, sourceVertex, baseType, requestedBases)
         if (nearestBases != null) {
             return nearestBases.minBy { it.value }.key

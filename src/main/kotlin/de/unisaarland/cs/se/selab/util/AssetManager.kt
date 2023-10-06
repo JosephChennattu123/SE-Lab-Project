@@ -10,6 +10,7 @@ import de.unisaarland.cs.se.selab.model.vehicle.Path
 import de.unisaarland.cs.se.selab.model.vehicle.Vehicle
 import de.unisaarland.cs.se.selab.model.vehicle.VehicleStatus
 import de.unisaarland.cs.se.selab.model.vehicle.VehicleType
+import de.unisaarland.cs.se.selab.util.PowerSetCalculator.computeCombinations
 
 /**
  * Returns requirements for emergencies and handles the allocation of assets to emergencies */
@@ -84,7 +85,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.EMERGENCY_DOCTOR_CAR,
                         1,
-                        1
+                        null
                     )
                 )
             }
@@ -151,7 +152,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.EMERGENCY_DOCTOR_CAR,
                         1,
-                        1
+                        null
                     )
                 )
             }
@@ -182,7 +183,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.K9_POLICE_CAR,
                         1,
-                        1
+                        null
                     ),
                     EmergencyRequirement(
                         VehicleType.AMBULANCE,
@@ -207,7 +208,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.K9_POLICE_CAR,
                         2,
-                        2
+                        null
                     ),
                     EmergencyRequirement(
                         VehicleType.AMBULANCE,
@@ -239,7 +240,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.AMBULANCE,
                         1,
-                        0
+                        1
                     )
                 )
             }
@@ -254,7 +255,7 @@ object AssetManager {
                     EmergencyRequirement(
                         VehicleType.EMERGENCY_DOCTOR_CAR,
                         1,
-                        1
+                        null
                     )
                 )
             }
@@ -321,7 +322,7 @@ object AssetManager {
                 }
 
                 // if vehicle is currently on the road, calculate drive time from edge to edge.
-                VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY -> {
+                matchReturningOrToEmergency(reallocate, vehicle.status) -> {
                     val currentVertex =
                         vehicle.getCurrentVertexID() ?: error("current vertex is null")
                     val nextVertex = vehicle.getNextVertexID() ?: error("next vertex is null")
@@ -343,7 +344,8 @@ object AssetManager {
                     }
                 }
 
-                else -> {}
+                // if we do not match any status we mark the vehicle to be removed.
+                else -> { vehiclesThatCannotReachInTime.add(vehicle) }
             }
         }
         // remove vehicles that cannot reach the emergency in time.
@@ -361,6 +363,19 @@ object AssetManager {
         assignVehiclesAndLog(model, emergency, vehicles, vehicleIdToPath, reallocate)
     }
 
+    private fun matchReturningOrToEmergency(
+        reallocation: Boolean,
+        status: VehicleStatus
+    ): VehicleStatus {
+        return if (reallocation && status
+            in listOf(VehicleStatus.RETURNING, VehicleStatus.TO_EMERGENCY)
+        ) {
+            status
+        } else {
+            VehicleStatus.NONE
+        }
+    }
+
     private fun assignVehiclesAndLog(
         model: Model,
         emergency: Emergency,
@@ -375,7 +390,10 @@ object AssetManager {
                 // remove vehicles that are already assigned to an emergency.
                 val emergencyOfReallocatedVehicle = model
                     .getAssignedEmergencyById(vehicle.emergencyID as Int) as Emergency
-                removeVehicleFromEmergency(emergencyOfReallocatedVehicle, vehicle, model)
+                if (vehicle.status == VehicleStatus.TO_EMERGENCY) {
+                    removeVehicleFromEmergency(emergencyOfReallocatedVehicle, vehicle, model)
+                }
+                vehicle.status = VehicleStatus.TO_EMERGENCY
                 Logger.logAssetReallocated(vehicle.vehicleID, emergency.id)
             } else {
                 Logger.logAssetAllocated(
@@ -564,7 +582,10 @@ object AssetManager {
                 it.vehicleType == vehicle.vehicleType
         }
         // iterate over unfulfilled requirements of the given vehicle's type.
-        while (!requirementFulfilled && requirementsIndex < requirements.size) {
+        if (fittingRequirements.isEmpty()) {
+            return false
+        }
+        while (!requirementFulfilled && requirementsIndex < fittingRequirements.size) {
             val requiredType = fittingRequirements[requirementsIndex].vehicleType
             val requiredAmount = fittingRequirements[requirementsIndex].amountOfAsset
             if (requiredType == VehicleType.FIRE_TRUCK_LADDER) {
@@ -574,7 +595,7 @@ object AssetManager {
             } else if (requiredAmount == null) {
                 requirementFulfilled = true
                 fittingRequirements[requirementsIndex].numberOfVehicles--
-            } else {
+            } else if (vehicle.currentNumberOfAssets as Int > 0) {
                 requirementFulfilled = true
                 fittingRequirements[requirementsIndex].amountOfAsset =
                     requiredAmount - vehicle.currentNumberOfAssets as Int
@@ -697,8 +718,16 @@ object AssetManager {
         // return the smallest
         return sortedCombinations.first().toMutableList()
     }
+}
 
-    private fun computeCombinations(ids: List<Int>, size: Int): List<List<Int>> {
+/**
+ * object used to claculate power set of certain size.
+ * */
+object PowerSetCalculator {
+    /**
+     * computes the power set of a given size.
+     * */
+    fun computeCombinations(ids: List<Int>, size: Int): List<List<Int>> {
         if (size == 0) {
             return listOf(emptyList())
         }
