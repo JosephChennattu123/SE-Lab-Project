@@ -599,6 +599,7 @@ object AssetManager {
                 requirementFulfilled = true
                 fittingRequirements[requirementsIndex].amountOfAsset =
                     requiredAmount - vehicle.currentNumberOfAssets as Int
+                fittingRequirements[requirementsIndex].numberOfVehicles--
             }
             requirementsIndex++
         }

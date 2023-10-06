@@ -112,7 +112,7 @@ class AssetAllocation {
     }
 
     private fun creatRequest(model: Model, emergency: Emergency, mainBase: Base) {
-        val baseNeedRequest: MutableList<Int> = mutableListOf()
+        val baseVertexIdsNeedRequest: MutableList<Int> = mutableListOf()
         val baseTypesNeeded = emergency.currentRequirements
             .map { VehicleType.getBaseType(it.vehicleType) }.toSet()
         for (baseType in baseTypesNeeded) {
@@ -121,12 +121,14 @@ class AssetAllocation {
                 mainBase.vertexID,
                 baseType,
                 setOf(mainBase.vertexID)
-            )?.let { baseNeedRequest.add(it) }
+            )?.let { baseVertexIdsNeedRequest.add(it) }
         }
 
-        if (baseNeedRequest.isNotEmpty()) {
-            baseNeedRequest.sort()
-            baseNeedRequest.forEach {
+        if (baseVertexIdsNeedRequest.isNotEmpty()) {
+            baseVertexIdsNeedRequest.sort()
+            val baseIds =
+                model.bases.values.filter { base -> base.vertexID in baseVertexIdsNeedRequest }.map { it.baseId }
+            baseIds.forEach {
                 val requestNew = Request.createNewRequest(
                     mainBase.baseId,
                     emergency.id,
