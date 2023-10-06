@@ -24,14 +24,9 @@ object Dijkstra {
     fun getNearestBaseVertexIdToEdge(graph: Graph, location: Location, baseType: BaseType): Int? {
         val edge = graph.getEdge(location)
         val nearestBasesToTarget = findNearestBases(graph, edge.targetVertex.vertexId, baseType)
-//        println("----------------------------")
         val nearestBasesToSource = findNearestBases(graph, edge.sourceVertex.vertexId, baseType)
         val nearestBaseToTarget = nearestBasesToTarget?.minBy { it.value }
-//        println(edge.targetVertex.vertexId)
-//        println(nearestBaseToTarget)
         val nearestBaseToSource = nearestBasesToSource?.minBy { it.value }
-//        println(edge.sourceVertex.vertexId)
-//        println(nearestBasesToSource)
         if (nearestBaseToSource != null) {
             if (nearestBaseToTarget != null) {
                 return if (nearestBasesToSource.getValue(nearestBaseToSource.key)
@@ -94,8 +89,6 @@ object Dijkstra {
                 distanceFromSourceVertex,
                 height
             )
-//        println("pathToTargetVertex" + pathToTargetVertex.vertexPath + ", weight" +
-//        pathToTargetVertex.edgeWeights + pathToTargetVertex.totalTicksToArrive)
         val pathToSourceVertex = getShortestPathFromEdgeToVertex(
             graph,
             lastVisitedVertex,
@@ -104,10 +97,6 @@ object Dijkstra {
             distanceFromSourceVertex,
             height
         )
-//        println(
-//                "pathToSourceVertex" + pathToSourceVertex.vertexPath
-//                    + ", weight" + pathToSourceVertex.edgeWeights + pathToSourceVertex.totalTicksToArrive
-//            )
 
         return if (pathToTargetVertex.totalTicksToArrive < pathToSourceVertex.totalTicksToArrive) {
             pathToTargetVertex
@@ -132,7 +121,7 @@ object Dijkstra {
     ): Path {
         val parentMap = HashMap<Int, Int>()
         val distanceFromSourceVertex =
-            dijkstraAlgorithm(graph, sourceVertex, false, height, parentMap)
+            dijkstraAlgorithm(graph, targetVertex, true, height, parentMap)
         val path = reconstructPath(sourceVertex, targetVertex, parentMap)
         val weights: MutableList<Int> = mutableListOf()
         val isOneWay: MutableList<Boolean> = mutableListOf()
@@ -149,7 +138,7 @@ object Dijkstra {
             path,
             weights,
             isOneWay,
-            getRoundedTicks(distanceFromSourceVertex.getValue(targetVertex))
+            getRoundedTicks(distanceFromSourceVertex.getValue(sourceVertex))
         )
     }
 
@@ -302,7 +291,6 @@ object Dijkstra {
         val nearestBases = HashMap<Int, Int>()
         val distanceFromSourceVertex =
             dijkstraAlgorithm(graph, vertexId, true, parentMap = HashMap())
-//        println(distanceFromSourceVertex)
         val filterVertices = distanceFromSourceVertex.keys.filter {
             !excludedBases.contains(it) && graph.vertices[it]?.baseType == baseType
         }
@@ -403,23 +391,27 @@ object Dijkstra {
                 } else {
                     edge.targetVertex.vertexId
                 }
-            val oldDistance = distancesFromSource.getValue(newVertexId)
 
-//            println(
-//                "reverse: $reverse. " +
-//                    "vertexId ${vertex.vertexId} edgeId ${edge.edgeId}  newVertexId $newVertexId" +
-//                    ": newDistance $newDistance, oldDistance $oldDistance"
-//            )
+            updateDistanceAndParent(distancesFromSource, newVertexId, newDistance, vertex, parentMap)
+        }
+    }
 
-            val isNewShorter = newDistance < oldDistance
-            val isNotInParentMap = !parentMap.contains(vertex.vertexId)
-            val isSameDistanceButSmallerId =
-                newDistance == oldDistance && vertex.vertexId < parentMap.getValue(vertex.vertexId)
-
-            if (isNewShorter || isNotInParentMap || isSameDistanceButSmallerId) {
-                distancesFromSource[newVertexId] = newDistance
-                parentMap[newVertexId] = vertex.vertexId
+    private fun updateDistanceAndParent(
+        distancesFromSource: HashMap<Int, Int>,
+        newVertexId: Int,
+        newDistance: Int,
+        vertex: Vertex,
+        parentMap: HashMap<Int, Int>
+    ) {
+        val oldDistance = distancesFromSource.getValue(newVertexId)
+        if (newDistance <= oldDistance) {
+            distancesFromSource[newVertexId] = newDistance
+            if (newDistance == oldDistance) {
+                if (vertex.vertexId < parentMap.getValue(newVertexId)) {
+                    parentMap[newVertexId] = vertex.vertexId
+                }
             }
+            parentMap[newVertexId] = vertex.vertexId
         }
     }
 
@@ -428,17 +420,14 @@ object Dijkstra {
         target: Int,
         parentMap: HashMap<Int, Int>
     ): List<Int> {
-//        assert (parentMap.keys.contains(target))
-//        println("source: $source, target: $target, parent: $parentMap")
         val path: MutableList<Int> = mutableListOf()
-        var currentVertex = target
-        while (currentVertex != source) {
+        var currentVertex = source
+        while (currentVertex != target) {
             path.add(currentVertex)
             currentVertex = parentMap.getValue(currentVertex)
         }
-        path.add(source)
-//        println("return: ${path.reversed()}")
-        return path.reversed()
+        path.add(target)
+        return path
     }
 
     private fun getRoundedTicks(distance: Int): Int {
