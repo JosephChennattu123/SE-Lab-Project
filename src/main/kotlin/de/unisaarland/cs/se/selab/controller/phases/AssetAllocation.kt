@@ -133,7 +133,8 @@ class AssetAllocation {
                 model.addRequest(requestNew)
                 Logger.logRequest(
                     requestNew.requestId,
-                    it,
+                    model.graph.vertices[it]?.baseId
+                        ?: throw IllegalArgumentException("This vertex must have base!"),
                     emergency.id
                 )
             }
