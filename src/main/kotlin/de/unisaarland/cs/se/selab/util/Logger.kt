@@ -151,7 +151,7 @@ object Logger {
      */
     fun logAssetRerouted(assetsAmount: Int) {
         printLog("Assets Rerouted: $assetsAmount")
-        numReroutedAssets += 1
+        numReroutedAssets += assetsAmount
     }
 
     /**

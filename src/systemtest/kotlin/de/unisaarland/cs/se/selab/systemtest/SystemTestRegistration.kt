@@ -124,6 +124,9 @@ object SystemTestRegistration {
      */
     fun registerSystemTestsMutantSimulation(manager: SystemTestManager) {
         manager.registerTest(OneEmergency())
+        manager.registerTest(SimpleTest())
+        manager.registerTest(SimpleTestButEventEnds())
         manager.registerTest(SimpleSimulation())
+        manager.registerTest(VehicleUnavailable())
     }
 }

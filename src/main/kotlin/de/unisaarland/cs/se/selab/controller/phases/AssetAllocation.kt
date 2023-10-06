@@ -38,10 +38,10 @@ class AssetAllocation {
     }
 
     /**
-     * Sort Vehicles by id, and check if the status is AT_BASE
+     * Sort Vehicles by id
      * */
-    private fun sortAtBaseVehicles(vehicles: List<Vehicle>): MutableList<Vehicle> {
-        return vehicles.filter { it.status == VehicleStatus.AT_BASE }.sortedBy { it.vehicleID }.toMutableList()
+    private fun sortVehicles(vehicles: List<Vehicle>): MutableList<Vehicle> {
+        return vehicles.sortedBy { it.vehicleID }.toMutableList()
     }
 
     /**
@@ -62,10 +62,19 @@ class AssetAllocation {
         for (lowEmergency in lowerSeverityEmergencies) {
             vehiclesCanReroute.addAll(
                 model.getVehiclesByIds(lowEmergency.assignedVehicleIDs)
-                    .filter { it.baseID == mainBase.baseId && it.status == VehicleStatus.TO_EMERGENCY }
+                    .filter {
+                        it.baseID == mainBase.baseId &&
+                            it.canBeReallocated()
+                    }
             )
         }
-        vehiclesCanReroute.addAll(vehicles.filter { it.status == VehicleStatus.RETURNING })
+        vehiclesCanReroute.addAll(
+            model.getVehiclesByIds(mainBase.vehicles).sortedBy { it.vehicleID }.filter {
+                it.status == VehicleStatus.RETURNING &&
+                    it.canBeReallocated()
+            }
+        )
+        // vehiclesCanReroute.addAll(vehicles.filter { it.status == VehicleStatus.RETURNING })
         return vehiclesCanReroute
     }
 
@@ -75,7 +84,7 @@ class AssetAllocation {
             emergency.mainBaseID
                 ?: throw IllegalArgumentException("Emergency should have mainBase!")
         ) ?: throw IllegalArgumentException("Wrong base ID!")
-        val vehicles = sortAtBaseVehicles(model.getVehiclesByIds(mainBase.vehicles))
+        val vehicles = sortVehicles(model.getVehiclesByIds(mainBase.vehicles))
 
         AssetManager.allocateAssetsToEmergency(model, emergency, vehicles, false)
         if (!emergency.isFulfilled()) {
@@ -89,9 +98,9 @@ class AssetAllocation {
         mainBase: Base,
         vehicles: List<Vehicle>
     ) {
-        val vehiclesCanReroute =
+        val reallocatableVehicles =
             getVehiclesCanReroute(emergency, mainBase, vehicles, model)
-        AssetManager.allocateAssetsToEmergency(model, emergency, vehiclesCanReroute, true)
+        AssetManager.allocateAssetsToEmergency(model, emergency, reallocatableVehicles, true)
         // if allocate & reallocate not failed, then change this canRequest
         if (emergency.assignedVehicleIDs.isNotEmpty()) emergency.canRequest = true
         if (!emergency.isFulfilled() && emergency.canRequest) {
@@ -101,12 +110,14 @@ class AssetAllocation {
 
     private fun creatRequest(model: Model, emergency: Emergency, mainBase: Base) {
         val baseNeedRequest: MutableList<Int> = mutableListOf()
-        for (req in emergency.currentRequirements) {
+        val baseTypesNeeded = emergency.currentRequirements
+            .map { VehicleType.getBaseType(it.vehicleType) }.toSet()
+        for (baseType in baseTypesNeeded) {
             Dijkstra.getNextNearestBase(
                 model.graph,
                 mainBase.vertexID,
-                VehicleType.getBaseType(req.vehicleType),
-                emptySet()
+                baseType,
+                setOf(mainBase.vertexID)
             )?.let { baseNeedRequest.add(it) }
         }
 

@@ -89,9 +89,9 @@ class EventValidator(jsonParser: JsonParser) : BasicValidator(jsonParser) {
 
                 EventType.VEHICLE_UNAVAILABLE -> EventFactory.createRepairVehicle(
                     it.id,
+                    it.vehicleId as Int,
                     it.tick,
-                    it.duration,
-                    it.vehicleId as Int
+                    it.duration
                 )
             }
         }.toList()

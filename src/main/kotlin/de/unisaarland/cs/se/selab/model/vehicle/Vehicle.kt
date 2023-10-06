@@ -60,7 +60,7 @@ abstract class Vehicle(
         ) {
             val curNum = currentNumberOfAssets as Int
             var remainingAmount = amount
-            if (amount > curNum) {
+            if (amount >= curNum) {
                 remainingAmount -= curNum
                 currentNumberOfAssets = 0
             } else {
@@ -84,6 +84,15 @@ abstract class Vehicle(
             return true
         }
         return false
+    }
+
+    /**
+     * checks if vehicle can be reallocated if it is returning or on the way to emergency
+     * and is not unavailable and has some or null assets.
+     * */
+    fun canBeReallocated(): Boolean {
+        val isStatusCorrect = status == VehicleStatus.TO_EMERGENCY || status == VehicleStatus.RETURNING
+        return isStatusCorrect && !isUnavailable && (currentNumberOfAssets ?: 1) > 0
     }
 
     /**
