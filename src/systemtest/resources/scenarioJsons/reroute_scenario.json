@@ -14,17 +14,17 @@
   "emergencyCalls": [
     {
       "id": 0,
-      "tick": 0,
-      "village": "Saarbruecken",
+      "tick": 1,
+      "village": "Homburg",
       "roadName": "Sonnenstrasse",
       "emergencyType": "MEDICAL",
       "severity": 1,
       "handleTime": 2,
-      "maxDuration": 13
+      "maxDuration": 23
     },
     {
       "id": 1,
-      "tick": 2,
+      "tick": 3,
       "village": "Saarbruecken",
       "roadName": "GoldeneBremm",
       "emergencyType": "MEDICAL",
