@@ -20,6 +20,16 @@
       "severity": 1,
       "handleTime": 1,
       "maxDuration": 6
+    },
+    {
+      "id": 1,
+      "tick": 7,
+      "village": "Saarbruecken",
+      "roadName": "Friedrich_Street",
+      "emergencyType": "CRIME",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 2
     }
   ]
 }

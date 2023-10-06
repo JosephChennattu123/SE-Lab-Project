@@ -73,6 +73,7 @@ object SystemTestRegistration {
         manager.registerTest(SimpleMapEmergencyFailure())
         manager.registerTest(UnderStaffedAndFail())
         manager.registerTest(VehicleUnavailable())
+        manager.registerTest(CriminalOffloadingTest())
     }
 
     /**
