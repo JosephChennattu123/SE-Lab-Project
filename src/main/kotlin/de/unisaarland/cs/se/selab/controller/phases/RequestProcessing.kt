@@ -29,9 +29,7 @@ class RequestProcessing {
     fun execute(model: Model) {
         // Iterate over each request.
 
-        model.requests.sortBy { it.requestId }
-        while (model.requests.isNotEmpty()) {
-            val req = model.requests.first()
+        for (req in model.requests) {
             // For each request, retrieve the emergencyId, baseId, and their corresponding
             // concrete objects from the model.
 
@@ -55,7 +53,6 @@ class RequestProcessing {
             if (reqEmergency != null && !reqEmergency.isFulfilled()) {
                 checkEmergencyRequirements(model, reqEmergency, req, base)
             }
-            model.requests.remove(req)
         }
     }
 
