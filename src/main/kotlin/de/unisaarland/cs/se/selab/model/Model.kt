@@ -90,9 +90,13 @@ class Model(
         return vIds.mapNotNull { vehicles[it] }
     }
 
-    /** @returns list of all current events */
+    /** @return list of all current events */
     fun getCurrentEventsObjects(): List<Event> {
-        return currentEvents.distinct().mapNotNull { events[it] }
+        val idsOfCurrentEmergencies = tickToEmergencyId[currentTick].orEmpty()
+        if (idsOfCurrentEmergencies.isNotEmpty()) {
+            return events.values.filter { it.id in idsOfCurrentEmergencies }
+        }
+        return emptyList()
     }
 
     /** @returns all events */
