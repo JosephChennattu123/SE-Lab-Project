@@ -411,10 +411,10 @@ object Dijkstra {
 //                    ": newDistance $newDistance, oldDistance $oldDistance"
 //            )
 
-            if (newDistance < oldDistance) {
-                distancesFromSource[newVertexId] = newDistance
-                parentMap[newVertexId] = vertex.vertexId
-            } else if (newDistance == oldDistance && vertex.vertexId < parentMap.getValue(newVertexId)) {
+            if (newDistance < oldDistance ||
+                !parentMap.contains(vertex.vertexId) ||
+                (newDistance == oldDistance && vertex.vertexId < parentMap.getValue(vertex.vertexId))
+            ) {
                 distancesFromSource[newVertexId] = newDistance
                 parentMap[newVertexId] = vertex.vertexId
             }
