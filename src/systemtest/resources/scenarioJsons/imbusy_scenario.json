@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "TRAFFIC_JAM",
+      "tick": 1,
+      "duration": 1,
+      "factor": 2,
+      "source": 2,
+      "target": 3
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Shav",
+      "roadName": "By_the_Stream",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 3
+    },
+    {
+      "id": 1,
+      "tick": 1,
+      "village": "Shav",
+      "roadName": "By_the_Stream",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 13
+    }
+  ]
+}
