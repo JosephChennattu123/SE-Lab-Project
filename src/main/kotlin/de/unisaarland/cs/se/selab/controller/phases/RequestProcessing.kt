@@ -28,17 +28,18 @@ class RequestProcessing {
 
     fun execute(model: Model) {
         // Iterate over each request.
+        val iterator = model.requests.listIterator()
 
-        for (req in model.requests) {
+        while (iterator.hasNext()) {
+            val req = iterator.next()
             // For each request, retrieve the emergencyId, baseId, and their corresponding
             // concrete objects from the model.
-
             val reqEmergency = model.getAssignedEmergencyById(req.emergencyId)
-            val base = model.getBaseById(req.targetBaseId)
+            val base = model.getBaseById(req.targetBaseId) ?: error("fuck!")
 
             // get the list of vehicleIds belonging to the base and then get the list of concrete
             // vehicles from the model
-            val vehiclesId = (base as Base).vehicles
+            val vehiclesId = base.vehicles
             // filter out the vehicles that are not in base by checking the status
             val vehicles = model.getVehiclesByIds(vehiclesId)
                 .filter { it.status == VehicleStatus.AT_BASE } as MutableList
@@ -51,12 +52,18 @@ class RequestProcessing {
 
             // check if the emergency requirements have been fulfilled by calling isFulfilled on the emergency
             if (reqEmergency != null && !reqEmergency.isFulfilled()) {
-                checkEmergencyRequirements(model, reqEmergency, req, base)
+                checkEmergencyRequirements(model, reqEmergency, req, base, iterator)
             }
         }
     }
 
-    private fun checkEmergencyRequirements(model: Model, reqEmergency: Emergency, req: Request, base: Base) {
+    private fun checkEmergencyRequirements(
+        model: Model,
+        reqEmergency: Emergency,
+        req: Request,
+        base: Base,
+        iterator: MutableListIterator<Request>
+    ) {
         // get the set of already processed bases from the request
         // and  add the baseId of the base that we tried to send assets from
         val excludedBases = mutableSetOf<Int>()
@@ -84,10 +91,15 @@ class RequestProcessing {
         }
         if (nextNearestBase != null) {
             // create a new request
-            val newRequest = Request.createNewRequest(base.baseId, reqEmergency.id, nextNearestBase, excludedBases)
+            val newRequest = Request.createNewRequest(
+                base.baseId,
+                reqEmergency.id,
+                model.graph.vertices[nextNearestBase]?.baseId ?: error("bigger fuck"),
+                excludedBases
+            )
 
             // add the request at the end to the list of the request we are currently iterating over
-            model.requests.add(newRequest)
+            iterator.add(newRequest)
         }
     }
 }
