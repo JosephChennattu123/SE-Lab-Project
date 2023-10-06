@@ -84,7 +84,10 @@ class AssetAllocation {
             emergency.mainBaseID
                 ?: throw IllegalArgumentException("Emergency should have mainBase!")
         ) ?: throw IllegalArgumentException("Wrong base ID!")
-        val vehicles = sortVehicles(model.getVehiclesByIds(mainBase.vehicles))
+        val vehicles =
+            sortVehicles(model.getVehiclesByIds(mainBase.vehicles))
+                .filter { it.status == VehicleStatus.AT_BASE }
+                .toMutableList()
 
         AssetManager.allocateAssetsToEmergency(model, emergency, vehicles, false)
         if (!emergency.isFulfilled()) {
