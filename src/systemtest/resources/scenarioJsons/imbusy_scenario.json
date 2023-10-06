@@ -1,0 +1,35 @@
+{
+  "events": [
+    {
+      "id": 0,
+      "type": "TRAFFIC_JAM",
+      "tick": 1,
+      "duration": 1,
+      "factor": 1,
+      "source": 1,
+      "target": 2
+    }
+  ],
+  "emergencyCalls": [
+    {
+      "id": 0,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "Town_Hall_Square",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 10
+    },
+    {
+      "id": 1,
+      "tick": 1,
+      "village": "Berlin",
+      "roadName": "Town_Hall_Square",
+      "emergencyType": "FIRE",
+      "severity": 1,
+      "handleTime": 1,
+      "maxDuration": 15
+    }
+  ]
+}

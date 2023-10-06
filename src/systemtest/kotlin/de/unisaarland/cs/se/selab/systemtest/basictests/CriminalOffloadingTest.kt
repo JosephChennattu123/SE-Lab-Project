@@ -66,7 +66,6 @@ class CriminalOffloadingTest : SystemTest() {
         // PoliceEmergency1 fails
         assertNextLine(logEmergencyResult(1, false))
 
-
         assertNextLine(LOG_SIMULATION_ENDED)
     }
 }
