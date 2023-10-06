@@ -60,6 +60,7 @@ class SuccessfulRequest : SystemTest() {
         assertNextLine(logTick(2))
         assertNextLine(logAssetArrived(0, 2)) // motorcycle
         assertNextLine(logAssetArrived(1, 3)) // ambulance
+        assertNextLine(logAssetArrived(3, 3)) // ambulance
         assertNextLine(logAssetArrived(5, 2)) // police car
         assertNextLine(logAssetArrived(6, 2)) // police car
         assertNextLine(logAssetArrived(7, 2)) // police car
@@ -68,7 +69,6 @@ class SuccessfulRequest : SystemTest() {
         assertNextLine(logAssetArrived(11, 2)) // motorcycle
         assertNextLine(logAssetArrived(13, 2)) // k9
         assertNextLine(logAssetArrived(14, 2)) // k9
-        assertNextLine(logAssetArrived(16, 3)) // ambulance
         assertNextLine(logAssetArrived(19, 2)) // police car
 
         assertNextLine(logTick(3))
