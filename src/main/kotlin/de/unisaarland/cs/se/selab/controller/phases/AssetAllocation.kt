@@ -121,7 +121,7 @@ class AssetAllocation {
             )?.let {
                 baseNeedRequest.add(
                     model.graph.vertices[it]?.baseId
-                        ?: error("This vertex must have base!")
+                        ?: throw IllegalArgumentException("This vertex must have base!")
                 )
             }
         }
