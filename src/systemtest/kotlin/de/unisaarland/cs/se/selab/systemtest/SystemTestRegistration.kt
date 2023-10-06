@@ -4,8 +4,9 @@ package de.unisaarland.cs.se.selab.systemtest
 import de.unisaarland.cs.se.selab.systemtest.basictests.*
 import de.unisaarland.cs.se.selab.systemtest.runner.SystemTestManager
 import de.unisaarland.cs.se.selab.systemtest.simulation.events.VehicleUnavailable
-import de.unisaarland.cs.se.selab.systemtest.simulation.smallSimulation.IAmBusy
+import de.unisaarland.cs.se.selab.systemtest.simulation.requesting.SuccessfulRequest
 import de.unisaarland.cs.se.selab.systemtest.simulation.smallSimulation.SimpleSimulation
+import de.unisaarland.cs.se.selab.systemtest.simulation.smallSimulation.UnderStaffedAndFail
 import de.unisaarland.cs.se.selab.systemtest.validation.BaseWithNoVertex
 import de.unisaarland.cs.se.selab.systemtest.validation.EmergencyDoctorWithLadder
 import de.unisaarland.cs.se.selab.systemtest.validation.EmergencyOnNonExistingRoad
@@ -42,41 +43,36 @@ object SystemTestRegistration {
      * If all tests of this section pass: -
      */
     fun registerSystemTestsReferenceImpl(manager: SystemTestManager) {
-        /**
-         manager.registerTest(ExampleTest())
-         manager.registerTest(OneEmergency())
-         manager.registerTest(FireEmergencyTest())
-         manager.registerTest(SimpleTest())
-         manager.registerTest(SimpleTestButEventEnds())
-         manager.registerTest(BaseWithNoVertex())
-         manager.registerTest(EmergencyDoctorWithLadder())
-         manager.registerTest(FireStationWithAmbulance())
-         manager.registerTest(FireTruckWithAmbulance())
-         manager.registerTest(HospitalWithFireTruck())
-         manager.registerTest(MissingDepartmentPolice())
-         manager.registerTest(MissingDepartmentFireStation())
-         manager.registerTest(MissingDepartmentHospital())
-         manager.registerTest(PoliceNoVehicles())
-         manager.registerTest(PoliceCarWithWater())
-         manager.registerTest(PoliceStationWithAmbulance())
-         manager.registerTest(TwoBasesOneVertex())
-         manager.registerTest(VehiclesWithIllegalValues())
-         manager.registerTest(MixedVehicles())
-         manager.registerTest(MixedBases())
-         manager.registerTest(MixedEvents())
-         manager.registerTest(EmergencyOnNonExistingRoad())
-         manager.registerTest(EventOnNonExistingRoad())
-         manager.registerTest(VehicleEventNoVehicle())
-
-         manager.registerTest(SimpleSimulation())
-         /
-         manager.registerTest(SuccessfulRequest())
-         manager.registerTest(SimpleMapEmergencyFailure())
-         manager.registerTest(UnderStaffedAndFail())
-         manager.registerTest(VehicleUnavailable())
-         manager.registerTest(CriminalOffloadingTest())
-*/
-        manager.registerTest(IAmBusy())
+        manager.registerTest(ExampleTest())
+        manager.registerTest(OneEmergency())
+        manager.registerTest(FireEmergencyTest())
+        manager.registerTest(SimpleTest())
+        manager.registerTest(SimpleTestButEventEnds())
+        manager.registerTest(BaseWithNoVertex())
+        manager.registerTest(EmergencyDoctorWithLadder())
+        manager.registerTest(FireStationWithAmbulance())
+        manager.registerTest(FireTruckWithAmbulance())
+        manager.registerTest(HospitalWithFireTruck())
+        manager.registerTest(MissingDepartmentPolice())
+        manager.registerTest(MissingDepartmentFireStation())
+        manager.registerTest(MissingDepartmentHospital())
+        manager.registerTest(PoliceNoVehicles())
+        manager.registerTest(PoliceCarWithWater())
+        manager.registerTest(PoliceStationWithAmbulance())
+        manager.registerTest(TwoBasesOneVertex())
+        manager.registerTest(VehiclesWithIllegalValues())
+        manager.registerTest(MixedVehicles())
+        manager.registerTest(MixedBases())
+        manager.registerTest(MixedEvents())
+        manager.registerTest(EmergencyOnNonExistingRoad())
+        manager.registerTest(EventOnNonExistingRoad())
+        manager.registerTest(VehicleEventNoVehicle())
+        manager.registerTest(SimpleSimulation())
+        manager.registerTest(SuccessfulRequest())
+        manager.registerTest(SimpleMapEmergencyFailure())
+        manager.registerTest(UnderStaffedAndFail())
+        manager.registerTest(VehicleUnavailable())
+        manager.registerTest(CriminalOffloadingTest())
     }
 
     /**
